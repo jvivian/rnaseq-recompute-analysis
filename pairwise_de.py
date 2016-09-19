@@ -56,12 +56,22 @@ class Analysis(object):
         self.ranked = pd.DataFrame()
         self.genes = {}
 
-    def process_combined_df(self):
-        # Read in tissue dataframe and collect TCGA sample names
-        log.info('Reading in tissue dataframe: ' + self.df_path)
-        self.df = self._remove_nonprotein_coding_genes()
-        self.df.to_csv(self.pc_path, sep='\t')
-        return self.df
+    def run_pairwise_edger(self):
+        """
+        Run pairwise differential expression using the program edgeR
+
+        The R script is generated then parallelized by the number of
+        cores the analysis object was instantiated with
+        """
+        if not os.path.exists(self.pc_path):
+            self._remove_nonprotein_coding_genes()
+        # Write out edgeR script
+        with open(self.edger_script, 'w') as f:
+            f.write(self._generate_edger_script())
+        # Run multiple edgeR processes
+        log.info('Beginning pairwise differential expression: Using {} cores'.format(self.cores))
+        with ThreadPoolExecutor(max_workers=self.cores) as executor:
+            executor.map(self._run_edger, self.tcga_names)
 
     def _remove_nonprotein_coding_genes(self):
         """
@@ -76,16 +86,9 @@ class Analysis(object):
                     if line[line.index('gene_type') + 1] == '"protein_coding";':
                         pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
         pc_genes = list(pc_genes)
-        return self.df.ix[pc_genes]
-
-    def run_pairwise_edger(self):
-        # Write out edgeR script
-        with open(self.edger_script, 'w') as f:
-            f.write(self._generate_edger_script())
-        # Multiprocess edgeR
-        log.info('Beginning pairwise differential expression: Using {} cores'.format(self.cores))
-        with ThreadPoolExecutor(max_workers=self.cores) as executor:
-            executor.map(self._run_edger, self.tcga_names)
+        self.df = self.df.ix[pc_genes]
+        self.df.to_csv(self.pc_path, sep='\t')
+        return self.df
 
     def _run_edger(self, sample):
         """
@@ -288,6 +291,8 @@ def main():
     parser.add_argument('--gene-map', type=str, default='/mnt/metadata/attrs.tsv',
                         help='File containing map information. Must have at least 2 column names: '
                              'geneID and geneName.')
+    parser.add_argument('--gencode', type=str, default='/mnt/gencode.v23.annotation.gtf',
+                        help='Gencode annotation file. Version 23 was used in the rnaseq recompute.')
     parser.add_argument('--cores', default=8, type=int, help='Number of cores to use.')
     # params = parser.parse_args()
     pass
