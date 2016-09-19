@@ -33,9 +33,9 @@ class Analysis(object):
         self.pairwise_dir = os.path.join(self.tissue_dir, 'pairwise_results')
         self.results_dir = os.path.join(self.tissue_dir, 'results')
         self.edger_script = os.path.join(self.tissue_dir, 'edgeR-pairwise-DE.R')
-
+        self.pc_path = os.path.join(self.tissue_dir, os.path.splitext(os.path.basename(self.df_path))[0] + '_pc.tsv')
+        # Read in dataframe and store tcga_names
         self.df = pd.read_csv(self.df_path, sep='\t', index_col=0)
-
         self.tcga_names = [name.replace('-', '.') for name in self.df.columns if 'TCGA' in name]
 
         self.ranked = pd.DataFrame()
@@ -44,11 +44,8 @@ class Analysis(object):
     def process_combined_df(self):
         # Read in tissue dataframe and collect TCGA sample names
         log.info('Reading in tissue dataframe: ' + self.df_path)
-        # Remove non-protein coding genes
         self.df = self._remove_nonprotein_coding_genes()
-        pc_df_path = os.path.join(self.tissue_dir, os.path.splitext(os.path.basename(self.df_path))[0] + '_pc.tsv')
-        self.df.to_csv(pc_df_path, sep='\t')
-
+        self.df.to_csv(self.pc_path, sep='\t')
         return self.df
 
     def _remove_nonprotein_coding_genes(self):
@@ -177,7 +174,7 @@ class Analysis(object):
         library(edgeR)
         args <- commandArgs(trailingOnly = TRUE)
         sample <- args[1]
-        n <- read.table('{tissue_df}', sep='\\t', header=1, row.names=1)
+        n <- read.table('{pc_path}', sep='\\t', header=1, row.names=1)
         gtex_count <- length(colnames(n[grepl('GTEX', colnames(n))]))
         tcga_count <- length(colnames(n)) - gtex_count
         cat('Sample: ', sample, '\\t')
@@ -241,7 +238,7 @@ class Analysis(object):
         output_name <- paste('{pairwise_dir}/', sample, '.tsv', sep='')
         write.table(qlf_sort, output_name, quote=FALSE, sep='\t', col.names=NA)
         """.format(tissue_dir=self.tissue_dir, mds_dir=mds_dir, ma_dir=ma_dir, pairwise_dir=self.pairwise_dir,
-                   tissue_df=self.df_path))
+                   pc_path=self.pc_path))
 
 
 def mkdir_p(path):
