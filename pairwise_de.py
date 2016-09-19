@@ -11,12 +11,12 @@ import os
 import subprocess
 import textwrap
 from collections import defaultdict
-from multiprocessing import Pool
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
 log = logging.getLogger(__name__)
@@ -64,11 +64,10 @@ class Analysis(object):
         # Write out edgeR script
         with open(self.edger_script, 'w') as f:
             f.write(self._generate_edger_script())
-
         # Multiprocess edgeR
         log.info('Beginning pairwise differential expression: Using {} cores'.format(self.cores))
-        pool = Pool(self.cores)
-        pool.map(self._run_edger, self.tcga_names)
+        with ThreadPoolExecutor(max_workers=self.cores) as executor:
+            executor.map(self._run_edger, self.tcga_names)
 
     def _run_edger(self, sample):
         """
