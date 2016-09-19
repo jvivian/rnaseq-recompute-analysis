@@ -23,8 +23,6 @@ def concat_frames(gtex_df, tcga_df, name, path='/mnt/tissues/'):
     output_dir = os.path.join(path, name)
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
-    with open(path + name + '/num_samples', 'w') as f:
-        f.write('{}\t{}\n'.format(len(gtex_df.columns), len(tcga_df.columns)))
     df = pd.concat([gtex_df, tcga_df], axis=1)
     combined_name = os.path.join(path, name, name + '_combined.tsv')
     df.to_csv(combined_name, sep='\t')
