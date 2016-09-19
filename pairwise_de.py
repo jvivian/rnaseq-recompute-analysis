@@ -30,6 +30,7 @@ class Analysis(object):
         self.gene_map = gene_map
         self.gencode_path = gencode_path
         self.tissue_dir = os.path.dirname(self.df_path)
+        self.norm_count_tables = os.path.join(self.tissue_dir, 'norm_count_tables')
         self.pairwise_dir = os.path.join(self.tissue_dir, 'pairwise_results')
         self.results_dir = os.path.join(self.tissue_dir, 'results')
         self.edger_script = os.path.join(self.tissue_dir, 'edgeR-pairwise-DE.R')
@@ -88,9 +89,7 @@ class Analysis(object):
         log.info('Compiling pairwise differntial r')
         self.ranked = self._rank_results()
         self.ranked = self._add_mapped_genes()
-        if not os.path.exists(self.results_dir):
-            os.mkdir(self.results_dir)
-
+        mkdir_p(self.results_dir)
         # pval / fc/ cpm histogram
         f, axarr = plt.subplots(3, figsize=(8, 6))
         sns.distplot(self.ranked.pval, ax=axarr[0], color='r')
@@ -155,7 +154,7 @@ class Analysis(object):
         mds_dir = os.path.join(self.tissue_dir, 'plots_mds')
         ma_dir = os.path.join(self.tissue_dir, 'plots_ma')
 
-        for d in [mds_dir, ma_dir, self.pairwise_dir]:
+        for d in [mds_dir, ma_dir, self.pairwise_dir, self.norm_count_tables]:
             mkdir_p(d)
 
         return textwrap.dedent("""
