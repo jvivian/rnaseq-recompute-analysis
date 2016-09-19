@@ -102,7 +102,7 @@ def main():
                         help='location of TCGA metadata tsv.')
     parser.add_argument('--gtex-expression', default='/mnt/xena_tables/gtex_gene_expected_count', type=str,
                         help='location of GTEx expression table.')
-    parser.add_argument('--gtex-expression', default='/mnt/xena_tables/tcga_gene_expected_count', type=str,
+    parser.add_argument('--tcga-expression', default='/mnt/xena_tables/tcga_gene_expected_count', type=str,
                         help='location of TCGA expression table.')
     params = parser.parse_args()
 
