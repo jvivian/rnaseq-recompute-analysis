@@ -23,8 +23,22 @@ log = logging.getLogger(__name__)
 
 
 class Analysis(object):
+    """
+    Represents one pairwise differential expression analysis.
 
-    def __init__(self, tissue_df, cores, gene_map, gencode_path='/mnt/gencode.v23.annotation.gtf'):
+    Pairwise differential expression describes the process of comparing one group of samples
+    to a different sample one at a time and aggregating the results. GTEx represents normal
+    human tissue, so that's group 1. TCGA samples are from cancer biopsies and are abnormal
+    in different ways, i.e. GTEx clusters tightly together whereas TCGA samples are more dispersed.
+    """
+
+    def __init__(self, tissue_df, cores, gene_map, gencode_path):
+        """
+        :param str tissue_df: Path to the combined tissue dataframe. See tissue_pairing.py for more information
+        :param int cores: Number of cores to use when performing pairwise differential expression
+        :param str gene_map: Path to the TSV that has ENSMBL gene mapping information
+        :param str gencode_path: Path to the gencode annotation
+        """
         self.df_path = tissue_df
         self.cores = cores
         self.gene_map = gene_map
@@ -38,7 +52,7 @@ class Analysis(object):
         # Read in dataframe and store tcga_names
         self.df = pd.read_csv(self.df_path, sep='\t', index_col=0)
         self.tcga_names = [name.replace('-', '.') for name in self.df.columns if 'TCGA' in name]
-
+        # Variables used in aggregating results
         self.ranked = pd.DataFrame()
         self.genes = {}
 
@@ -50,6 +64,9 @@ class Analysis(object):
         return self.df
 
     def _remove_nonprotein_coding_genes(self):
+        """
+        Removes non-protein coding genes which can skew normalization
+        """
         log.info('Creating dataframe with non-protein coding genes removed.')
         pc_genes = set()
         with open(self.gencode_path, 'r') as f:
@@ -72,7 +89,7 @@ class Analysis(object):
 
     def _run_edger(self, sample):
         """
-        Function used in pool.map to run Rscript
+        Method used in ThreadPoolExecutor to run Rscript
 
         :param str sample: TCGA sample
         """
@@ -85,6 +102,9 @@ class Analysis(object):
         return 'yay!'
 
     def read_results(self):
+        """
+        Read in the differential expression results
+        """
         # Read in result tables
         log.info('Compiling pairwise differntial r')
         self.ranked = self._rank_results()
@@ -260,8 +280,6 @@ def main():
     3. Run RScript to perform differential expression
         I. Create dataframe of GTEx and single TCGA sample
         II.
-
-    :return:
     """
     parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--tissue-df', type=str, required=True,
