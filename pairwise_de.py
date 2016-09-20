@@ -19,6 +19,7 @@ import seaborn as sns
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
@@ -28,8 +29,8 @@ class Analysis(object):
 
     Pairwise differential expression describes the process of comparing one group of samples
     to a different sample one at a time and aggregating the results. GTEx represents normal
-    human tissue, so that's group 1. TCGA samples are from cancer biopsies and are abnormal
-    in different ways, i.e. GTEx clusters tightly together whereas TCGA samples are more dispersed.
+    human tissue, so that's our collective normal group. TCGA samples are from cancer biopsies
+    and cluster together less tightly than GTEx, so we'll compare against them one at a time.
     """
 
     def __init__(self, tissue_df, cores, gene_map, gencode_path):
@@ -96,12 +97,11 @@ class Analysis(object):
 
         :param str sample: TCGA sample
         """
-        print 'Running sample: ' + sample
-        try:
-            subprocess.check_call(['Rscript', self.edger_script, sample])
-        except Exception as e:
-            print e
-            return e.message
+        log.info('Running sample: ' + sample)
+        p = subprocess.Popen(['Rscript', self.edger_script, sample])
+        out, err = p.communicate()
+        if not p.returncode == 0:
+            raise RuntimeError('EdgeR run failed!\n\n\nstdout:\n{}stderr:\n{}\n\n\n'.format(out, err))
         return 'yay!'
 
     def read_results(self):
