@@ -12,12 +12,15 @@ import subprocess
 import textwrap
 from collections import defaultdict
 
-import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from concurrent.futures import ThreadPoolExecutor
-from tqdm import tqdm
+
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -54,8 +57,12 @@ class Analysis(object):
         self.df = pd.read_csv(self.df_path, sep='\t', index_col=0)
         self.tcga_names = [name.replace('-', '.') for name in self.df.columns if 'TCGA' in name]
         # Variables used in aggregating results
+        self.num_samples = None
         self.ranked = pd.DataFrame()
         self.genes = {}
+        self.pvals = defaultdict(list)
+        self.fc = defaultdict(list)
+        self.cpm = defaultdict(list)
 
     def run_pairwise_edger(self):
         """
@@ -64,6 +71,7 @@ class Analysis(object):
         The R script is generated then parallelized by the number of
         cores the analysis object was instantiated with
         """
+        log.info('Running pairwise differential expression')
         if not os.path.exists(self.pc_path):
             self._remove_nonprotein_coding_genes()
         # Write out edgeR script
@@ -108,12 +116,13 @@ class Analysis(object):
         """
         Read in the differential expression results
         """
-        # Read in result tables
-        log.info('Compiling pairwise differntial r')
+        log.info('Compiling pairwise results')
+        self.num_samples = len([x for x in os.listdir(self.results_dir) if x.endswith('.tsv')])
         self.ranked = self._rank_results()
         self.ranked = self._add_mapped_genes()
         mkdir_p(self.results_dir)
-        # pval / fc/ cpm histogram
+        log.info('Saving ranked TSV file to: ' + self.results_dir)
+        self.ranked.to_csv(os.path.join(self.results_dir, 'ranked.tsv'), sep='\t')
         f, axarr = plt.subplots(3, figsize=(8, 6))
         sns.distplot(self.ranked.pval, ax=axarr[0], color='r')
         sns.distplot(self.ranked.fc, ax=axarr[1], color='b')
@@ -123,36 +132,26 @@ class Analysis(object):
         axarr[2].set_ylabel('Log CPM')
         plt.savefig(os.path.join(self.results_dir, 'pval_fc_cpm_histogram.pdf'))
 
-    def _rank_results(self, cutoff=.90):
-        pvals, fc, cpm = defaultdict(list), defaultdict(list), defaultdict(list)
+    def _rank_results(self):
+        log.info('Reading in tables')
+        dfs = [x for x in os.listdir(self.pairwise_dir) if x.endswith('.tsv')]
+        with ThreadPoolExecutor(max_workers=self.cores) as executor:
+            executor.map(self._create_results_table, dfs)
 
-        # Open each file and append values
-        for f in tqdm(os.listdir(self.pairwise_dir)):
-            df = pd.read_csv(os.path.join(self.pairwise_dir, f), sep='\t', index_col=0)
-            for gene in df.index:
-                pvals[gene].append(df.loc[gene]['PValue'])
-                fc[gene].append(df.loc[gene]['logFC'])
-                cpm[gene].append(df.loc[gene]['logCPM'])
+        log.info('Remove genes not present in 90% of samples.')
+        with ThreadPoolExecutor(max_workers=self.cores) as executor:
+            executor.map(self._remove_unrepresented_genes, self.pvals.keys())
 
-        # Only retain genes that are present in 90% of samples, as we care about genes that matter at a cohort level.
-        num_samples = len(os.listdir(self.pairwise_dir))
-        for gene in pvals.keys():
-            if len(pvals[gene]) < int(num_samples * cutoff):
-                pvals.pop(gene)
-                fc.pop(gene)
-                cpm.pop(gene)
-        len(pvals.keys())
-
-        # Rank genes
-        self.genes = pvals.keys()
-        self.ranked['pval'] = [np.mean(pvals[x]) for x in self.genes]
-        self.ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.001]) for x in self.genes]
-        self.ranked['pval_std'] = [np.std(pvals[x]) for x in self.genes]
-        self.ranked['fc'] = [np.mean(fc[x]) for x in self.genes]
-        self.ranked['fc_std'] = [np.std(fc[x]) for x in self.genes]
-        self.ranked['cpm'] = [np.mean(cpm[x]) for x in self.genes]
-        self.ranked['cpm_std'] = [np.std(cpm[x]) for x in self.genes]
-        self.ranked['num_samples'] = [len(pvals[x]) for x in self.genes]
+        log.info('Ranking results by pval < 0.001')
+        self.genes = self.pvals.keys()
+        self.ranked['pval'] = [np.mean(self.pvals[x]) for x in self.genes]
+        self.ranked['pval_counts'] = [sum([1 for y in self.pvals[x] if y < 0.001]) for x in self.genes]
+        self.ranked['pval_std'] = [np.std(self.pvals[x]) for x in self.genes]
+        self.ranked['fc'] = [np.mean(self.fc[x]) for x in self.genes]
+        self.ranked['fc_std'] = [np.std(self.fc[x]) for x in self.genes]
+        self.ranked['cpm'] = [np.mean(self.cpm[x]) for x in self.genes]
+        self.ranked['cpm_std'] = [np.std(self.cpm[x]) for x in self.genes]
+        self.ranked['num_samples'] = [len(self.pvals[x]) for x in self.genes]
         self.ranked['gene'] = self.genes
         self.ranked.index = self.genes
         self.ranked.sort_values('pval_counts', inplace=True, ascending=False)
@@ -160,7 +159,21 @@ class Analysis(object):
 
         return self.ranked
 
+    def _create_results_table(self, f):
+        df = pd.read_csv(os.path.join(self.pairwise_dir, f), sep='\t', index_col=0)
+        for gene in df.index:
+            self.pvals[gene].append(df.loc[gene]['PValue'])
+            self.fc[gene].append(df.loc[gene]['logFC'])
+            self.cpm[gene].append(df.loc[gene]['logCPM'])
+
+    def _remove_unrepresented_genes(self, gene):
+        if len(self.pvals[gene]) < int(self.num_samples * 0.90):
+            self.pvals.pop(gene)
+            self.fc.pop(gene)
+            self.cpm.pop(gene)
+
     def _add_mapped_genes(self):
+        log.info('Adding mapped genes')
         id_map = pd.read_table(self.gene_map, sep='\t')
         gene_mappings = {x: y for x, y in itertools.izip(id_map['geneId'], id_map['geneName'])}
         mapped_genes = []
