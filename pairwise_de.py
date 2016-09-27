@@ -8,19 +8,15 @@ import errno
 import itertools
 import logging
 import os
+import shutil
 import subprocess
 import textwrap
-from collections import defaultdict
+from collections import defaultdict, Counter
 
-import matplotlib
 import numpy as np
 import pandas as pd
-import seaborn as sns
 from concurrent.futures import ThreadPoolExecutor
-
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
+from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -48,18 +44,24 @@ class Analysis(object):
         self.gene_map = gene_map
         self.gencode_path = gencode_path
         self.tissue_dir = os.path.dirname(self.df_path)
-        self.norm_count_tables = os.path.join(self.tissue_dir, 'norm_count_tables')
+        self.norm_counts_dir = os.path.join(self.tissue_dir, 'norm_count_tables')
+        self.mds_dir = os.path.join(self.tissue_dir, 'plots_mds')
+        self.ma_dir = os.path.join(self.tissue_dir, 'plots_ma')
         self.pairwise_dir = os.path.join(self.tissue_dir, 'pairwise_results')
+        self.masked_dir = os.path.join(self.pairwise_dir, 'masked_results')
+        self.matched_dir = os.path.join(self.pairwise_dir, 'matched_results')
+        self.unmatched_dir = os.path.join(self.pairwise_dir, 'unmatched_results')
         self.results_dir = os.path.join(self.tissue_dir, 'results')
         self.edger_script = os.path.join(self.tissue_dir, 'edgeR-pairwise-DE.R')
         self.pc_path = os.path.join(self.tissue_dir, os.path.splitext(os.path.basename(self.df_path))[0] + '_pc.tsv')
         # Read in dataframe and store tcga_names
-        self.df = pd.read_csv(self.df_path, sep='\t', index_col=0)
-        self.tcga_names = [name.replace('-', '.') for name in self.df.columns if 'TCGA' in name]
+        self.df = None
+        self.tcga_names = None
         # Variables used in aggregating results
+        self.dfs = None
         self.num_samples = None
-        self.ranked = pd.DataFrame()
-        self.genes = {}
+        # self.ranked = pd.DataFrame()
+        self.genes = None
         self.pvals = defaultdict(list)
         self.fc = defaultdict(list)
         self.cpm = defaultdict(list)
@@ -71,7 +73,11 @@ class Analysis(object):
         The R script is generated then parallelized by the number of
         cores the analysis object was instantiated with
         """
-        log.info('Running pairwise differential expression')
+        log.info('Reading in table')
+        self.df = pd.read_csv(self.df_path, sep='\t', index_col=0)
+        self.tcga_names = [name.replace('-', '.') for name in self.df.columns if 'TCGA' in name]
+        for d in [self.mds_dir, self.ma_dir, self.pairwise_dir, self.norm_counts_dir]:
+            mkdir_p(d)
         if not os.path.exists(self.pc_path):
             self._remove_nonprotein_coding_genes()
         # Write out edgeR script
@@ -114,65 +120,90 @@ class Analysis(object):
 
     def read_results(self):
         """
-        Read in the differential expression results
+        Read in the differential expression results, rank
         """
+        for d in [self.results_dir, self.masked_dir, self.matched_dir, self.unmatched_dir]:
+            mkdir_p(d)
         log.info('Compiling pairwise results')
-        self.num_samples = len([x for x in os.listdir(self.results_dir) if x.endswith('.tsv')])
-        self.ranked = self._rank_results()
-        self.ranked = self._add_mapped_genes()
-        mkdir_p(self.results_dir)
-        log.info('Saving ranked TSV file to: ' + self.results_dir)
-        self.ranked.to_csv(os.path.join(self.results_dir, 'ranked.tsv'), sep='\t')
-        f, axarr = plt.subplots(3, figsize=(8, 6))
-        sns.distplot(self.ranked.pval, ax=axarr[0], color='r')
-        sns.distplot(self.ranked.fc, ax=axarr[1], color='b')
-        sns.distplot(self.ranked.cpm, ax=axarr[2])
-        axarr[0].set_ylabel('P-values')
-        axarr[1].set_ylabel('Log FC')
-        axarr[2].set_ylabel('Log CPM')
-        plt.savefig(os.path.join(self.results_dir, 'pval_fc_cpm_histogram.pdf'))
+        self.dfs = [x for x in os.listdir(self.pairwise_dir) if x.endswith('.tsv')]
+        self.num_samples = len(self.dfs)
+        # Find samples with matched normals
+        barcodes = [x[:-7] for x in self.dfs]
+        matched = {item for item, count in Counter(barcodes).items() if count == 2}
+        matched = {x for x in matched if x + '.11.tsv' in self.dfs and x + '.01.tsv' in self.dfs}
+        self._produce_masks(matched)
+        matched = set([x+'.11.tsv' for x in matched] + [x + '.01.tsv' for x in matched])
+        for unmatch in set(self.dfs) - matched:
+            shutil.move(os.path.join(self.pairwise_dir, unmatch), os.path.join(self.unmatched_dir, unmatch))
+        for match in matched:
+            shutil.move(os.path.join(self.pairwise_dir, match), os.path.join(self.matched_dir, match))
 
-    def _rank_results(self):
-        log.info('Reading in tables')
-        dfs = [x for x in os.listdir(self.pairwise_dir) if x.endswith('.tsv')]
-        with ThreadPoolExecutor(max_workers=self.cores) as executor:
-            executor.map(self._create_results_table, dfs)
+        # Rank genes for matched and unmatched samples
+        for directory in [self.masked_dir, self.unmatched_dir]:
+            ranked = pd.DataFrame()
+            ranked = self._rank_results(directory, ranked)
+            ranked = self._add_mapped_genes(ranked)
+            log.info('Saving ranked TSV file to: ' + self.results_dir)
+            ranked.to_csv(os.path.join(self.results_dir, os.path.basename(directory) + '-ranked.tsv'), sep='\t')
 
-        log.info('Remove genes not present in 90% of samples.')
-        with ThreadPoolExecutor(max_workers=self.cores) as executor:
-            executor.map(self._remove_unrepresented_genes, self.pvals.keys())
+    def _produce_masks(self, matched):
+        """
+        Samples with matched normals will be used to mask genes in the tumor sample
+        :return:
+        """
+        log.info('Producing masks for matched samples')
+        for match in tqdm(matched):
+            log.debug('Match: ' + match)
+            match_path = os.path.join(self.pairwise_dir, match)
+            # try:
+            df_norm = pd.read_csv(match_path + '.11.tsv', sep='\t', index_col=0)
+            masked_genes = df_norm[df_norm.PValue < 0.001].index
+            df_tumor = pd.read_csv(match_path + '.01.tsv', sep='\t', index_col=0)
+            for gene in masked_genes:
+                try:
+                    df_tumor.drop(gene, inplace=True)
+                except ValueError:  # DE gene in normal didn't show up in tumor
+                    pass
+            df_tumor.to_csv(os.path.join(self.masked_dir, match + '.01.tsv'), sep='\t')
+            with open(os.path.join(self.masked_dir, match + '_masked_genes'), 'w') as f:
+                f.write('\n'.join(masked_genes))
+            # except IOError:  # "Norm" sample wasn't .11
+            #     pass
+
+    def _rank_results(self, directory, ranked):
+        log.info('Reading in ranked tables from: ' + directory)
+        for f in tqdm([x for x in os.listdir(directory) if x.endswith('.tsv')]):
+            log.debug('Ranking: ' + f)
+            df = pd.read_csv(os.path.join(directory, f), sep='\t', index_col=0)
+            for gene in df.index:
+                self.pvals[gene].append(df.loc[gene]['PValue'])
+                self.fc[gene].append(df.loc[gene]['logFC'])
+                self.cpm[gene].append(df.loc[gene]['logCPM'])
 
         log.info('Ranking results by pval < 0.001')
         self.genes = self.pvals.keys()
-        self.ranked['pval'] = [np.mean(self.pvals[x]) for x in self.genes]
-        self.ranked['pval_counts'] = [sum([1 for y in self.pvals[x] if y < 0.001]) for x in self.genes]
-        self.ranked['pval_std'] = [np.std(self.pvals[x]) for x in self.genes]
-        self.ranked['fc'] = [np.mean(self.fc[x]) for x in self.genes]
-        self.ranked['fc_std'] = [np.std(self.fc[x]) for x in self.genes]
-        self.ranked['cpm'] = [np.mean(self.cpm[x]) for x in self.genes]
-        self.ranked['cpm_std'] = [np.std(self.cpm[x]) for x in self.genes]
-        self.ranked['num_samples'] = [len(self.pvals[x]) for x in self.genes]
-        self.ranked['gene'] = self.genes
-        self.ranked.index = self.genes
-        self.ranked.sort_values('pval_counts', inplace=True, ascending=False)
-        self.ranked.to_csv(os.path.join(self.tissue_dir, 'ranked_df.tsv'), sep='\t')
+        ranked['pval'] = [np.median(self.pvals[x]) for x in self.genes]
+        ranked['pval_counts'] = [sum([1 for y in self.pvals[x] if y < 0.001]) for x in self.genes]
+        ranked['pval_std'] = [np.std(self.pvals[x]) for x in self.genes]
+        ranked['fc'] = [np.median(self.fc[x]) for x in self.genes]
+        ranked['fc_std'] = [np.std(self.fc[x]) for x in self.genes]
+        ranked['cpm'] = [np.median(self.cpm[x]) for x in self.genes]
+        ranked['cpm_std'] = [np.std(self.cpm[x]) for x in self.genes]
+        ranked['num_samples'] = [len(self.pvals[x]) for x in self.genes]
+        ranked['gene'] = self.genes
+        ranked.index = self.genes
+        ranked.sort_values('pval_counts', inplace=True, ascending=False)
 
-        return self.ranked
-
-    def _create_results_table(self, f):
-        df = pd.read_csv(os.path.join(self.pairwise_dir, f), sep='\t', index_col=0)
-        for gene in df.index:
-            self.pvals[gene].append(df.loc[gene]['PValue'])
-            self.fc[gene].append(df.loc[gene]['logFC'])
-            self.cpm[gene].append(df.loc[gene]['logCPM'])
+        return ranked
 
     def _remove_unrepresented_genes(self, gene):
+        log.debug('Removing underrepresented gene: ' + gene)
         if len(self.pvals[gene]) < int(self.num_samples * 0.90):
             self.pvals.pop(gene)
             self.fc.pop(gene)
             self.cpm.pop(gene)
 
-    def _add_mapped_genes(self):
+    def _add_mapped_genes(self, df):
         log.info('Adding mapped genes')
         id_map = pd.read_table(self.gene_map, sep='\t')
         gene_mappings = {x: y for x, y in itertools.izip(id_map['geneId'], id_map['geneName'])}
@@ -183,16 +214,10 @@ class Analysis(object):
             except KeyError:
                 new_gene = gene
             mapped_genes.append(new_gene)
-        self.ranked['gene_name'] = mapped_genes
-        return self.ranked
+        df['gene_name'] = mapped_genes
+        return df
 
     def _generate_edger_script(self):
-        mds_dir = os.path.join(self.tissue_dir, 'plots_mds')
-        ma_dir = os.path.join(self.tissue_dir, 'plots_ma')
-
-        for d in [mds_dir, ma_dir, self.pairwise_dir, self.norm_count_tables]:
-            mkdir_p(d)
-
         return textwrap.dedent("""
         plot_MDS <- function(name, f){{
             output_name = paste('{mds_dir}/', name, '.pdf', sep='')
@@ -271,8 +296,8 @@ class Analysis(object):
         # Write out table
         output_name <- paste('{pairwise_dir}/', sample, '.tsv', sep='')
         write.table(qlf_sort, output_name, quote=FALSE, sep='\t', col.names=NA)
-        """.format(tissue_dir=self.tissue_dir, mds_dir=mds_dir, ma_dir=ma_dir, pairwise_dir=self.pairwise_dir,
-                   pc_path=self.pc_path))
+        """.format(tissue_dir=self.tissue_dir, mds_dir=self.mds_dir, ma_dir=self.ma_dir,
+                   pairwise_dir=self.pairwise_dir, pc_path=self.pc_path))
 
 
 def mkdir_p(path):
@@ -307,5 +332,8 @@ def main():
     parser.add_argument('--gencode', type=str, default='/mnt/gencode.v23.annotation.gtf',
                         help='Gencode annotation file. Version 23 was used in the rnaseq recompute.')
     parser.add_argument('--cores', default=8, type=int, help='Number of cores to use.')
-    # params = parser.parse_args()
-    pass
+    params = parser.parse_args()
+
+    a = Analysis(tissue_df=params.tissue_df, cores=params.cores, gene_map=params.gene_map, gencode_path=params.gencode)
+    a.run_pairwise_edger()
+    a.read_results()
