@@ -60,11 +60,7 @@ class Analysis(object):
         # Variables used in aggregating results
         self.dfs = None
         self.num_samples = None
-        # self.ranked = pd.DataFrame()
         self.genes = None
-        self.pvals = defaultdict(list)
-        self.fc = defaultdict(list)
-        self.cpm = defaultdict(list)
 
     def run_pairwise_edger(self):
         """
@@ -173,37 +169,32 @@ class Analysis(object):
                 f.write('\n'.join(masked_genes))
 
     def _rank_results(self, directory, ranked):
+        pvals = defaultdict(list)
+        fc = defaultdict(list)
+        cpm = defaultdict(list)
         log.info('Reading in ranked tables from: ' + directory)
         for f in tqdm([x for x in os.listdir(directory) if x.endswith('.tsv')]):
             log.debug('Ranking: ' + f)
             df = pd.read_csv(os.path.join(directory, f), sep='\t', index_col=0)
             for gene in df.index:
-                self.pvals[gene].append(df.loc[gene]['PValue'])
-                self.fc[gene].append(df.loc[gene]['logFC'])
-                self.cpm[gene].append(df.loc[gene]['logCPM'])
+                pvals[gene].append(df.loc[gene]['PValue'])
+                fc[gene].append(df.loc[gene]['logFC'])
+                cpm[gene].append(df.loc[gene]['logCPM'])
 
         log.info('Ranking results by pval < 0.001')
-        self.genes = self.pvals.keys()
-        ranked['pval'] = [np.median(self.pvals[x]) for x in self.genes]
-        ranked['pval_counts'] = [sum([1 for y in self.pvals[x] if y < 0.001]) for x in self.genes]
-        ranked['pval_std'] = [np.std(self.pvals[x]) for x in self.genes]
-        ranked['fc'] = [np.median(self.fc[x]) for x in self.genes]
-        ranked['fc_std'] = [np.std(self.fc[x]) for x in self.genes]
-        ranked['cpm'] = [np.median(self.cpm[x]) for x in self.genes]
-        ranked['cpm_std'] = [np.std(self.cpm[x]) for x in self.genes]
-        ranked['num_samples'] = [len(self.pvals[x]) for x in self.genes]
-        ranked['gene'] = self.genes
+        self.genes = pvals.keys()
+        ranked['pval'] = [np.median(pvals[x]) for x in self.genes]
+        ranked['pval_std'] = [np.std(pvals[x]) for x in self.genes]
+        ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.001]) for x in self.genes]
+        ranked['fc'] = [np.median(fc[x]) for x in self.genes]
+        ranked['fc_std'] = [np.std(fc[x]) for x in self.genes]
+        ranked['cpm'] = [np.median(cpm[x]) for x in self.genes]
+        ranked['cpm_std'] = [np.std(cpm[x]) for x in self.genes]
+        ranked['num_samples'] = [len(pvals[x]) for x in self.genes]
         ranked.index = self.genes
         ranked.sort_values('pval_counts', inplace=True, ascending=False)
 
         return ranked
-
-    def _remove_unrepresented_genes(self, gene):
-        log.debug('Removing underrepresented gene: ' + gene)
-        if len(self.pvals[gene]) < int(self.num_samples * 0.90):
-            self.pvals.pop(gene)
-            self.fc.pop(gene)
-            self.cpm.pop(gene)
 
     def _add_mapped_genes(self, df):
         log.info('Adding mapped genes')
