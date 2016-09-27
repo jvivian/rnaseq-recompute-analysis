@@ -146,16 +146,20 @@ class Analysis(object):
             log.info('Saving ranked TSV file to: ' + self.results_dir)
             ranked.to_csv(os.path.join(self.results_dir, os.path.basename(directory) + '-ranked.tsv'), sep='\t')
 
+            for fc in [1, 1.5, 2, 2.5, 3]:
+                ranked[(ranked.fc > fc) | (ranked.fc < -fc)].to_csv(os.path.join(
+                    self.results_dir, os.path.basename(directory) + '-ranked-cpm-' + str(fc)) + '.tsv', sep='\t')
+
     def _produce_masks(self, matched):
         """
         Samples with matched normals will be used to mask genes in the tumor sample
-        :return:
+        :return: Gene ranks, FC, CPM
+        :rtype: dict
         """
         log.info('Producing masks for matched samples')
         for match in tqdm(matched):
             log.debug('Match: ' + match)
             match_path = os.path.join(self.pairwise_dir, match)
-            # try:
             df_norm = pd.read_csv(match_path + '.11.tsv', sep='\t', index_col=0)
             masked_genes = df_norm[df_norm.PValue < 0.001].index
             df_tumor = pd.read_csv(match_path + '.01.tsv', sep='\t', index_col=0)
@@ -167,8 +171,6 @@ class Analysis(object):
             df_tumor.to_csv(os.path.join(self.masked_dir, match + '.01.tsv'), sep='\t')
             with open(os.path.join(self.masked_dir, match + '_masked_genes'), 'w') as f:
                 f.write('\n'.join(masked_genes))
-            # except IOError:  # "Norm" sample wasn't .11
-            #     pass
 
     def _rank_results(self, directory, ranked):
         log.info('Reading in ranked tables from: ' + directory)
