@@ -58,6 +58,7 @@ def generate_match_de():
     args <- commandArgs(trailingOnly = TRUE)
     df_path <- args[1]
     patient_path <- args[2]
+    script.dir <- dirname(sys.frame(1)$ofile)
 
     # Read in tables / patients
     n <- read.table(df_path, sep='\t', header=1, row.names=1)
@@ -79,23 +80,23 @@ def generate_match_de():
 
     # Write out table
     resOrdered <- res[order(res$padj),]
-    res_name <- paste(dirname(df_path), 'results.csv', sep='/')
+    res_name <- paste(script.dir, 'results.csv', sep='/')
     write.csv(as.data.frame(resOrdered), file=res_name)
 
     # MA Plot
-    ma_name <- paste(dirname(df_path), 'MA.pdf', sep='/')
+    ma_name <- paste(script.dir, 'MA.pdf', sep='/')
     pdf(ma_name, width=7, height=7)
     plotMA(res, main='DESeq2')
     dev.off()
 
     # Dispersion Plot
-    disp_name <- paste(dirname(df_path), 'disp.pdf', sep='/')
+    disp_name <- paste(script.dir, 'disp.pdf', sep='/')
     pdf(disp_name, width=7, height=7)
     plotDispEsts( y, ylim = c(1e-6, 1e1) )
     dev.off()
 
     # PVal Hist
-    hist_name <- paste(dirname(df_path), 'pval-hist.pdf', sep='/')
+    hist_name <- paste(script.dir, 'pval-hist.pdf', sep='/')
     pdf(hist_name, width=7, height=7)
     hist( res$pvalue, breaks=20, col="grey" )
     dev.off()
@@ -105,7 +106,7 @@ def generate_match_de():
     bins <- cut( res$baseMean, qs )
     levels(bins) <- paste0("~",round(.5*qs[-1] + .5*qs[-length(qs)]))
     ratios <- tapply( res$pvalue, bins, function(p) mean( p < .01, na.rm=TRUE ) )
-    ratio_name <- paste(dirname(df_path), 'ratios.pdf', sep='/')
+    ratio_name <- paste(script.dir, 'ratios.pdf', sep='/')
     pdf(ratio_name, width=7, height=7)
     barplot(ratios, xlab="mean normalized count", ylab="ratio of small $p$ values")
     dev.off()
@@ -162,7 +163,7 @@ def main():
             deseq_path = write_de_script(match_dir)
             df_path = df_path[0] if len(df_path) == 1 else [x for x in df_path if 'pc.tsv' in x][0]
             print df_path
-            match_df_path, patient_path = create_matched_dataframe(df_path, dest=tissue)
+            match_df_path, patient_path = create_matched_dataframe(df_path, dest=match_dir)
             deseq2_info.append((deseq_path, match_df_path, patient_path))
 
     with ThreadPoolExecutor(max_workers=8) as executor:
