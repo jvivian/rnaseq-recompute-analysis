@@ -47,3 +47,13 @@ concat_frames(gp, tp, name='prostate')
 gs = pd.read_csv('/mnt/tissues/stomach/Stomach.tsv', sep='\t', index_col=0)
 ts = pd.read_csv('/mnt/tissues/stomach/Stomach_adenocarcinoma.tsv', sep='\t', index_col=0)
 concat_frames(gs, ts, name='stomach')
+
+# Stomach
+go = pd.read_csv('/mnt/tissues/ovary/Ovary.tsv', sep='\t', index_col=0)
+to = pd.read_csv('/mnt/tissues/ovary/Ovarian_serous_cystadenocarcinoma.tsv', sep='\t', index_col=0)
+concat_frames(go, to, name='ovary')
+
+# Pancreas
+gp = pd.read_csv('/mnt/tissues/pancreas/Pancreas.tsv', sep='\t', index_col=0)
+tp = pd.read_csv('/mnt/tissues/pancreas/Pancreatic_adenocarcinoma.tsv', sep='\t', index_col=0)
+concat_frames(gp, tp, name='pancreas')
