@@ -9,6 +9,10 @@ import os
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+import logging
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 
 def process_raw_xena_df(df):
@@ -60,6 +64,7 @@ def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_express
     :param str tcga_metadata: Path to TCGA metadata
     :param str gtex_expression: Path to GTEx expression table
     :param str tcga_expression: Path to TCGA expression table
+    :param str output_dir: Path to output directory for tables
     """
     # GTEx metadata
     gtex_meta = pd.read_csv(gtex_metadata, delimiter='\t')
@@ -89,20 +94,43 @@ def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_express
         create_subframe(tc, samples=subtype.barcode, name=name, output_dir=output_dir)
 
 
-def concat_frames(gtex_df, tcga_df, output_dir):
+def concat_frames(gtex_df_path, tcga_df_path, output_path):
     """
     Concantenate dataframes produces by tissue_preprocessing
     Creates two files:
         1. num_samples which contains the number of gtex and tcga samples
         2. A concantenated dataframe (axis=1) of gtex_df and tcga_df
 
-    :param pd.DataFrame gtex_df: GTex dataframe
-    :param pd.DataFrame tcga_df: TCGA dataframe
-    :param str name: Name of tissue
-    :param str path: Path to where directory and tissue will be created
+    :param str gtex_df_path: Path to GTEx dataframe
+    :param str tcga_df_path: Path to TCGA dataframe
+    :param str output_path: Path to where directory and tissue will be created
     """
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-    df = pd.concat([gtex_df, tcga_df], axis=1)
-    combined_name = os.path.join(output_dir, 'combined-gtex-tcga.tsv')
-    df.to_csv(combined_name, sep='\t')
+    log.info('Concatenating dataframes: {}\t{}'.format(gtex_df_path, tcga_df_path))
+    gtex = pd.read_csv(gtex_df_path, sep='\t', index_col=0)
+    tcga = pd.read_csv(tcga_df_path, sep='\t', index_col=0)
+    df = pd.concat([gtex, tcga], axis=1)
+    df.to_csv(output_path, sep='\t')
+
+
+# TODO: Replace with GTFParser
+def remove_nonprotein_coding_genes(df_path, gencode_path):
+    """
+    Removes non-protein coding genes which can skew normalization
+
+    :param str df_path: Path to combined-gtex-tcga-counts.tsv dataframe
+    :param str gencode_path: Path to gencode GTF
+    """
+    log.info('Creating dataframe with non-protein coding genes removed: ' + df_path)
+    df = pd.read_csv(df_path, sep='\t', index_col=0)
+    pc_genes = set()
+    with open(gencode_path, 'r') as f:
+        for line in f.readlines():
+            if not line.startswith('#'):
+                line = line.split()
+                if line[line.index('gene_type') + 1] == '"protein_coding";':
+                    pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
+    # Subset list of protein-coding genes
+    pc_genes = list(pc_genes)
+    df = df.ix[pc_genes]
+    output_path = os.path.join(os.path.dirname(df_path), 'combined-gtex-tcga-counts-protein-coding.tsv')
+    df.to_csv(output_path, sep='\t')
