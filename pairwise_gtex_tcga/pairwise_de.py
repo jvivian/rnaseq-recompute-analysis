@@ -17,6 +17,7 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
+from utility_functions import mkdir_p
 from utility_functions.gtf_parser import GTFRecord
 
 logging.basicConfig(level=logging.INFO)
