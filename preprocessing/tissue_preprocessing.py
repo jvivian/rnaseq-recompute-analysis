@@ -36,7 +36,7 @@ def prepare_for_de(df):
     return df
 
 
-def create_subframe(df, samples, name, path='/mnt/subframes/'):
+def create_subframe(df, samples, name, output_dir):
     """
     Creates a subframe from a dataframe given a set of samples
     Applies reverse normalization to get expected counts.
@@ -44,15 +44,15 @@ def create_subframe(df, samples, name, path='/mnt/subframes/'):
     :param pd.DataFrame df: Expression dataframe
     :param pd.Series samples: Selection of samples to subselect from
     :param str name: Name of output dataframe
-    :param str path: Path to output dataframe
+    :param str output_dir: Path to output dataframe
     """
     sub = df[df.index.isin(samples)]
     sub = prepare_for_de(sub)
     sub = sub.apply(lambda x: (2**x) - 1)  # Reverse of Xena normalization
-    sub.to_csv(os.path.join(path, name + '.tsv'), sep='\t')
+    sub.to_csv(os.path.join(output_dir, name + '.tsv'), sep='\t')
 
 
-def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_expression):
+def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_expression, output_dir):
     """
     Create subframes for every tissue
 
@@ -81,36 +81,28 @@ def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_express
     for tissue in tqdm(gtex_meta.body_site.unique()):
         subtype = gtex_meta[gtex_meta.body_site == tissue]
         name = '_'.join(' '.join(tissue.split('-')).split())
-        create_subframe(gt, samples=subtype.Sample_Name, name=name)
+        create_subframe(gt, samples=subtype.Sample_Name, name=name, output_dir=output_dir)
 
     for tissue in tqdm(tcga_meta.disease_name.unique()):
         subtype = tcga_meta[tcga_meta.disease_name == tissue]
         name = '_'.join(' '.join(tissue.split('-')).split())
-        create_subframe(tc, samples=subtype.barcode, name=name)
+        create_subframe(tc, samples=subtype.barcode, name=name, output_dir=output_dir)
 
 
-def main():
+def concat_frames(gtex_df, tcga_df, output_dir):
     """
-    Tissue preprocessing for RNA-seq recompute data pulled from Xena.
+    Concantenate dataframes produces by tissue_preprocessing
+    Creates two files:
+        1. num_samples which contains the number of gtex and tcga samples
+        2. A concantenated dataframe (axis=1) of gtex_df and tcga_df
 
-    Given metadata information and expression tables, produce "subframes" for each tissue type.
+    :param pd.DataFrame gtex_df: GTex dataframe
+    :param pd.DataFrame tcga_df: TCGA dataframe
+    :param str name: Name of tissue
+    :param str path: Path to where directory and tissue will be created
     """
-    parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--gtex-metadata', default='/mnt/metadata/gtex-table.txt', type=str,
-                        help='location of GTEx metadata table.')
-    parser.add_argument('--tcga-metadata', default='/mnt/metadata/tcga-summary.tsv', type=str,
-                        help='location of TCGA metadata tsv.')
-    parser.add_argument('--gtex-expression', default='/mnt/xena_tables/gtex_gene_expected_count', type=str,
-                        help='location of GTEx expression table.')
-    parser.add_argument('--tcga-expression', default='/mnt/xena_tables/tcga_gene_expected_count', type=str,
-                        help='location of TCGA expression table.')
-    params = parser.parse_args()
-
-    create_subframes(gtex_metadata=params.gtex_metadata,
-                     tcga_metadata=params.tcga_metadata,
-                     gtex_expression=params.gtex_expression,
-                     tcga_expression=params.tcga_expression)
-
-
-if __name__ == '__main__':
-    main()
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    df = pd.concat([gtex_df, tcga_df], axis=1)
+    combined_name = os.path.join(output_dir, 'combined-gtex-tcga.tsv')
+    df.to_csv(combined_name, sep='\t')

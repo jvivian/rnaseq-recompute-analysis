@@ -4,7 +4,6 @@ John Vivian
 September, 2016
 """
 import argparse
-import errno
 import itertools
 import logging
 import os
@@ -18,11 +17,13 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
+from utility_functions.gtf_parser import GTFRecord
+
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-class Analysis(object):
+class PairwiseAnalysis(object):
     """
     Represents one pairwise differential expression analysis.
 
@@ -57,6 +58,8 @@ class Analysis(object):
         # Read in dataframe and store tcga_names
         self.df = None
         self.tcga_names = None
+        # Store positional values (chromosome, start, stop)
+        self.positions = {}
         # Variables used in aggregating results
         self.dfs = None
         self.num_samples = None
@@ -75,7 +78,7 @@ class Analysis(object):
         for d in [self.mds_dir, self.ma_dir, self.pairwise_dir, self.norm_counts_dir]:
             mkdir_p(d)
         if not os.path.exists(self.pc_path):
-            self._remove_nonprotein_coding_genes()
+            self.df = self.remove_nonprotein_coding_genes(self.df, self.gencode_path, self.pc_path)
         # Write out edgeR script
         with open(self.edger_script, 'w') as f:
             f.write(self._generate_edger_script())
@@ -84,22 +87,24 @@ class Analysis(object):
         with ThreadPoolExecutor(max_workers=self.cores) as executor:
             executor.map(self._run_edger, self.tcga_names)
 
-    def _remove_nonprotein_coding_genes(self):
+    @staticmethod
+    def remove_nonprotein_coding_genes(df, gencode_path, output_path=None):
         """
         Removes non-protein coding genes which can skew normalization
         """
         log.info('Creating dataframe with non-protein coding genes removed.')
         pc_genes = set()
-        with open(self.gencode_path, 'r') as f:
+        with open(gencode_path, 'r') as f:
             for line in f.readlines():
                 if not line.startswith('#'):
                     line = line.split()
                     if line[line.index('gene_type') + 1] == '"protein_coding";':
                         pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
         pc_genes = list(pc_genes)
-        self.df = self.df.ix[pc_genes]
-        self.df.to_csv(self.pc_path, sep='\t')
-        return self.df
+        df = df.ix[pc_genes]
+        if output_path:
+            df.to_csv(output_path, sep='\t')
+        return df
 
     def _run_edger(self, sample):
         """
@@ -139,9 +144,9 @@ class Analysis(object):
             ranked = pd.DataFrame()
             ranked = self._rank_results(directory, ranked)
             ranked = self._add_mapped_genes(ranked)
+            ranked = self._add_chromsome_position(ranked)
             log.info('Saving ranked TSV file to: ' + self.results_dir)
             ranked.to_csv(os.path.join(self.results_dir, os.path.basename(directory) + '-ranked.tsv'), sep='\t')
-
             for fc in [1, 1.5, 2, 2.5, 3]:
                 ranked[(ranked.fc > fc) | (ranked.fc < -fc)].to_csv(os.path.join(
                     self.results_dir, os.path.basename(directory) + '-ranked-cpm-' + str(fc)) + '.tsv', sep='\t')
@@ -183,13 +188,13 @@ class Analysis(object):
 
         log.info('Ranking results by pval < 0.001')
         self.genes = pvals.keys()
-        ranked['pval'] = [np.median(pvals[x]) for x in self.genes]
-        ranked['pval_std'] = [np.std(pvals[x]) for x in self.genes]
         ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.001]) for x in self.genes]
-        ranked['fc'] = [np.median(fc[x]) for x in self.genes]
-        ranked['fc_std'] = [np.std(fc[x]) for x in self.genes]
-        ranked['cpm'] = [np.median(cpm[x]) for x in self.genes]
-        ranked['cpm_std'] = [np.std(cpm[x]) for x in self.genes]
+        ranked['pval'] = [np.median(pvals[x]) for x in self.genes]
+        ranked['pval_std'] = [round(np.std(pvals[x]), 4) for x in self.genes]
+        ranked['fc'] = [round(np.median(fc[x]), 4) for x in self.genes]
+        ranked['fc_std'] = [round(np.std(fc[x]), 4) for x in self.genes]
+        ranked['cpm'] = [round(np.median(cpm[x]), 4) for x in self.genes]
+        ranked['cpm_std'] = [round(np.std(cpm[x]), 4) for x in self.genes]
         ranked['num_samples'] = [len(pvals[x]) for x in self.genes]
         ranked.index = self.genes
         ranked.sort_values('pval_counts', inplace=True, ascending=False)
@@ -208,6 +213,24 @@ class Analysis(object):
                 new_gene = gene
             mapped_genes.append(new_gene)
         df['gene_name'] = mapped_genes
+        return df
+
+    def _add_chromsome_position(self, df):
+        log.info('Creating dictionary from GTF')
+        with open(self.gencode_path, 'r') as f:
+            for line in f:
+                if not line.startswith('#'):
+                    line = GTFRecord(line)
+                    if line.gene_type == 'protein_coding':
+                        self.positions[line.gene_id] = (line.seqname, line.start, line.end)
+        chromsome, start, end = [], [], []
+        for gene in self.genes:
+            chromsome.append(self.positions[gene][0])
+            start.append(self.positions[gene][1])
+            end.append(self.positions[gene][2])
+        df['chromosome'] = chromsome
+        df['start'] = start
+        df['end'] = end
         return df
 
     def _generate_edger_script(self):
@@ -293,16 +316,6 @@ class Analysis(object):
                    pairwise_dir=self.pairwise_dir, pc_path=self.pc_path))
 
 
-def mkdir_p(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-
-
 def main():
     """
     RNA-seq Pairwise Differential Expression Methodology:
@@ -327,6 +340,9 @@ def main():
     parser.add_argument('--cores', default=8, type=int, help='Number of cores to use.')
     params = parser.parse_args()
 
-    a = Analysis(tissue_df=params.tissue_df, cores=params.cores, gene_map=params.gene_map, gencode_path=params.gencode)
+    a = PairwiseAnalysis(tissue_df=params.tissue_df, cores=params.cores, gene_map=params.gene_map, gencode_path=params.gencode)
     a.run_pairwise_edger()
     a.read_results()
+
+if __name__ == '__main__':
+    main()

@@ -1,13 +1,13 @@
-import os
-import textwrap
-import logging
-import subprocess
-
 import errno
+import logging
+import os
+import subprocess
+import textwrap
+
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 
-from pairwise_de import PairwiseAnalysis
+from pairwise_gtex_tcga.pairwise_de import PairwiseAnalysis
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
