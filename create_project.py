@@ -9,6 +9,7 @@ import os
 import shutil
 import sys
 
+import pandas as pd
 import synapseclient
 from synapseclient.exceptions import SynapseHTTPError
 from tqdm import tqdm
@@ -25,7 +26,7 @@ tcga_counts = 'syn7434253'
 gtex_metadata = 'syn7248852'
 tcga_metadata = 'syn7248855'
 gencode_metadata = 'syn7248851'
-paired_table = None  # TODO: Replace with paired table
+paired_table = 'syn7437125'
 # Subdirectories to create
 leaves = ['data/xena-tables/gtex', 'data/xena-tables/tcga', 'data/tissue-pairs',
           'data/tissue-dataframes', 'metadata', 'experiments']
@@ -98,11 +99,13 @@ def main():
     tissue_dataframe_path = os.path.join(root_dir, 'data/tissue_dataframes')
     create_subframes(gtex_metadata=gtex_metadata_path, tcga_metadata=tcga_metadata_path,
                      tcga_expression=tcga_xena_path, gtex_expression=gtex_xena_path, output_dir=tissue_dataframe_path)
-    # TODO: Add section to acquire the paired data.
-    # TODO: Create a paired list once Kaia gets back to you, place on Synapse, use to create tissue pairings
-    # TODO: folder_name, gtex_file_name, tcga_file_name
-    # TODO: Then delete /data/tissue-dataframes ?
-    # create_paired_tissues(root_dir)
+    # Deal with cervix, special case
+    c1 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Ectocervix.tsv'))
+    c2 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Endocervix.tsv'))
+    df = pd.concat([c1, c2], axis=1)
+    df.to_csv(os.path.join(tissue_dataframe_path, 'Cervix_endo_and_ecto.tsv'), sep='\t')
+    # Create paired tissue directories
+    create_paired_tissues(root_dir)
 
 
 if __name__ == '__main__':
