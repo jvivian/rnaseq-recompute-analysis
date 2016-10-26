@@ -3,13 +3,12 @@
 John Vivian
 September, 2016
 """
-import argparse
+import logging
 import os
 
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-import logging
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -76,18 +75,21 @@ def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_express
     tcga_meta = pd.read_csv(tcga_metadata, delimiter='\t')
     tcga_meta.barcode = [x[:15] for x in tcga_meta.barcode]
 
-    # Read in expression dataframes
+    log.info('Reading in in GTEx expression table')
     gt = pd.read_csv(gtex_expression, delimiter='\t')
     gt = process_raw_xena_df(gt)
 
+    log.info('Reading in TCGA expression table')
     tc = pd.read_csv(tcga_expression, delimiter='\t')
     tc = process_raw_xena_df(tc)
 
+    log.info('Creating GTEx tissue dataframes')
     for tissue in tqdm(gtex_meta.body_site.unique()):
         subtype = gtex_meta[gtex_meta.body_site == tissue]
         name = '_'.join(' '.join(tissue.split('-')).split())
         create_subframe(gt, samples=subtype.Sample_Name, name=name, output_dir=output_dir)
 
+    log.info('Creating TCGA tissue dataframes')
     for tissue in tqdm(tcga_meta.disease_name.unique()):
         subtype = tcga_meta[tcga_meta.disease_name == tissue]
         name = '_'.join(' '.join(tissue.split('-')).split())
@@ -105,7 +107,7 @@ def concat_frames(gtex_df_path, tcga_df_path, output_path):
     :param str tcga_df_path: Path to TCGA dataframe
     :param str output_path: Path to where directory and tissue will be created
     """
-    log.info('Concatenating dataframes: {}\t{}'.format(gtex_df_path, tcga_df_path))
+    log.info('Concatenating dataframes: {}\t{}'.format(os.path.basename(gtex_df_path), os.path.basename(tcga_df_path)))
     gtex = pd.read_csv(gtex_df_path, sep='\t', index_col=0)
     tcga = pd.read_csv(tcga_df_path, sep='\t', index_col=0)
     df = pd.concat([gtex, tcga], axis=1)
@@ -120,7 +122,7 @@ def remove_nonprotein_coding_genes(df_path, gencode_path):
     :param str df_path: Path to combined-gtex-tcga-counts.tsv dataframe
     :param str gencode_path: Path to gencode GTF
     """
-    log.info('Creating dataframe with non-protein coding genes removed: ' + df_path)
+    log.info('Creating dataframe with only protein-coding genes: ' + os.path.basename(df_path))
     df = pd.read_csv(df_path, sep='\t', index_col=0)
     pc_genes = set()
     with open(gencode_path, 'r') as f:
