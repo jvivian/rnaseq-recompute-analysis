@@ -11,6 +11,7 @@ import sys
 
 import pandas as pd
 import synapseclient
+from concurrent.futures import ThreadPoolExecutor
 from synapseclient.exceptions import SynapseHTTPError
 from tqdm import tqdm
 
@@ -32,8 +33,16 @@ leaves = ['data/xena-tables/gtex', 'data/xena-tables/tcga', 'data/tissue-pairs',
           'data/tissue-dataframes', 'metadata', 'experiments']
 
 
-def download_input_data(root_dir, user_name):
+def download_input_data(root_dir, user_name, cores):
+    """
+    Downloads input data for the project
+
+    :param str root_dir: Project root directory
+    :param str user_name: Synapse user name
+    :param int cores: Number of cores to use
+    """
     syn = synapseclient.Synapse()
+    log.info('Attempting to login to Synapse')
     try:
         syn.login(user_name, os.environ['SYNAPSE_PASSWORD'])
     except KeyError:
@@ -41,15 +50,24 @@ def download_input_data(root_dir, user_name):
     except SynapseHTTPError as e:
         raise RuntimeError('Failed to connect Synapse client, check password: ' + e.message)
     # Download input tables
-    syn.get(gtex_counts, downloadLocation=os.path.join(root_dir, 'data/xena-tables/gtex'))
-    syn.get(tcga_counts, downloadLocation=os.path.join(root_dir, 'data/xena-tables/tcga'))
-    # Download metadata
-    syn.get(gtex_metadata, downloadLocation=os.path.join(root_dir, 'metadata'))
-    syn.get(tcga_metadata, downloadLocation=os.path.join(root_dir, 'metadata'))
-    syn.get(gencode_metadata, downloadLocation=os.path.join(root_dir, 'metadata'))
+    log.info('Downloading input data')
+    download_information = [(syn, gtex_counts, os.path.join(root_dir, 'data/xena-tables/gtex')),
+                            (syn, tcga_counts, os.path.join(root_dir, 'data/xena-tables/tcga')),
+                            (syn, gtex_metadata, os.path.join(root_dir, 'metadata')),
+                            (syn, tcga_metadata, os.path.join(root_dir, 'metadata')),
+                            (syn, gencode_metadata, os.path.join(root_dir, 'metadata')),
+                            (syn, paired_table, os.path.join(root_dir, 'metadata'))]
+    with ThreadPoolExecutor(max_workers=cores) as executor:
+        executor.map(synpase_download, download_information)
 
 
 def create_paired_tissues(root_dir):
+    """
+    Creates paired tissue dataframes
+
+    :param str root_dir: Project root directory
+    """
+    log.info('Creating paired tissues')
     with open(os.path.join(root_dir, 'metadata/tissue-pairings.tsv'), 'r') as f:
         for line in tqdm(f):
             if line:
@@ -68,6 +86,12 @@ def create_paired_tissues(root_dir):
                 remove_nonprotein_coding_genes(df_path=combined_path, gencode_path=gencode_path)
 
 
+def synpase_download(blob):
+    """Map function for downloading from Synapse"""
+    syn, syn_id, location = blob
+    syn.get(syn_id, downloadLocation=location)
+
+
 def main():
     """
     Recreates the RNA-seq Recompute Analysis project structure.
@@ -81,25 +105,29 @@ def main():
     parser.add_argument('--location', type=str, help='Directory to create project.')
     parser.add_argument('--username', type=str, help='Synapse username. Create account at Synpase.org and set the '
                                                      'password in the environment variable "SYNAPSE_PASSWORD".')
+    parser.add_argument('--cores', type=int, help='Number of cores to use when running R.', default=1)
     params = parser.parse_args()
+
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
-    # Create directory tree
-    root_dir = os.path.join(params.location, 'rna-seq_analysis')
+
+    log.info('Creating project directory tree at: ' + params.location)
+    root_dir = os.path.join(params.location, 'rna-seq-analysis')
     [mkdir_p(os.path.join(root_dir, x)) for x in leaves]
-    # Download input data
-    download_input_data(root_dir=root_dir, user_name=params.user_name)
-    # Create tissue dataframes
+
+    download_input_data(root_dir=root_dir, user_name=params.username, cores=params.cores)
+
     gtex_metadata_path = os.path.join(root_dir, 'metadata/gtex-table.txt')
     tcga_metadata_path = os.path.join(root_dir, 'metadata/tcga-summary.tsv')
     gtex_xena_path = os.path.join(root_dir, 'data/xena-tables/gtex/gtex_gene_counts')
     tcga_xena_path = os.path.join(root_dir, 'data/xena-tables/tcga/tcga_gene_counts')
-    tissue_dataframe_path = os.path.join(root_dir, 'data/tissue_dataframes')
+    tissue_dataframe_path = os.path.join(root_dir, 'data/tissue-dataframes')
+    log.info('Creating tissue dataframes at: ' + tissue_dataframe_path)
     create_subframes(gtex_metadata=gtex_metadata_path, tcga_metadata=tcga_metadata_path,
                      tcga_expression=tcga_xena_path, gtex_expression=gtex_xena_path, output_dir=tissue_dataframe_path)
-    # Deal with cervix, special case
+    # Deal with cervix - special case where we're combining the GTEx tissue to match TCGA
     c1 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Ectocervix.tsv'))
     c2 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Endocervix.tsv'))
     df = pd.concat([c1, c2], axis=1)
