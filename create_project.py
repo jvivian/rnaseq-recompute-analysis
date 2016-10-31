@@ -95,6 +95,10 @@ def synpase_download(blob):
 def main():
     """
     Recreates the RNA-seq Recompute Analysis project structure.
+        - Downloads input data / metadata from Synapse
+        - Creates dataframes for GTEx and TCGA separated by body site or disease name
+        - Pairs matching tissues together
+        - Creates a subset the combined dataframe that contains only protein-coding genes
 
     REQUIRED: Your Synapse password must be stored in the environment variable: SYNAPSE_PASSWORD
     e.g.
@@ -103,8 +107,8 @@ def main():
     """
     parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--location', type=str, help='Directory to create project.')
-    parser.add_argument('--username', type=str, help='Synapse username. Create account at Synpase.org and set the '
-                                                     'password in the environment variable "SYNAPSE_PASSWORD".')
+    parser.add_argument('--username', type=str, help='Synapse username (email). Create account at Synpase.org and set '
+                                                     'the password in the environment variable "SYNAPSE_PASSWORD".')
     parser.add_argument('--cores', type=int, help='Number of cores to use when running R.', default=1)
     params = parser.parse_args()
 
@@ -128,8 +132,8 @@ def main():
     create_subframes(gtex_metadata=gtex_metadata_path, tcga_metadata=tcga_metadata_path,
                      tcga_expression=tcga_xena_path, gtex_expression=gtex_xena_path, output_dir=tissue_dataframe_path)
     # Deal with cervix - special case where we're combining the GTEx tissue to match TCGA
-    c1 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Ectocervix.tsv'))
-    c2 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Endocervix.tsv'))
+    c1 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Ectocervix.tsv'), index_col=0, sep='\t')
+    c2 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Endocervix.tsv'), index_col=0, sep='\t')
     df = pd.concat([c1, c2], axis=1)
     df.to_csv(os.path.join(tissue_dataframe_path, 'Cervix_endo_and_ecto.tsv'), sep='\t')
     # Create paired tissue directories
