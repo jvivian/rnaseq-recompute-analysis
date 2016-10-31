@@ -98,10 +98,7 @@ def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_express
 
 def concat_frames(gtex_df_path, tcga_df_path, output_path):
     """
-    Concantenate dataframes produces by tissue_preprocessing
-    Creates two files:
-        1. num_samples which contains the number of gtex and tcga samples
-        2. A concantenated dataframe (axis=1) of gtex_df and tcga_df
+    Concantenate tissue dataframes to create a single combined data frame
 
     :param str gtex_df_path: Path to GTEx dataframe
     :param str tcga_df_path: Path to TCGA dataframe

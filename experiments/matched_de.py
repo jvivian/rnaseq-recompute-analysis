@@ -13,14 +13,18 @@ def create_matched_dataframe(input_df, output_df):
     df = pd.read_csv(input_df, sep='\t', index_col=0)
     barcodes = [x[:-3] for x in df.columns]
     matched = list(set(x for x in barcodes if x + '-11' in df.columns and x + '-01' in df.columns))
-    # Write out the patients here
-    patient_path = os.path.join(os.path.dirname(output_df), 'patient-pairs.txt')
-    with open(patient_path, 'w') as f:
-        f.write('\n'.join([x for x in matched for _ in (0, 1)]))
-    matched = [f(x) for x in matched for f in (lambda f1: f1 + '-01', lambda f2: f2 + '-11')]
-    matched_df = df[matched]
-    log.info('Writing out matched dataframe to: ' + os.path.dirname(output_df))
-    matched_df.to_csv(output_df, sep='\t')
+    if matched:
+        # Write out the patients here
+        patient_path = os.path.join(os.path.dirname(output_df), 'patient-pairs.txt')
+        with open(patient_path, 'w') as f:
+            f.write('\n'.join([x for x in matched for _ in (0, 1)]))
+        matched = [f(x) for x in matched for f in (lambda f1: f1 + '-01', lambda f2: f2 + '-11')]
+        matched_df = df[matched]
+        log.info('Writing out matched dataframe to: ' + os.path.dirname(output_df))
+        matched_df.to_csv(output_df, sep='\t')
+        return True
+    else:
+        return False
 
 
 def generate_match_de():
@@ -53,7 +57,7 @@ def generate_match_de():
 
     # Write out table
     resOrdered <- res[order(res$padj),]
-    res_name <- paste(script.dir, 'results.tsv', sep='/')
+    res_name <- paste(script.dir, 'results.tsv', sep='/', quote=FALSE)
     write.table(as.data.frame(resOrdered), file=res_name, col.names=NA, sep='\\t')
 
     # MA Plot

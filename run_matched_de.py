@@ -32,9 +32,12 @@ def main():
     for tissue in tissue_pairs:
         input_df = os.path.join(root_dir, 'data/tissue-pairs', tissue, 'combined-gtex-tcga-counts-protein-coding.tsv')
         output_df = os.path.join(experiment_dir, tissue, 'matched-tcga-counts.tsv')
-        create_matched_dataframe(input_df, output_df)
+        paired = create_matched_dataframe(input_df, output_df)
         # Write out DESeq2 R script
-        write_de_script(os.path.join(experiment_dir, tissue))
+        if paired:
+            write_de_script(os.path.join(experiment_dir, tissue))
+        else:
+            tissue_pairs.remove(tissue)
     # Run DESeq2 in batches
     log.info('Starting DESeq2 run using {} number of cores'.format(params.cores))
     with ThreadPoolExecutor(max_workers=params.cores) as executor:
