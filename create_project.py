@@ -76,12 +76,13 @@ def create_paired_tissues(root_dir):
                 gtex = gtex.split(',') if ',' in gtex else [gtex]
                 tissue_dir = os.path.join(root_dir, 'data/tissue-pairs', dirname)
                 mkdir_p(tissue_dir)
-                gtex_df = os.path.join(root_dir, 'data/tissue-dataframes/', gtex)
+                gtex_dfs = [os.path.join(root_dir, 'data/tissue-dataframes/', g) for g in gtex]
                 tcga_df = os.path.join(root_dir, 'data/tissue-dataframes/', tcga)
                 # Create combined dataframe and group tissues together
                 combined_path = os.path.join(tissue_dir, 'combined-gtex-tcga-counts.tsv')
-                concat_frames(gtex_df_path=gtex_df, tcga_df_path=tcga_df, output_path=combined_path)
-                shutil.copy(gtex_df, os.path.join(tissue_dir, gtex))
+                concat_frames(gtex_df_paths=gtex_dfs, tcga_df_path=tcga_df, output_path=combined_path)
+                # Copy input dataframes over for clarity
+                [shutil.copy(gtex_df, os.path.join(tissue_dir)) for gtex_df in gtex_dfs]
                 shutil.copy(tcga_df, os.path.join(tissue_dir, tcga))
                 # Create dataframe of just protein-coding genes
                 gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
@@ -133,11 +134,6 @@ def main():
     log.info('Creating tissue dataframes at: ' + tissue_dataframe_path)
     create_subframes(gtex_metadata=gtex_metadata_path, tcga_metadata=tcga_metadata_path,
                      tcga_expression=tcga_xena_path, gtex_expression=gtex_xena_path, output_dir=tissue_dataframe_path)
-    # Deal with cervix - special case where we're combining the GTEx tissue to match TCGA
-    c1 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Ectocervix.tsv'), index_col=0, sep='\t')
-    c2 = pd.read_csv(os.path.join(tissue_dataframe_path, 'Cervix_Endocervix.tsv'), index_col=0, sep='\t')
-    df = pd.concat([c1, c2], axis=1)
-    df.to_csv(os.path.join(tissue_dataframe_path, 'Cervix_endo_and_ecto.tsv'), sep='\t')
     # Create paired tissue directories
     create_paired_tissues(root_dir)
 
