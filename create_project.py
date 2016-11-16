@@ -27,7 +27,7 @@ tcga_counts = 'syn7434253'
 gtex_metadata = 'syn7248852'
 tcga_metadata = 'syn7248855'
 gencode_metadata = 'syn7248851'
-paired_table = 'syn7437125'
+paired_table = 'syn7541065'
 # Subdirectories to create
 leaves = ['data/xena-tables/gtex', 'data/xena-tables/tcga', 'data/tissue-pairs',
           'data/tissue-dataframes', 'metadata', 'experiments']
@@ -72,6 +72,8 @@ def create_paired_tissues(root_dir):
         for line in tqdm(f):
             if line:
                 dirname, gtex, tcga = line.strip().split('\t')
+                # Some GTEx tissues need to be combined in the final dataframe
+                gtex = gtex.split(',') if ',' in gtex else [gtex]
                 tissue_dir = os.path.join(root_dir, 'data/tissue-pairs', dirname)
                 mkdir_p(tissue_dir)
                 gtex_df = os.path.join(root_dir, 'data/tissue-dataframes/', gtex)

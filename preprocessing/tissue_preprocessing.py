@@ -96,18 +96,18 @@ def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_express
         create_subframe(tc, samples=subtype.barcode, name=name, output_dir=output_dir)
 
 
-def concat_frames(gtex_df_path, tcga_df_path, output_path):
+def concat_frames(gtex_df_paths, tcga_df_path, output_path):
     """
     Concantenate tissue dataframes to create a single combined data frame
 
-    :param str gtex_df_path: Path to GTEx dataframe
+    :param list gtex_df_paths: Path(s) to GTEx dataframe(s)
     :param str tcga_df_path: Path to TCGA dataframe
     :param str output_path: Path to where directory and tissue will be created
     """
-    log.info('Concatenating dataframes: {}\t{}'.format(os.path.basename(gtex_df_path), os.path.basename(tcga_df_path)))
-    gtex = pd.read_csv(gtex_df_path, sep='\t', index_col=0)
+    log.debug('Combining: {}\t{}'.format(gtex_df_paths, tcga_df_path))
+    gtex = [pd.read_csv(gtex_df, sep='\t', index_col=0) for gtex_df in gtex_df_paths]
     tcga = pd.read_csv(tcga_df_path, sep='\t', index_col=0)
-    df = pd.concat([gtex, tcga], axis=1)
+    df = pd.concat(gtex + [tcga], axis=1)
     df.to_csv(output_path, sep='\t')
 
 
@@ -119,7 +119,6 @@ def remove_nonprotein_coding_genes(df_path, gencode_path):
     :param str df_path: Path to combined-gtex-tcga-counts.tsv dataframe
     :param str gencode_path: Path to gencode GTF
     """
-    log.info('Creating dataframe with only protein-coding genes: ' + os.path.basename(df_path))
     df = pd.read_csv(df_path, sep='\t', index_col=0)
     pc_genes = set()
     with open(gencode_path, 'r') as f:
