@@ -75,7 +75,6 @@ def main():
     First run create_project.py
 
     Runs DESeq2 for all TCGA samples with a tumor-normal pair
-    :return:
     """
     parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--rna-seq-directory', type=str, required=True,
