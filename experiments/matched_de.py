@@ -1,6 +1,7 @@
 import logging
 import os
 import subprocess
+from subprocess import PIPE
 import textwrap
 
 import pandas as pd
@@ -20,7 +21,6 @@ def create_matched_dataframe(input_df, output_df):
             f.write('\n'.join([x for x in matched for _ in (0, 1)]))
         matched = [f(x) for x in matched for f in (lambda f1: f1 + '-01', lambda f2: f2 + '-11')]
         matched_df = df[matched]
-        log.info('Writing out matched dataframe to: ' + os.path.dirname(output_df))
         matched_df.to_csv(output_df, sep='\t')
         return True
     else:
@@ -46,6 +46,8 @@ def generate_match_de():
     patient_vector <- patients$V1
 
     # DESeq2 preprocessing
+    # Rounding the countData since DESeQ2 only accepts integer counts
+    # The design matrix is conditioned on the two vectors: patient and condition
     countData <- round(n)
     colData <- data.frame(condition=disease_vector, patient=patient_vector, row.names=colnames(countData))
     y <- DESeqDataSetFromMatrix(countData = countData, colData = colData, design = ~ patient + condition)
@@ -57,8 +59,8 @@ def generate_match_de():
 
     # Write out table
     resOrdered <- res[order(res$padj),]
-    res_name <- paste(script.dir, 'results.tsv', sep='/', quote=FALSE)
-    write.table(as.data.frame(resOrdered), file=res_name, col.names=NA, sep='\\t')
+    res_name <- paste(script.dir, 'results.tsv', sep='/')
+    write.table(as.data.frame(resOrdered), file=res_name, col.names=NA, sep='\\t',  quote=FALSE)
 
     # MA Plot
     ma_name <- paste(script.dir, 'plots', 'MA.pdf', sep='/')
@@ -98,12 +100,15 @@ def write_de_script(directory):
 
 
 def run_deseq2(tissue_dir):
-    log.info('Running sample: ' + tissue_dir)
+    tissue_name = os.path.basename(tissue_dir)
+    log.info('Running sample: ' + tissue_name)
     patient_path = os.path.join(tissue_dir, 'patient-pairs.txt')
     df_path = os.path.join(tissue_dir, 'matched-tcga-counts.tsv')
     deseq_path = os.path.join(tissue_dir, 'deseq2.R')
-    p = subprocess.Popen(['Rscript', deseq_path, df_path, patient_path])
+    p = subprocess.Popen(['Rscript', deseq_path, df_path, patient_path], stderr=PIPE, stdout=PIPE)
     out, err = p.communicate()
     if not p.returncode == 0:
-        raise RuntimeError('DESeq run failed!\n\n\nstdout:\n{}stderr:\n{}\n\n\n'.format(out, err))
+        raise RuntimeError('DESeq run failed for {}!\n\n\nstdout:\n{}stderr:\n{}\n\n\n'.format(tissue_name, out, err))
+    else:
+        log.info('Sample has finished successfully: ' + tissue_name)
     return 'yay!'
