@@ -6,8 +6,8 @@ import shutil
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
-from experiments.matched_de import create_matched_dataframe, write_de_script, run_deseq2
-from utility_functions import mkdir_p
+from experiments.TCGA_matched import create_matched_dataframe, write_de_script, run_deseq2
+from utils import mkdir_p
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
