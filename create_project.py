@@ -28,6 +28,7 @@ gtex_metadata = 'syn7248852'
 tcga_metadata = 'syn7248855'
 gencode_metadata = 'syn7248851'
 paired_table = 'syn7541065'
+gene_map = 'syn7801438'
 # Subdirectories to create
 leaves = ['data/xena-tables/gtex', 'data/xena-tables/tcga', 'data/tissue-pairs',
           'data/tissue-dataframes', 'metadata', 'experiments']
@@ -51,12 +52,14 @@ def download_input_data(root_dir, user_name, cores):
         raise RuntimeError('Failed to connect Synapse client, check password: ' + e.message)
     # Download input tables
     log.info('Downloading input data')
+    metadata_dir = os.path.join(root_dir, 'metadata')
     download_information = [(syn, gtex_counts, os.path.join(root_dir, 'data/xena-tables/gtex')),
                             (syn, tcga_counts, os.path.join(root_dir, 'data/xena-tables/tcga')),
-                            (syn, gtex_metadata, os.path.join(root_dir, 'metadata')),
-                            (syn, tcga_metadata, os.path.join(root_dir, 'metadata')),
-                            (syn, gencode_metadata, os.path.join(root_dir, 'metadata')),
-                            (syn, paired_table, os.path.join(root_dir, 'metadata'))]
+                            (syn, gtex_metadata, metadata_dir),
+                            (syn, tcga_metadata, metadata_dir),
+                            (syn, gencode_metadata, metadata_dir),
+                            (syn, paired_table, metadata_dir),
+                            (syn, gene_map, metadata_dir)]
     with ThreadPoolExecutor(max_workers=cores) as executor:
         executor.map(synpase_download, download_information)
 
