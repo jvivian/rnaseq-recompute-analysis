@@ -15,18 +15,21 @@ import shutil
 import textwrap
 
 import matplotlib.pyplot as plt
+import numpy as np
 from tqdm import tqdm
 
 from tissue_clustering.tsne_clustering import create_classification_vector
 from tissue_clustering.tsne_clustering import create_combined_df
 from tissue_clustering.tsne_clustering import find_protein_coding_genes
 from tissue_clustering.tsne_clustering import plot_dimensionality_reduction
+from tissue_clustering.tsne_clustering import run_pca
 from tissue_clustering.tsne_clustering import run_tsne
 from tissue_clustering.tsne_clustering import split_tcga_tumor_normal
-from utility_functions import mkdir_p
+from utils import mkdir_p
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+
 
 tissues = {
     'adrenal': ['Adrenal_Gland.tsv',
@@ -91,54 +94,25 @@ tissues = {
                'Uterus.tsv']}
 
 
-def main():
-    """
-    First run create_project.py, located in the root diretctory of this project.
-
-    Runs t-SNE clustering for a set of tissues
-    """
-    parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--rna-seq-directory', type=str, required=True,
-                        help='Full path to rna-seq_analysis directory, created by running create_project.py')
-    params = parser.parse_args()
-
-    log.info(textwrap.dedent("""
-████████╗   ███████╗███╗   ██╗███████╗    ██████╗ ██╗      ██████╗ ████████╗███████╗
-╚══██╔══╝   ██╔════╝████╗  ██║██╔════╝    ██╔══██╗██║     ██╔═══██╗╚══██╔══╝██╔════╝
-   ██║█████╗███████╗██╔██╗ ██║█████╗      ██████╔╝██║     ██║   ██║   ██║   ███████╗
-   ██║╚════╝╚════██║██║╚██╗██║██╔══╝      ██╔═══╝ ██║     ██║   ██║   ██║   ╚════██║
-   ██║      ███████║██║ ╚████║███████╗    ██║     ███████╗╚██████╔╝   ██║   ███████║
-   ╚═╝      ╚══════╝╚═╝  ╚═══╝╚══════╝    ╚═╝     ╚══════╝ ╚═════╝    ╚═╝   ╚══════╝
-    """))
-
-    log.info('Creating experiment diretories')
-    root_dir = params.rna_seq_directory
-    experiment_dir = os.path.join(root_dir, 'experiments/tsne-clustering')
-    plot_dir = os.path.join(experiment_dir, 'plots')
-    [mkdir_p(os.path.join(experiment_dir, x)) for x in tissues.keys()]
-    mkdir_p(plot_dir)
-
-    log.info('Copying over requisite dataframes')
-    tissue_dataframes = os.path.join(root_dir, 'data/tissue-dataframes')
-    for tissue in tqdm(tissues):
-        for tsv in tissues[tissue]:
-            if not os.path.exists(os.path.join(experiment_dir, tissue, tsv)):
-                shutil.copy(os.path.join(tissue_dataframes, tsv), os.path.join(experiment_dir, tissue, tsv))
-
-    log.info('Collecting t-SNE data for each tissue')
-    tsne_output = os.path.join(experiment_dir, 'tsne.pickle')
+def run_clustering(gencode_path, cluster_dir, name='tsne'):
+    tsne_output = os.path.join(cluster_dir, 'cluster-data.pickle')
     if os.path.exists(tsne_output):
         log.info('Pickle file found, loading: ' + tsne_output)
         tsne = pickle.load(open(tsne_output, 'rb'))
     else:
-        log.info('Curating list of protein coding genes')
-        pc_genes = find_protein_coding_genes(os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf'))
+        pc_genes = find_protein_coding_genes(gencode_path)
         tsne = {}
         for tissue in tqdm(tissues):
-            files = split_tcga_tumor_normal(os.path.join(experiment_dir, tissue))
+            files = split_tcga_tumor_normal(os.path.join(os.path.split(cluster_dir)[0], tissue))
             vector, label = create_classification_vector(files)
             df = create_combined_df(files, pc_genes)
-            x = run_tsne(df)
+
+            # Log-normalizing expression data for PCA / t-SNE
+            ln_df = df.apply(lambda y: np.log(y + 1))
+            if name == 'tsne':
+                x = run_tsne(ln_df)
+            else:
+                x = run_pca(ln_df)
             tsne[tissue] = (x, files, label)
         with open(tsne_output, 'w') as f:
             pickle.dump(tsne, f)
@@ -155,15 +129,57 @@ def main():
             axes[i].scatter(matrix[label == l, 0], matrix[label == l, 1], alpha=0.5, color=color, label=target_name)
         axes[i].legend(loc='best', fontsize=6)
         axes[i].set_title(tissue)
-    plt.savefig(os.path.join(plot_dir, 'tsne-plots.pdf'), format='pdf')
+    plt.savefig(os.path.join(cluster_dir, name + '-plots.pdf'), format='pdf')
 
     log.info('Creating per-tissue plots')
     for tissue in tsne:
         f, ax = plt.subplots()
         x, files, label = tsne[tissue]
         plot_dimensionality_reduction(ax, x, files, label, title=tissue)
-        f.savefig(os.path.join(plot_dir, tissue + '.pdf'), format='pdf')
+        f.savefig(os.path.join(cluster_dir, tissue + '-' + name + '.png'), format='png', dpi=300)
+        plt.close()
 
+
+def main():
+    """
+    First run create_project.py, located in the root diretctory of this project.
+
+    Runs t-SNE & PCA clustering for a set of tissues
+    """
+    parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--rna-seq-directory', type=str, required=True,
+                        help='Full path to rna-seq_analysis directory, created by running create_project.py')
+    params = parser.parse_args()
+
+    log.info(textwrap.dedent("""
+ ██████╗██╗     ██╗   ██╗███████╗████████╗███████╗██████╗ ██╗███╗   ██╗ ██████╗
+██╔════╝██║     ██║   ██║██╔════╝╚══██╔══╝██╔════╝██╔══██╗██║████╗  ██║██╔════╝
+██║     ██║     ██║   ██║███████╗   ██║   █████╗  ██████╔╝██║██╔██╗ ██║██║  ███╗
+██║     ██║     ██║   ██║╚════██║   ██║   ██╔══╝  ██╔══██╗██║██║╚██╗██║██║   ██║
+╚██████╗███████╗╚██████╔╝███████║   ██║   ███████╗██║  ██║██║██║ ╚████║╚██████╔╝
+ ╚═════╝╚══════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+    """))
+
+    log.info('Creating experiment diretories')
+    root_dir = params.rna_seq_directory
+    gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
+    experiment_dir = os.path.join(root_dir, 'experiments/clustering')
+    tsne_dir = os.path.join(experiment_dir, 'tsne')
+    pca_dir = os.path.join(experiment_dir, 'pca')
+    [mkdir_p(os.path.join(experiment_dir, x)) for x in tissues.keys() + [tsne_dir, pca_dir]]
+
+    log.info('Copying over requisite dataframes')
+    tissue_dataframes = os.path.join(root_dir, 'data/tissue-dataframes')
+    for tissue in tqdm(tissues):
+        for tsv in tissues[tissue]:
+            if not os.path.exists(os.path.join(experiment_dir, tissue, tsv)):
+                shutil.copy(os.path.join(tissue_dataframes, tsv), os.path.join(experiment_dir, tissue, tsv))
+
+    log.info('Running t-SNE clustering')
+    run_clustering(gencode_path, cluster_dir=tsne_dir)
+
+    log.info('Running PCA clustering')
+    run_clustering(gencode_path, cluster_dir=pca_dir, name='pca')
 
 if __name__ == '__main__':
     main()
