@@ -49,10 +49,12 @@ def create_subframe(df, samples, name, output_dir):
     :param str name: Name of output dataframe
     :param str output_dir: Path to output dataframe
     """
-    sub = df[df.index.isin(samples)]
-    sub = prepare_for_de(sub)
-    sub = sub.apply(lambda x: (2**x) - 1)  # Reverse of Xena normalization
-    sub.to_csv(os.path.join(output_dir, name + '.tsv'), sep='\t')
+    output_path = os.path.join(output_dir, name + '.tsv')
+    if not os.path.exists(output_path):
+        sub = df[df.index.isin(samples)]
+        sub = prepare_for_de(sub)
+        sub = sub.apply(lambda x: (2**x) - 1)  # Reverse of Xena normalization
+        sub.to_csv(output_path, sep='\t')
 
 
 def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_expression, output_dir):
@@ -105,10 +107,11 @@ def concat_frames(gtex_df_paths, tcga_df_path, output_path):
     :param str output_path: Path to where directory and tissue will be created
     """
     log.debug('Combining: {}\t{}'.format(gtex_df_paths, tcga_df_path))
-    gtex = [pd.read_csv(gtex_df, sep='\t', index_col=0) for gtex_df in gtex_df_paths]
-    tcga = pd.read_csv(tcga_df_path, sep='\t', index_col=0)
-    df = pd.concat(gtex + [tcga], axis=1)
-    df.to_csv(output_path, sep='\t')
+    if not os.path.exists(output_path):
+        gtex = [pd.read_csv(gtex_df, sep='\t', index_col=0) for gtex_df in gtex_df_paths]
+        tcga = pd.read_csv(tcga_df_path, sep='\t', index_col=0)
+        df = pd.concat(gtex + [tcga], axis=1)
+        df.to_csv(output_path, sep='\t')
 
 
 # TODO: Replace with GTFParser
@@ -121,14 +124,15 @@ def remove_nonprotein_coding_genes(df_path, gencode_path):
     """
     df = pd.read_csv(df_path, sep='\t', index_col=0)
     pc_genes = set()
-    with open(gencode_path, 'r') as f:
-        for line in f.readlines():
-            if not line.startswith('#'):
-                line = line.split()
-                if line[line.index('gene_type') + 1] == '"protein_coding";':
-                    pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
-    # Subset list of protein-coding genes
-    pc_genes = list(pc_genes)
-    df = df.ix[pc_genes]
     output_path = os.path.join(os.path.dirname(df_path), 'combined-gtex-tcga-counts-protein-coding.tsv')
-    df.to_csv(output_path, sep='\t')
+    if not os.path.exists(output_path):
+        with open(gencode_path, 'r') as f:
+            for line in f.readlines():
+                if not line.startswith('#'):
+                    line = line.split()
+                    if line[line.index('gene_type') + 1] == '"protein_coding";':
+                        pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
+        # Subset list of protein-coding genes
+        pc_genes = list(pc_genes)
+        df = df.ix[pc_genes]
+        df.to_csv(output_path, sep='\t')
