@@ -12,6 +12,7 @@ import subprocess
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
+
 def mkdir_p(path):
     try:
         os.makedirs(path)
@@ -53,9 +54,9 @@ def write_script(script_func, directory, name='deseq2.R'):
     """
     Writes out script (usually an R script for DESeq2) in a given directory
 
-    :param function script_func:
-    :param str directory:
-    :param str name:
+    :param function script_func: Function that returns text block containing script
+    :param str directory: Directory where script will be written
+    :param str name: Name of script
     :return: Path to script
     :rtype: str
     """
@@ -71,7 +72,6 @@ def run_deseq2(blob):
     Designed for use with ThreadPoolExecutor's map
 
     :param tuple(str, list[str]) blob:
-    :return:
     """
     script_path, args = blob
     p = subprocess.Popen(['Rscript'] + list(args), stderr=subprocess.PIPE)
