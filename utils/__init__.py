@@ -3,7 +3,12 @@ import os
 import pickle
 
 import pandas as pd
+import logging
 
+import subprocess
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 def mkdir_p(path):
     try:
@@ -15,9 +20,24 @@ def mkdir_p(path):
             raise
 
 
-def add_gene_names(df_path, gene_map_pickle):
-    """Assumes ensemble gene names are the index"""
-    gene_map = pickle.load(open(gene_map_pickle, 'rb'))
+def dedupe(items):
+    seen = set()
+    for item in items:
+        if item not in seen:
+            yield item
+            seen.add(item)
+
+
+def add_gene_names(df_path, gene_map_path):
+    """
+    Adds gene names to results.tsv from DESeq2
+
+    :param str df_path: Path to dataframe from DESeq2
+    :param str gene_map_path: Path to a pickled dictionary that maps geneId to geneName
+    :return: Dataframe containing the geneNames as the index and the geneId as an appended column
+    :rtype: pd.DataFrame
+    """
+    gene_map = pickle.load(open(gene_map_path, 'rb'))
     df = pd.read_csv(df_path, sep='\t', index_col=0)
 
     gene_names = [gene_map[x] if x in gene_map.keys() else x for x in df.index]
@@ -25,3 +45,37 @@ def add_gene_names(df_path, gene_map_pickle):
     df.index = gene_names
 
     return df
+
+
+def write_script(script_func, directory, name='deseq2.R'):
+    """
+    Writes out script (usually an R script for DESeq2) in a given directory
+
+    :param function script_func:
+    :param str directory:
+    :param str name:
+    :return: Path to script
+    :rtype: str
+    """
+    deseq_script_path = os.path.join(directory, name)
+    with open(deseq_script_path, 'w') as f:
+        f.write(script_func())
+    return deseq_script_path
+
+
+def run_deseq2(blob):
+    """
+    Function for running DESeq2 in batches
+    Designed for use with ThreadPoolExecutor's map
+
+    :param tuple(str, list[str]) blob:
+    :return:
+    """
+    script_path, args = blob
+    p = subprocess.Popen(['Rscript'] + list(args), stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    if not p.returncode == 0:
+        raise RuntimeError('Run failed: {}'.format(err))
+    else:
+        log.info('Run has finished successfully')
+    return 'yay!'
