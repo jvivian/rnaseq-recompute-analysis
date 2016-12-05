@@ -16,7 +16,7 @@ from synapseclient.exceptions import SynapseHTTPError
 from tqdm import tqdm
 
 from preprocessing.tissue_preprocessing import create_subframes, concat_frames, remove_nonprotein_coding_genes
-from utility_functions import mkdir_p
+from utils import mkdir_p
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
