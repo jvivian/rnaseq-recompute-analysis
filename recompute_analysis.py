@@ -26,7 +26,9 @@ def main():
     subparsers = parser.add_subparsers(dest='command')
 
     # Parent parser arguments
-    parser.add_argument('--project-dir', help='Full path to the project directory (rna-seq-analysis)')
+    parser.add_argument('--project-dir', help='Full path to the project directory (rna-seq-analysis) created'
+                                              'by launching the create_project.py or using the create-project'
+                                              'entrypoint.')
 
     # GTEx One Versus All
     parser_gtex_ova = subparsers.add_parser('gtex-one-vs-all', parents=[parser], help='Run GTEx One Vs All comparison.')
