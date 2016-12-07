@@ -4,7 +4,7 @@ import os
 
 from concurrent.futures import ThreadPoolExecutor
 
-from experiments.GTEX_matched import create_deseq2_inputs, run_deseq2, write_de_script
+from deprecated_code.GTEX_matched import create_deseq2_inputs, run_deseq2, write_de_script
 from utils import mkdir_p
 
 logging.basicConfig(level=logging.INFO)
