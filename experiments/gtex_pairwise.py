@@ -20,7 +20,7 @@ class GtexPairwise(AbstractExperiment):
 
     def __init__(self, root_dir, cores):
         super(GtexPairwise, self).__init__(root_dir)
-        self.cores = cores
+        self.cores = int(cores)
         self.experiment_dir = os.path.join(root_dir, 'experiments/gtex-pairwise')
         self.tissue_dirs = [os.path.join(self.experiment_dir, x) for x in self.tissues]
         self.output_df = os.path.join(self.experiment_dir, 'gtex-combined.tsv')
@@ -35,7 +35,7 @@ class GtexPairwise(AbstractExperiment):
 
         log.info('Writing out combined GTEx dataframe')
         if not os.path.exists(self.output_df):
-            dfs = [pd.read_csv(x, sep='\t', index_col=0) for x in self.protein_coding_paths]
+            dfs = [pd.read_csv(x, sep='\t', index_col=0).filter(regex=('GTEX')) for x in self.protein_coding_paths]
             df = pd.concat(dfs, axis=1)
             df.to_csv(self.output_df, sep='\t')
             all_samples_vector = set(df.columns)
@@ -47,16 +47,17 @@ class GtexPairwise(AbstractExperiment):
         log.info('Writing out vectors')
         for df in tqdm(self.protein_coding_paths):
             tissue = os.path.basename(os.path.dirname(df))
-            tissue_set = set(open(df, 'r').readline().strip().split('\t'))
+            tissue_set = {x for x in open(df, 'r').readline().strip().split('\t') if 'GTEX' in x}
             for sample in tissue_set:
                 sample_vector = list(all_samples_vector - tissue_set) + [sample]
                 with open(os.path.join(self.experiment_dir, tissue, 'samples', sample), 'w') as f:
                     f.write('\n'.join(sample_vector))
 
     def run_experiment(self):
-        vectors = [[os.path.join(x, y)] for x in self.tissue_dirs for y in os.listdir(x)]
+        vectors = [[os.path.join(x, 'samples', y)] for x in self.tissue_dirs for y in os.listdir(os.path.join(x, 'samples'))]
         blob = zip([self.script_path for _ in xrange(len(vectors))], vectors)
 
+        log.info('Starting DESeq2 Runs using {} cores'.format(self.cores))
         with ThreadPoolExecutor(max_workers=self.cores) as executor:
             executor.map(run_deseq2, blob)
 
@@ -102,7 +103,7 @@ class GtexPairwise(AbstractExperiment):
 
         args <- commandArgs(trailingOnly = TRUE)
         # df_path <- args[1]
-        df_path <- {df_path}
+        df_path <- '{df_path}'
         vector_path <- args[1]
         vector_name <- basename(vector_path)  # Name of vector should be the GTEx sample
         vector_dir <- dirname(vector_path)
