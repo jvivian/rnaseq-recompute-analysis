@@ -24,6 +24,7 @@ def create_matched_dataframe(input_df, output_df):
         matched_df.to_csv(output_df, sep='\t')
         return True
     else:
+        log.info(input_df + ' no matching samples found beetween barcodes: -01 and -11.')
         return False
 
 
