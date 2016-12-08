@@ -75,10 +75,10 @@ def run_deseq2(blob):
     :param tuple(str, list[str]) blob:
     """
     script_path, args = blob
-    p = subprocess.Popen(['Rscript'] + list(args), stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    if not p.returncode == 0:
-        raise RuntimeError('Run failed: {}'.format(err))
+    log.debug(str(args))
+    rt = subprocess.check_call(['Rscript', script_path] + list(args))
+    if not rt == 0:
+        raise RuntimeError('Run failed!')
     else:
         log.info('Run has finished successfully')
     return 'yay!'
