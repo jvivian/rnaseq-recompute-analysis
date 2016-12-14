@@ -9,7 +9,6 @@ import os
 import shutil
 import sys
 
-import pandas as pd
 import synapseclient
 from concurrent.futures import ThreadPoolExecutor
 from synapseclient.exceptions import SynapseHTTPError
@@ -107,7 +106,7 @@ def main():
         - Downloads input data / metadata from Synapse
         - Creates dataframes for GTEx and TCGA separated by body site or disease name
         - Pairs matching tissues together
-        - Creates a subset the combined dataframe that contains only protein-coding genes
+        - Creates a subset of the combined dataframes containing only protein-coding genes
 
     REQUIRED: Your Synapse password must be stored in the environment variable: SYNAPSE_PASSWORD
     e.g.
