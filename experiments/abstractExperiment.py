@@ -34,6 +34,7 @@ class AbstractExperiment(object):
         """
         log.info('Creating directory trees')
         for path in dirtree:
+            log.debug(path)
             mkdir_p(path)
 
     @abstractmethod
