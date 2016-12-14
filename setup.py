@@ -8,7 +8,7 @@ setup(name='rnaseq_recompute_analysis',
       author_email='jtvivian@gmail.com',
       license='MIT',
       packages=['recompute_analysis'],
-      install_requires=['tqdm', 'pandas', 'numpy'],
+      install_requires=['tqdm', 'pandas', 'numpy', 'synapseclient'],
       entry_points = {
           'console_scripts': [
               'create-project = recompute_analysis.create_project:main',
