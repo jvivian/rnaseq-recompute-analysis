@@ -84,6 +84,10 @@ def run_deseq2(blob):
     return 'yay!'
 
 
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
+
+
 def title_gtex_one_vs_all():
     return(textwrap.dedent("""
      ██████╗████████╗███████╗██╗  ██╗     ██████╗ ███╗   ██╗███████╗    ██╗   ██╗███████╗     █████╗ ██╗     ██╗
