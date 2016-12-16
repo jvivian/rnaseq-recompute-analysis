@@ -112,6 +112,8 @@ def main():
     e.g.
     $ export SYNAPSE_PASSWORD=foobar
     $ python create_project.py --location=/home/ubuntu/ --username=foo@bar.com
+
+    If you do not have a synapse account, create one for free in under a minute at www.synapse.org
     """
     parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--location', type=str, help='Directory to create project.')
