@@ -33,14 +33,14 @@ def main():
     subparsers = parser.add_subparsers(dest='command')
 
     # GTEx One Versus All
-    parser_gtex_ova = subparsers.add_parser('gtex-one-vs-all', parents=[parser], help='Run GTEx One Vs All comparison.')
-    parser_gtex_ova.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
-    parser_gtex_ova.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
+    # parser_gtex_ova = subparsers.add_parser('gtex-one-vs-all', parents=[parser], help='Run GTEx One Vs All comparison.')
+    # parser_gtex_ova.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
+    # parser_gtex_ova.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
     # GTEx Pairwise
-    parser_gtex_pairwise = subparsers.add_parser('gtex-pairwise', help='Run GTEx Pairwise Comparison')
-    parser_gtex_pairwise.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
-    parser_gtex_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
+    # parser_gtex_pairwise = subparsers.add_parser('gtex-pairwise', help='Run GTEx Pairwise Comparison')
+    # parser_gtex_pairwise.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
+    # parser_gtex_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
     # Clustering
     parser_clustering = subparsers.add_parser('clustering', parents=[parser], help='Run PCA / t-SNE clustering.')
