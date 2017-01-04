@@ -107,15 +107,17 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
                     f.write('\n'.join(gene_names))
 
     def combine_results(self, output_name='results.tsv', result_dir='results'):
-        for tissue_dir in tqdm(self.tissue_dirs):
+        gene_map = pickle.load(open(self.gene_map, 'rb'))
+        for tissue_dir in sorted(self.tissue_dirs):
+            log.info('Processing ' + os.path.basename(tissue_dir))
             results_path = os.path.join(tissue_dir, output_name)
             ranked = pd.DataFrame()
             pvals = defaultdict(list)
             fc = defaultdict(list)
             cpm = defaultdict(list)
             results = [os.path.join(tissue_dir, 'results', x) for x in os.listdir(os.path.join(tissue_dir, result_dir))]
-            for result in results:
-                df = add_gene_names(result, self.gene_map)
+            for result in tqdm(results):
+                df = pd.read_csv(result, index_col=0, sep='\t')
                 for gene in df.index:
                     pvals[gene].append(df.loc[gene]['PValue'])
                     fc[gene].append(df.loc[gene]['logFC'])
