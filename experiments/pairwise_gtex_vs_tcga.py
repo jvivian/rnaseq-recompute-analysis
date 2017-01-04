@@ -42,7 +42,7 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
             with open(df, 'r') as f:
                 samples = [x for x in f.readline().strip().split('\t')]
                 gtex = [x.replace('-', '.') for x in samples if 'GTEX-' in x]
-                tcga = [x.replace('-', '.') for x in samples if 'TCGA-' in x and x.endswith('-01')]
+                tcga = [x.replace('-', '.') for x in samples if 'TCGA-' in x]
                 if gtex and tcga:
                     for sample in tcga:
                         vector = gtex + [sample]
