@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
 from experiments.AbstractExperiment import AbstractExperiment
-from utils import run_deseq2, add_gene_names
+from utils import run_deseq2
 from utils import write_script
 
 logging.basicConfig(level=logging.INFO)
@@ -114,28 +114,27 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
             ranked = pd.DataFrame()
             pvals = defaultdict(list)
             fc = defaultdict(list)
-            cpm = defaultdict(list)
             results = [os.path.join(tissue_dir, 'results', x) for x in os.listdir(os.path.join(tissue_dir, result_dir))]
             for result in tqdm(results):
                 df = pd.read_csv(result, index_col=0, sep='\t')
                 for gene in df.index:
-                    pvals[gene].append(df.loc[gene]['PValue'])
-                    fc[gene].append(df.loc[gene]['logFC'])
-                    cpm[gene].append(df.loc[gene]['logCPM'])
+                    pvals[gene].append(df.loc[gene]['padj'])
+                    fc[gene].append(df.loc[gene]['log2FoldChange'])
 
             genes = pvals.keys()
-            ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.001]) for x in genes]
+            ranked['num_samples'] = [len(pvals[x]) for x in genes]
+            ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.01]) for x in genes]
             ranked['pval'] = [np.median(pvals[x]) for x in genes]
             ranked['pval_std'] = [round(np.std(pvals[x]), 4) for x in genes]
             ranked['fc'] = [round(np.median(fc[x]), 4) for x in genes]
             ranked['fc_std'] = [round(np.std(fc[x]), 4) for x in genes]
-            ranked['cpm'] = [round(np.median(cpm[x]), 4) for x in genes]
-            ranked['cpm_std'] = [round(np.std(cpm[x]), 4) for x in genes]
-            ranked['num_samples'] = [len(pvals[x]) for x in genes]
-            ranked.index = genes
+
+            gene_names = [gene_map[x] if x in gene_map.keys() else x for x in genes]
+            ranked['gene_id'] = genes
+            ranked.index = gene_names
             ranked.sort_values('pval_counts', inplace=True, ascending=False)
 
-            ranked.to_csv(results_path)
+            ranked.to_csv(results_path, sep='\t')
 
     def teardown(self):
         pass
