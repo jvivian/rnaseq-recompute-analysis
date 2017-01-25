@@ -153,7 +153,7 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
             # Read in tables / patients
             n <- read.table(df_path, sep='\\t', header=1, row.names=1)
             vector <- read.table(vector_path)$V1
-            sub <- n[, vector]
+            sub <- n[, colnames(n)%in%vector]
 
             # Create matrix vectors
             disease_vector <- c(rep('G', length(vector)-1), 'T')
