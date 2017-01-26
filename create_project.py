@@ -94,10 +94,7 @@ def create_paired_tissues(root_dir):
 def synpase_download(blob):
     """Map function for downloading from Synapse"""
     syn, syn_id, location = blob
-    if not os.path.exists(location):
-        syn.get(syn_id, downloadLocation=location)
-    else:
-        log.info(location + ' already exists, skipping download from Synapse.')
+    syn.get(syn_id, downloadLocation=location)
 
 
 def main():
