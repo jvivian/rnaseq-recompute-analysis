@@ -40,6 +40,7 @@ class TcgaMatched(AbstractExperiment):
                 matched = list(set(x for x in barcodes if x + '-11' in samples and x + '-01' in samples))
                 if matched:
                     matched_vector = [f(x) for x in matched for f in (lambda f1: f1 + '-01', lambda f2: f2 + '-11')]
+                    matched_vector = [x.replace('-', '.') for x in matched_vector]
                     vector_path = os.path.join(self.vector_dir, tissue + '-vector')
                     with open(vector_path, 'w') as f:
                         f.write('\n'.join(matched_vector))
