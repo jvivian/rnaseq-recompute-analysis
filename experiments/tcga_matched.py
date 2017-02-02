@@ -63,6 +63,7 @@ class TcgaMatched(AbstractExperiment):
             executor.map(run_deseq2, blob)
 
     def teardown(self):
+        log.info('Adding gene names to results.')
         for df_path in [os.path.join(self.results_dir, x) for x in os.listdir(self.results_dir)]:
             df = add_gene_names(df_path, self.gene_map)
             df.to_csv(df_path, sep='\t')
