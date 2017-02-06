@@ -28,11 +28,12 @@ class TissueClustering(AbstractExperiment):
         self.tsne_dir = os.path.join(self.experiment_dir, 'tsne')
         self.pca_dir = os.path.join(self.experiment_dir, 'pca')
         self.pickles = os.path.join(self.experiment_dir, 'pickles')
-        self.tsne_tcga = os.path.join(self.experiment_dir, 'tcga-only')
+        self.tcga = os.path.join(self.experiment_dir, 'tcga-only')
+        self.tcga_matched = os.path.join(self.experiment_dir, 'tcga-matched')
 
     def setup(self):
-        dirtree = [self.tsne_dir, self.pca_dir, self.tsne_tcga] + \
-                  [os.path.join(self.pickles, x) for x in ['pca', 'tsne', 'tcga-only']]
+        dirtree = [self.tsne_dir, self.pca_dir, self.tcga, self.tcga_matched] + \
+                  [os.path.join(self.pickles, x) for x in ['pca', 'tsne', 'tcga-only', 'tcga-matched']]
         self.create_directories(dirtree)
 
     def run_experiment(self):
@@ -44,6 +45,9 @@ class TissueClustering(AbstractExperiment):
 
         log.info('Running TCGA Clustering')
         self.run_clustering(mode='tcga-only')
+
+        log.info('Running TCGA-Matched Clustering')
+        self.run_clustering(mode='tcga-matched')
 
     def run_clustering(self, mode='tsne'):
         for tissue_path in tqdm(sorted(self.protein_coding_paths)):
@@ -57,19 +61,29 @@ class TissueClustering(AbstractExperiment):
                 if mode == 'tcga-only':
                     tcga_cols = [x for x in df.columns if 'TCGA-' in x]
                     df = df[tcga_cols]
+                elif mode == 'tcga-matched':
+                    samples = list(df.columns)
+                    barcodes = [x[:-3] for x in samples]
+                    matched = list(set(x for x in barcodes if x + '-11' in samples and x + '-01' in samples))
+                    if matched:
+                        matched_vector = [f(x) for x in matched for f in (lambda f1: f1 + '-01', lambda f2: f2 + '-11')]
+                        df = df[matched_vector]
+                    else:
+                        continue
+
                 label = get_label(df)
                 df = df.T  # Transpose so dataframe is samples x genes
 
                 # Normalization via log normalization
-                # Experimented with Size Factor Rescaling (from DESeq2), Quantile Normalization, and log scaling
-                # Log scaling seemed sufficient, is fast, and straight forward
+                # Also experimented with Size Factor Rescaling (from DESeq2) and Quantile Normalization
+                # Log normalization seemed sufficient, is fast, and straight forward
                 df = df.apply(lambda y: np.log(y + 1))
 
                 # Cluster by method
-                if mode == 'tsne' or mode == 'tcga-only':
-                    x = run_tsne(df)
-                elif mode == 'pca':
+                if mode == 'pca':
                     x = run_pca(df)
+                else:
+                    x = run_tsne(df)
 
                 # Save relavant info in pickle
                 info = (x, label)
