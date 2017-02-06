@@ -71,6 +71,7 @@ class TcgaMatched(AbstractExperiment):
     def deseq2_script(self):
         return textwrap.dedent("""
             library('DESeq2')
+            library(data.table)
 
             # Argument parsing
             args <- commandArgs(trailingOnly = TRUE)
@@ -84,6 +85,7 @@ class TcgaMatched(AbstractExperiment):
             n <- read.table(df_path, sep='\\t', header=1, row.names=1)
             vector <- read.table(vector_path)$V1
             sub <- n[, colnames(n)%in%vector]
+            setcolorder(sub, as.character(vector))
 
             # Create matrix vectors
             disease_vector <- rep(c('T', 'N'), length(vector)/2)
