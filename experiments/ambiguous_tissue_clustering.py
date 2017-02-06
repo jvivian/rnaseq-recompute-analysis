@@ -22,12 +22,12 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
-class Clustering(AbstractExperiment):
+class AmbiguousTissueClustering(AbstractExperiment):
 
     def __init__(self, root_dir):
-        super(Clustering, self).__init__(root_dir)
+        super(AmbiguousTissueClustering, self).__init__(root_dir)
         self.root_dir = root_dir
-        self.experiment_dir = os.path.join(root_dir, 'experiments/clustering')
+        self.experiment_dir = os.path.join(root_dir, 'experiments/ambiguous-tissue-clustering')
         self.tsne_dir = os.path.join(self.experiment_dir, 'tsne')
         self.pca_dir = os.path.join(self.experiment_dir, 'pca')
 
