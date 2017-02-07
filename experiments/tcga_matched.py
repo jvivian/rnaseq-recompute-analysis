@@ -3,8 +3,6 @@ import os
 import shutil
 import textwrap
 
-from concurrent.futures import ThreadPoolExecutor
-
 from experiments.AbstractExperiment import AbstractExperiment
 from utils import run_deseq2, add_gene_names
 from utils import write_script
@@ -58,9 +56,8 @@ class TcgaMatched(AbstractExperiment):
         blob = zip([self.script_path for _ in xrange(len(vectors))], vectors)
 
         log.info('Starting DESeq2 Runs using {} cores'.format(self.cores))
-
-        with ThreadPoolExecutor(max_workers=int(self.cores)) as executor:
-            executor.map(run_deseq2, blob)
+        for b in blob:
+            run_deseq2(b)
 
     def teardown(self):
         log.info('Adding gene names to results.')
@@ -70,8 +67,10 @@ class TcgaMatched(AbstractExperiment):
 
     def deseq2_script(self):
         return textwrap.dedent("""
-            library('DESeq2')
-            library(data.table)
+            suppressMessages(library('DESeq2'))
+            suppressMessages(library('data.table'))
+            suppressMessages(library('BiocParallel'))
+            register(MulticoreParam({cores}))
 
             # Argument parsing
             args <- commandArgs(trailingOnly = TRUE)
@@ -89,7 +88,7 @@ class TcgaMatched(AbstractExperiment):
 
             # Create matrix vectors
             disease_vector <- rep(c('T', 'N'), length(vector)/2)
-            patient_vector <- gsub('.{3}$', '', vector) # Remove barcode from vector to get patient vector
+            patient_vector <- gsub('.{{3}}$', '', vector) # Remove barcode from vector to get patient vector
 
             # DESeq2 preprocessing
             # Rounding the countData since DESeQ2 only accepts integer counts
@@ -99,8 +98,8 @@ class TcgaMatched(AbstractExperiment):
             y <- DESeqDataSetFromMatrix(countData = countData, colData = colData, design = ~ patient + disease)
 
             # Run DESeq2
-            y <- DESeq(y)
-            res <- results(y)
+            y <- DESeq(y, parallel=TRUE)
+            res <- results(y, parallel=TRUE)
             summary(res)
 
             # Write out table
@@ -136,4 +135,4 @@ class TcgaMatched(AbstractExperiment):
             pdf(ratio_name, width=7, height=7)
             barplot(ratios, xlab="mean normalized count", ylab="ratio of small $p$ values")
             dev.off()
-            """)
+            """.format(cores=self.cores))
