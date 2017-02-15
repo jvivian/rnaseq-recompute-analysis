@@ -3,13 +3,14 @@ import argparse
 import logging
 import sys
 
-from experiments.clustering import Clustering
-from experiments.gtex_one_vs_all import GtexOneVsAll
 from experiments.gtex_pairwise import GtexPairwise
 from experiments.pairwise_gtex_vs_tcga import PairwiseTcgaVsGtex
 from experiments.tcga_matched import TcgaMatched
-from utils import title_clustering, cls
-from utils import title_gtex_one_vs_all, title_gtex_pairwise, title_tcga_matched, title_pairwise_gtex_tcga
+from experiments.tcga_matched_negative_control import TcgaMatchedNegativeControl
+from experiments.tcga_tumor_vs_normal import TcgaTumorVsNormal
+from experiments.tcga_tvn_negative_control import TcgaNegativeControl
+from experiments.tissue_clustering import TissueClustering
+from utils import cls, title_tcga_matched, title_pairwise_gtex_tcga
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -32,22 +33,32 @@ def main():
                                      add_help=False)
     subparsers = parser.add_subparsers(dest='command')
 
-    # GTEx One Versus All
-    # parser_gtex_ova = subparsers.add_parser('gtex-one-vs-all', parents=[parser], help='Run GTEx One Vs All comparison.')
-    # parser_gtex_ova.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
-    # parser_gtex_ova.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
-
     # GTEx Pairwise
-    # parser_gtex_pairwise = subparsers.add_parser('gtex-pairwise', help='Run GTEx Pairwise Comparison')
-    # parser_gtex_pairwise.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
-    # parser_gtex_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
+    parser_gtex_pairwise = subparsers.add_parser('gtex-pairwise', help='Run GTEx Pairwise Comparison')
+    parser_gtex_pairwise.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
+    parser_gtex_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
-    # Clustering
-    parser_clustering = subparsers.add_parser('clustering', parents=[parser], help='Run PCA / t-SNE clustering.')
-    parser_clustering.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
+    # Tissue Pair Clustering
+    parser_tissue_clustering = subparsers.add_parser('tissue-clustering',
+                                                     help='Run PCA / t-SNE clustering to examine similarity between'
+                                                          ' TCGA tumor, normal, and GTEx samples.')
+    parser_tissue_clustering.add_argument('--project-dir', required=True,
+                                          help='Full path to project dir (rna-seq-analysis')
+
+    # Ambiguous Tissue Clustering
+    parser_ambiguous_clustering = subparsers.add_parser('ambiguous-tissue-clustering', parents=[parser],
+                                                        help='Run PCA / t-SNE clustering to help determine pairing for '
+                                                             'tissues that are ambiguous.')
+    parser_ambiguous_clustering.add_argument('--project-dir', required=True,
+                                             help='Full path to project dir (rna-seq-analysis')
+
+    # TCGA Tumor Vs Normal
+    parser_tcga = subparsers.add_parser('tcga-tumor-vs-normal', help='Run TCGA T/N Analysis')
+    parser_tcga.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
+    parser_tcga.add_argument('--cores', required=True, type = int, help = 'Number of cores to utilize during run.')
 
     # TCGA Matched
-    parser_tcga_matched = subparsers.add_parser('tcga-matched', help='Run TCGA matched T/N analysis.')
+    parser_tcga_matched = subparsers.add_parser('tcga-matched', help='Run TCGA T/N analysis, matching T/N patients.')
     parser_tcga_matched.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
     parser_tcga_matched.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
@@ -57,6 +68,18 @@ def main():
     parser_pairwise.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
     parser_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
+    # Negative controls
+    tcga_neg = subparsers.add_parser('tcga-neg-control', help='Performs negative control experiment by randomizing the '
+                                                              'order of the disease vector relative to the input.')
+    tcga_neg.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
+    tcga_neg.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
+
+    tcga_match_neg = subparsers.add_parser('tcga-matched-neg-control',
+                                           help='Performs negative control experiment by randomizing disease'
+                                                'and patient vector realtive to the input.')
+    tcga_match_neg.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
+    tcga_match_neg.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
+
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         cls()
@@ -65,20 +88,11 @@ def main():
 
     # Execution
     params = parser.parse_args()
+    cls()
 
-    print params.command
-
-    if params.command == 'gtex-one-vs-all':
-        log.info(title_gtex_one_vs_all())
-        runner(GtexOneVsAll(params.project_dir, params.cores))
-
-    elif params.command == 'clustering':
-        log.info(title_clustering())
-        runner(Clustering(params.project_dir))
-
-    elif params.command == 'gtex-pairwise':
-        log.info(title_gtex_pairwise())
-        runner(GtexPairwise(params.project_dir, params.cores))
+    if params.command == 'tissue-clustering':
+        log.info('Tissue Clustering')
+        runner(TissueClustering(params.project_dir))
 
     elif params.command == 'tcga-matched':
         log.info(title_tcga_matched())
@@ -87,6 +101,22 @@ def main():
     elif params.command == 'pairwise-gtex-tcga':
         log.info(title_pairwise_gtex_tcga())
         runner(PairwiseTcgaVsGtex(params.project_dir, params.cores))
+
+    elif params.command == 'tcga-tumor-vs-normal':
+        log.info('TCGA Tumor Vs Normal')
+        runner(TcgaTumorVsNormal(params.project_dir, params.cores))
+
+    elif params.command == 'tcga-neg-control':
+        log.info('TCGA Tumor vs Normal Negative Control')
+        runner(TcgaNegativeControl(params.project_dir, params.cores))
+
+    elif params.command == 'tcga-matched-neg-control':
+        log.info('TCGA Matched Negative Control')
+        runner(TcgaMatchedNegativeControl(params.project_dir, params.cores))
+
+    elif params.command == 'gtex-pairwise':
+        log.info('GTEx Pairwise Tissue Experiment')
+        runner(GtexPairwise(params.project_dir, params.cores))
 
 if __name__ == '__main__':
     main()
