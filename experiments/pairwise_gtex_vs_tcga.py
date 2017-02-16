@@ -91,7 +91,7 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
             for match in matches:
                 df_norm = pd.read_csv(os.path.join(result_dir, match + '.11'), sep='\t', index_col=0)
                 df_tumor = pd.read_csv(os.path.join(result_dir, match + '.01'), sep='\t', index_col=0)
-                masked_genes = df_norm[df_norm.PValue < 0.001].index
+                masked_genes = df_norm[df_norm.padj < 0.001].index
                 for gene in masked_genes:
                     try:
                         df_tumor.drop(gene, inplace=True)
@@ -123,7 +123,7 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
 
             genes = pvals.keys()
             ranked['num_samples'] = [len(pvals[x]) for x in genes]
-            ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.01]) for x in genes]
+            ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.001]) for x in genes]
             ranked['pval'] = [np.median(pvals[x]) for x in genes]
             ranked['pval_std'] = [round(np.std(pvals[x]), 4) for x in genes]
             ranked['fc'] = [round(np.median(fc[x]), 4) for x in genes]
