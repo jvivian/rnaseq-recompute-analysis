@@ -114,7 +114,8 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
             ranked = pd.DataFrame()
             pvals = defaultdict(list)
             fc = defaultdict(list)
-            results = [os.path.join(tissue_dir, 'results', x) for x in os.listdir(os.path.join(tissue_dir, result_dir))]
+            results = [os.path.join(tissue_dir, 'results', x) for x in
+                       os.listdir(os.path.join(tissue_dir, result_dir)) if x.endswith('.01')]
             for result in tqdm(results):
                 df = pd.read_csv(result, index_col=0, sep='\t')
                 for gene in df.index:
