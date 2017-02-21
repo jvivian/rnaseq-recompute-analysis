@@ -71,6 +71,8 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
 
         log.info('Reducing results for each tissue into a single dataframe sorted by p-value counts')
         self.combine_results()
+        log.info('Reducing results for normal tissues sorted by p-value counts')
+        self.combine_results(output_name='normal-results.tsv', normal=True)
         log.info('Reducing masked reuslts for each tissue into a single dataframe sorted by p-value counts')
         self.combine_results(output_name='results-masked.tsv', result_dir='masked-results')
 
@@ -106,7 +108,7 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
                 with open(os.path.join(masked_gene_dir, match + '.01'), 'w') as f:
                     f.write('\n'.join(gene_names))
 
-    def combine_results(self, output_name='results.tsv', result_dir='results'):
+    def combine_results(self, output_name='results.tsv', result_dir='results', normal=True):
         gene_map = pickle.load(open(self.gene_map, 'rb'))
         for tissue_dir in sorted(self.tissue_dirs):
             log.info('Processing ' + os.path.basename(tissue_dir))
@@ -114,8 +116,9 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
             ranked = pd.DataFrame()
             pvals = defaultdict(list)
             fc = defaultdict(list)
+            sample_suffix = '.11' if normal else '.01'
             results = [os.path.join(tissue_dir, 'results', x) for x in
-                       os.listdir(os.path.join(tissue_dir, result_dir)) if x.endswith('.01')]
+                       os.listdir(os.path.join(tissue_dir, result_dir)) if x.endswith(sample_suffix)]
             for result in tqdm(results):
                 df = pd.read_csv(result, index_col=0, sep='\t')
                 for gene in df.index:
