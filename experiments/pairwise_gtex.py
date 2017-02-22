@@ -17,12 +17,12 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-class GtexPairwise(AbstractExperiment):
+class PairwiseGTEx(AbstractExperiment):
 
     def __init__(self, root_dir, cores):
-        super(GtexPairwise, self).__init__(root_dir)
+        super(PairwiseGTEx, self).__init__(root_dir)
         self.cores = int(cores)
-        self.experiment_dir = os.path.join(root_dir, 'experiments/gtex-pairwise')
+        self.experiment_dir = os.path.join(root_dir, 'experiments/pairwise-gtex')
         self.tissue_dirs = [os.path.join(self.experiment_dir, x) for x in self.tissues]
         self.output_df = os.path.join(self.experiment_dir, 'gtex-combined.tsv')
         self.script_path = None
