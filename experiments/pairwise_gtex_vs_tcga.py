@@ -30,7 +30,7 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
         self.script_path = None
 
     def setup(self):
-        for subdir in ['vectors', 'results', 'masked-results', 'masked-genes', 'plots', 'masks']:
+        for subdir in ['vectors', 'results', 'masked-results', 'masked-genes', 'masks']:
             self.create_directories([os.path.join(x, subdir) for x in self.tissue_dirs])
 
         self.script_path = write_script(self.deseq2_script, directory=self.experiment_dir)
