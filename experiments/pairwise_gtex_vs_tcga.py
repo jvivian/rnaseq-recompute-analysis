@@ -146,6 +146,7 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
     def deseq2_script(self):
         return textwrap.dedent("""
             suppressMessages(library('DESeq2'))
+            suppressMessages(library('data.table'))
 
             # Argument parsing
             args <- commandArgs(trailingOnly = TRUE)
@@ -158,6 +159,7 @@ class PairwiseTcgaVsGtex(AbstractExperiment):
             n <- read.table(df_path, sep='\\t', header=1, row.names=1)
             vector <- read.table(vector_path)$V1
             sub <- n[, colnames(n)%in%vector]
+            setcolorder(sub, as.character(vector))
 
             # Create matrix vectors
             disease_vector <- c(rep('G', length(vector)-1), 'T')
