@@ -48,6 +48,8 @@ class PairwiseTCGA(AbstractExperiment):
                         vector = tcga_n + [sample]
                         with open(os.path.join(tissue_dir, 'vectors', sample), 'w') as f_out:
                             f_out.write('\n'.join(vector))
+                else:
+                    self.results_dirs.remove(os.path.join(self.experiment_dir, tissue, 'results'))
 
     def run_experiment(self):
         df_vector_pairs = []
