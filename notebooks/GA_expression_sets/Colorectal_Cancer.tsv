@@ -1,0 +1,58 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+7	AQP8	aquaporin 8	Colon	-	4.44	0.039
+9	SST	somatostatin	Colon	-	4.31	0.011
+11	PYY	peptide YY	Colon	-	4.03	0.042
+14	MT1M	metallothionein 1M	Colon	-	3.93	0.013
+15	BEST4	bestrophin 4	Colon	-	3.9	0.021
+20	INSL5	insulin-like 5	Colon	-	3.76	0.048
+23	CA7	carbonic anhydrase VII	Colon	-	3.63	0.024
+24	SOX5	SRY (sex determining region Y)-box 5	Colon	-	3.58	0.001
+25	IGL	immunoglobulin lambda locus	Colon	-	3.53	0.02
+28	PIK3CG	phosphatidylinositol-4,5-bisphosphate 3-kinase, catalytic subunit gamma	Colon	-	3.42	0.007
+29	TTLL5	tubulin tyrosine ligase-like family member 5	Colon	-	3.36	0.01
+30	VSTM2A	V-set and transmembrane domain containing 2A	Colon	-	3.34	0.022
+37	TMCO5B	transmembrane and coiled-coil domains 5B, pseudogene	Colon	-	3.24	0.008
+39	SPIB	Spi-B transcription factor (Spi-1/PU.1 related)	Colon	-	3.15	0.025
+40	SCGB2A2	secretoglobin, family 2A, member 2	Colon	-	3.15	0.045
+41	OR6A2	olfactory receptor, family 6, subfamily A, member 2	Colon	-	3.14	0.001
+49	OGN	osteoglycin	Colon	-	3.06	0.022
+50	ABCA8	ATP-binding cassette, sub-family A (ABC1), member 8	Colon	-	3.06	0.043
+52	NEUROD1	neuronal differentiation 1	Colon	-	3.05	0.034
+55	MROH9	maestro heat-like repeat family member 9	Colon	-	3.02	0.014
+56	BPIFC	BPI fold containing family C	Colon	-	3.01	0
+57	WDR78	WD repeat domain 78	Colon	-	3	0.015
+1	CDH3	cadherin 3, type 1, P-cadherin (placental)	Colon	+	6.14	0
+2	HCAR3	hydroxycarboxylic acid receptor 3	Colon	+	5.6	0
+3	INHBA	inhibin, beta A	Colon	+	5.56	0
+4	CXCL8	chemokine (C-X-C motif) ligand 8	Colon	+	5.26	0
+5	COL12A1	collagen, type XII, alpha 1	Colon	+	4.84	0
+6	CEMIP	cell migration inducing protein, hyaluronan binding	Colon	+	4.63	0.008
+8	GREM1	gremlin 1, DAN family BMP antagonist	Colon	+	4.37	0.002
+10	FAM3B	family with sequence similarity 3, member B	Colon	+	4.1	0.023
+12	CXCL5	chemokine (C-X-C motif) ligand 5	Colon	+	3.97	0.004
+13	KRT23	keratin 23, type I	Colon	+	3.96	0.017
+16	DPEP1	dipeptidase 1 (renal)	Colon	+	3.88	0.039
+17	COL11A1	collagen, type XI, alpha 1	Colon	+	3.86	0.007
+18	TAC1	tachykinin, precursor 1	Colon	+	3.83	0.031
+19	S100A2	S100 calcium binding protein A2	Colon	+	3.8	0.013
+21	KRT6B	keratin 6B, type II	Colon	+	3.73	0.002
+22	MMP3	matrix metallopeptidase 3	Colon	+	3.63	0.044
+26	MMP10	matrix metallopeptidase 10	Colon	+	3.46	0.023
+27	LCN2	lipocalin 2	Colon	+	3.42	0.003
+31	PPP1R10	protein phosphatase 1, regulatory subunit 10	Blood	+	3.31	0
+32	CRNDE	colorectal neoplasia differentially expressed (non-protein coding)	Colon	+	3.3	0.013
+33	CHI3L1	chitinase 3-like 1 (cartilage glycoprotein-39)	Colon	+	3.29	0.003
+34	CHDH	choline dehydrogenase	Colon	+	3.28	0.012
+35	MUC5AC	mucin 5AC, oligomeric mucus/gel-forming	Colon	+	3.28	0.044
+36	MTRF1	mitochondrial translational release factor 1	Colon	+	3.25	0.006
+38	CCDC3	coiled-coil domain containing 3	Colon	+	3.22	0.022
+42	TUBB1	tubulin, beta 1 class VI	Colon	+	3.14	0.002
+43	MCM10	minichromosome maintenance 10 replication initiation factor	Colon	+	3.14	0.001
+44	KRT80	keratin 80, type II	Colon	+	3.13	0.016
+45	DUOX2	dual oxidase 2	Colon	+	3.1	0.018
+46	IL17F	interleukin 17F	Colon	+	3.1	0
+47	MMP7	matrix metallopeptidase 7	Colon	+	3.09	0.041
+48	CFI	complement factor I	Colon	+	3.07	0.027
+51	SRPX2	sushi-repeat containing protein, X-linked 2	Colon	+	3.05	0.002
+53	NLRP11	NLR family, pyrin domain containing 11	Colon	+	3.03	0.001
+54	MSLN	mesothelin	Colon	+	3.03	0.025

@@ -1,0 +1,376 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+1	SYCN	syncollin	Pancreas	-	8.04	0
+2	GP2	glycoprotein 2 (zymogen granule membrane)	Pancreas	-	7.99	0
+3	ALB	albumin	Pancreas	-	7.95	0
+4	SERPINI2	serpin peptidase inhibitor, clade I (pancpin), member 2	Pancreas	-	7.95	0
+5	CELA2B	chymotrypsin-like elastase family, member 2B	Pancreas	-	7.74	0
+6	PNLIPRP1	pancreatic lipase-related protein 1	Pancreas	-	7.66	0
+7	PDIA2	protein disulfide isomerase family A, member 2	Pancreas	-	7.53	0
+8	SPX	spexin hormone	Pancreas	-	7.53	0
+9	CTRL	chymotrypsin-like	Pancreas	-	7.52	0
+10	COL10A1	collagen, type X, alpha 1	Pancreas	+	7.52	0
+11	CELP	carboxyl ester lipase pseudogene	Pancreas	-	7.5	0
+12	COL5A1	collagen, type V, alpha 1	Pancreas	+	7.46	0
+13	SULF1	sulfatase 1	Pancreas	+	7.38	0
+14	CUZD1	CUB and zona pellucida-like domains 1	Pancreas	-	7.29	0
+15	POSTN	periostin, osteoblast specific factor	Pancreas	+	7.24	0
+16	COL1A1	collagen, type I, alpha 1	Pancreas	+	7.17	0
+17	AQP8	aquaporin 8	Pancreas	-	7.14	0
+18	CEACAM5	carcinoembryonic antigen-related cell adhesion molecule 5	Pancreas	+	7.1	0
+19	COL11A1	collagen, type XI, alpha 1	Pancreas	+	7	0
+20	CLPS	colipase, pancreatic	Pancreas	-	6.99	0
+21	INHBA	inhibin, beta A	Pancreas	+	6.95	0
+22	CPA2	carboxypeptidase A2 (pancreatic)	Pancreas	-	6.88	0
+23	CTRC	chymotrypsin C (caldecrin)	Pancreas	-	6.87	0
+24	CEACAM6	carcinoembryonic antigen-related cell adhesion molecule 6 (non-specific cross reacting antigen)	Pancreas	+	6.86	0
+25	PLA2G1B	phospholipase A2, group IB (pancreas)	Pancreas	-	6.79	0.001
+26	COL3A1	collagen, type III, alpha 1	Pancreas	+	6.78	0
+27	SFRP4	secreted frizzled-related protein 4	Pancreas	+	6.76	0
+28	CELA3A	chymotrypsin-like elastase family, member 3A	Pancreas	-	6.76	0.001
+29	GNMT	glycine N-methyltransferase	Pancreas	-	6.74	0
+30	COL1A2	collagen, type I, alpha 2	Pancreas	+	6.72	0
+31	REG1P	regenerating islet-derived 1 pseudogene	Pancreas	-	6.71	0
+32	S100P	S100 calcium binding protein P	Pancreas	+	6.67	0
+33	CELA3B	chymotrypsin-like elastase family, member 3B	Pancreas	-	6.66	0.001
+34	CEL	carboxyl ester lipase	Pancreas	-	6.63	0.001
+35	CTHRC1	collagen triple helix repeat containing 1	Pancreas	+	6.6	0
+36	CPA1	carboxypeptidase A1 (pancreatic)	Pancreas	-	6.56	0.001
+37	VCAN	versican	Pancreas	+	6.51	0
+38	TMEM52	transmembrane protein 52	Pancreas	-	6.4	0
+39	REG1B	regenerating islet-derived 1 beta	Pancreas	-	6.35	0.002
+40	CTSE	cathepsin E	Pancreas	+	6.3	0
+41	GLS2	glutaminase 2 (liver, mitochondrial)	Pancreas	-	6.28	0
+42	KLK1	kallikrein 1	Pancreas	-	6.26	0
+43	GJB2	gap junction protein, beta 2, 26kDa	Pancreas	+	6.24	0
+44	REG3G	regenerating islet-derived 3 gamma	Pancreas	-	6.17	0
+45	PLAU	plasminogen activator, urokinase	Pancreas	+	6.15	0
+46	COL5A2	collagen, type V, alpha 2	Pancreas	+	6.13	0
+47	SLC39A5	solute carrier family 39 (zinc transporter), member 5	Pancreas	-	6.09	0
+48	ERP27	endoplasmic reticulum protein 27	Pancreas	-	6.07	0
+49	SEMA3C	sema domain, immunoglobulin domain (Ig), short basic domain, secreted, (semaphorin) 3C	Pancreas	+	6	0
+50	PNLIP	pancreatic lipase	Pancreas	-	5.94	0.004
+51	CXCL5	chemokine (C-X-C motif) ligand 5	Pancreas	+	5.92	0
+52	CBS	cystathionine-beta-synthase	Pancreas	-	5.85	0
+53	CLDN18	claudin 18	Pancreas	+	5.79	0.001
+54	PNLIPRP2	pancreatic lipase-related protein 2	Pancreas	-	5.79	0.003
+55	PM20D1	peptidase M20 domain containing 1	Pancreas	-	5.76	0
+56	FGL1	fibrinogen-like 1	Pancreas	-	5.72	0
+57	XAF1	XIAP associated factor 1	Pancreas	+	5.72	0
+58	NTM	neurotrimin	Pancreas	+	5.71	0
+59	PAIP2B	poly(A) binding protein interacting protein 2B	Pancreas	-	5.7	0
+60	CDH11	cadherin 11, type 2, OB-cadherin (osteoblast)	Pancreas	+	5.67	0
+61	SAMSN1	SAM domain, SH3 domain and nuclear localization signals 1	Pancreas	+	5.66	0
+62	SFN	stratifin	Pancreas	+	5.65	0
+63	MFAP5	microfibrillar associated protein 5	Pancreas	+	5.65	0
+64	SLC1A2	solute carrier family 1 (glial high affinity glutamate transporter), member 2	Pancreas	-	5.61	0
+65	TEX11	testis expressed 11	Pancreas	-	5.57	0
+66	TMED6	transmembrane p24 trafficking protein 6	Pancreas	-	5.56	0
+67	EDNRA	endothelin receptor type A	Pancreas	+	5.55	0
+68	ASPN	asporin	Pancreas	+	5.53	0
+69	BNIP3	BCL2/adenovirus E1B 19kDa interacting protein 3	Pancreas	-	5.45	0
+70	RUNX2	runt-related transcription factor 2	Pancreas	+	5.45	0
+71	SERPINE1	serpin peptidase inhibitor, clade E (nexin, plasminogen activator inhibitor type 1), member 1	Pancreas	+	5.42	0
+72	LEF1	lymphoid enhancer-binding factor 1	Pancreas	+	5.41	0
+73	COL12A1	collagen, type XII, alpha 1	Pancreas	+	5.41	0
+74	PCDH7	protocadherin 7	Pancreas	+	5.39	0
+75	IFI44L	interferon-induced protein 44-like	Pancreas	+	5.38	0
+76	FAP	fibroblast activation protein, alpha	Pancreas	+	5.38	0
+77	LY75	lymphocyte antigen 75	Pancreas	+	5.38	0
+78	PTPRC	protein tyrosine phosphatase, receptor type, C	Pancreas	+	5.36	0
+79	SFRP2	secreted frizzled-related protein 2	Pancreas	+	5.36	0
+80	CPB1	carboxypeptidase B1 (tissue)	Pancreas	-	5.34	0.006
+81	AKR7A3	aldo-keto reductase family 7, member A3 (aflatoxin aldehyde reductase)	Pancreas	-	5.3	0
+82	REG3A	regenerating islet-derived 3 alpha	Pancreas	-	5.3	0.009
+83	CTRB2	chymotrypsinogen B2	Pancreas	-	5.29	0.005
+84	GBP1	guanylate binding protein 1, interferon-inducible	Pancreas	+	5.28	0
+85	PRSS1	protease, serine, 1 (trypsin 1)	Pancreas	-	5.26	0.007
+86	GREM1	gremlin 1, DAN family BMP antagonist	Pancreas	+	5.22	0
+87	SYBU	syntabulin (syntaxin-interacting)	Pancreas	-	5.21	0
+88	THY1	Thy-1 cell surface antigen	Pancreas	+	5.21	0
+89	VNN1	vanin 1	Pancreas	+	5.2	0
+90	FNDC1	fibronectin type III domain containing 1	Pancreas	+	5.17	0
+91	HEPH	hephaestin	Pancreas	+	5.16	0
+92	SLC6A14	solute carrier family 6 (amino acid transporter), member 14	Pancreas	+	5.15	0
+93	RBPJL	recombination signal binding protein for immunoglobulin kappa J region-like	Pancreas	-	5.14	0
+94	KLF5	Kruppel-like factor 5 (intestinal)	Pancreas	+	5.12	0
+95	TRIM29	tripartite motif containing 29	Pancreas	+	5.11	0
+96	PRSS3	protease, serine, 3	Pancreas	-	5.11	0
+97	CA4	carbonic anhydrase IV	Pancreas	-	5.1	0
+98	SLC20A1	solute carrier family 20 (phosphate transporter), member 1	Pancreas	+	5.1	0
+99	PLAC8	placenta-specific 8	Pancreas	+	5.09	0
+100	MMP12	matrix metallopeptidase 12	Pancreas	+	5.06	0
+101	AADAC	arylacetamide deacetylase	Pancreas	-	5.04	0
+102	MGP	matrix Gla protein	Pancreas	+	5.02	0
+103	MMP11	matrix metallopeptidase 11	Pancreas	+	5	0
+104	EPB41L4B	erythrocyte membrane protein band 4.1 like 4B	Pancreas	-	4.99	0
+105	KYNU	kynureninase	Pancreas	+	4.97	0
+106	OLFML2B	olfactomedin-like 2B	Pancreas	+	4.97	0
+107	SLC4A4	solute carrier family 4 (sodium bicarbonate cotransporter), member 4	Pancreas	-	4.97	0
+108	HOPX	HOP homeobox	Pancreas	+	4.96	0
+109	DUOX2	dual oxidase 2	Pancreas	+	4.96	0
+110	CALD1	caldesmon 1	Pancreas	+	4.95	0
+111	TNFAIP6	tumor necrosis factor, alpha-induced protein 6	Pancreas	+	4.95	0
+112	AZGP1	alpha-2-glycoprotein 1, zinc-binding	Pancreas	-	4.94	0
+113	TMPRSS4	transmembrane protease, serine 4	Pancreas	+	4.93	0
+114	HS3ST1	heparan sulfate (glucosamine) 3-O-sulfotransferase 1	Pancreas	+	4.93	0
+115	SLC30A2	solute carrier family 30 (zinc transporter), member 2	Pancreas	-	4.93	0
+116	ANO1	anoctamin 1, calcium activated chloride channel	Pancreas	+	4.92	0
+117	CSTA	cystatin A (stefin A)	Pancreas	+	4.9	0
+118	AOX1	aldehyde oxidase 1	Pancreas	-	4.9	0
+119	ECT2	epithelial cell transforming 2	Pancreas	+	4.88	0
+120	KPNA2	karyopherin alpha 2 (RAG cohort 1, importin alpha 1)	Pancreas	+	4.88	0
+121	BACE1	beta-site APP-cleaving enzyme 1	Pancreas	-	4.87	0
+122	CYP1B1	cytochrome P450, family 1, subfamily B, polypeptide 1	Pancreas	+	4.87	0
+123	TMEM97	transmembrane protein 97	Pancreas	-	4.87	0
+124	CXCL14	chemokine (C-X-C motif) ligand 14	Pancreas	+	4.86	0
+125	IL22RA1	interleukin 22 receptor, alpha 1	Pancreas	-	4.86	0
+126	HMCN1	hemicentin 1	Pancreas	+	4.85	0
+127	CXCR4	chemokine (C-X-C motif) receptor 4	Pancreas	+	4.85	0
+128	MMP1	matrix metallopeptidase 1	Pancreas	+	4.85	0.001
+129	GAMT	guanidinoacetate N-methyltransferase	Pancreas	-	4.84	0
+130	BCL2A1	BCL2-related protein A1	Pancreas	+	4.83	0
+131	TRHDE	thyrotropin-releasing hormone degrading enzyme	Pancreas	-	4.83	0
+132	GCNT3	glucosaminyl (N-acetyl) transferase 3, mucin type	Pancreas	+	4.82	0
+133	CCKBR	cholecystokinin B receptor	Pancreas	-	4.82	0
+134	AREG	amphiregulin	Pancreas	+	4.82	0
+135	ZNF207	zinc finger protein 207	Pancreas	+	4.81	0
+136	SLC6A6	solute carrier family 6 (neurotransmitter transporter), member 6	Pancreas	+	4.81	0
+137	SPARC	secreted protein, acidic, cysteine-rich (osteonectin)	Pancreas	+	4.8	0
+138	GABRP	gamma-aminobutyric acid (GABA) A receptor, pi	Pancreas	+	4.79	0.001
+139	HOMER2	homer scaffolding protein 2	Pancreas	-	4.79	0
+140	IFI44	interferon-induced protein 44	Pancreas	+	4.79	0
+141	PHLDA1	pleckstrin homology-like domain, family A, member 1	Pancreas	+	4.79	0
+142	SLC43A1	solute carrier family 43 (amino acid system L transporter), member 1	Pancreas	-	4.78	0
+143	HLA-DPA1	major histocompatibility complex, class II, DP alpha 1	Pancreas	+	4.78	0
+144	SEL1L	sel-1 suppressor of lin-12-like (C. elegans)	Pancreas	-	4.78	0
+145	PELI1	pellino E3 ubiquitin protein ligase 1	Pancreas	+	4.77	0
+146	ITGA2	integrin, alpha 2 (CD49B, alpha 2 subunit of VLA-2 receptor)	Pancreas	+	4.77	0
+147	STAT1	signal transducer and activator of transcription 1, 91kDa	Pancreas	+	4.77	0
+148	TPSB2	tryptase beta 2 (gene/pseudogene)	Pancreas	+	4.76	0
+149	LAMA4	laminin, alpha 4	Pancreas	+	4.76	0
+150	LINC00339	long intergenic non-protein coding RNA 339	Pancreas	-	4.76	0
+151	HLA-DQB1	major histocompatibility complex, class II, DQ beta 1	Pancreas	+	4.76	0
+152	RGS1	regulator of G-protein signaling 1	Pancreas	+	4.73	0
+153	ITGBL1	integrin, beta-like 1 (with EGF-like repeat domains)	Pancreas	+	4.72	0
+154	ALDOB	aldolase B, fructose-bisphosphate	Pancreas	-	4.72	0
+155	CCL18	chemokine (C-C motif) ligand 18 (pulmonary and activation-regulated)	Pancreas	+	4.72	0
+156	KRT19	keratin 19, type I	Pancreas	+	4.71	0
+157	NREP	neuronal regeneration related protein	Pancreas	+	4.7	0
+158	SYTL2	synaptotagmin-like 2	Pancreas	+	4.7	0
+159	NQO1	NAD(P)H dehydrogenase, quinone 1	Pancreas	+	4.69	0
+160	GPX2	glutathione peroxidase 2	Pancreas	+	4.69	0.001
+161	GPNMB	glycoprotein (transmembrane) nmb	Pancreas	+	4.69	0
+162	ITGB6	integrin, beta 6	Pancreas	+	4.67	0
+163	HPGD	hydroxyprostaglandin dehydrogenase 15-(NAD)	Pancreas	+	4.67	0
+164	TNFSF13B	tumor necrosis factor (ligand) superfamily, member 13b	Pancreas	+	4.66	0
+165	MPEG1	macrophage expressed 1	Pancreas	+	4.66	0
+166	LAMC2	laminin, gamma 2	Pancreas	+	4.66	0
+167	CCL20	chemokine (C-C motif) ligand 20	Pancreas	+	4.66	0
+168	ZEB2	zinc finger E-box binding homeobox 2	Pancreas	+	4.66	0
+169	LAMA3	laminin, alpha 3	Pancreas	+	4.63	0
+170	JMJD1C	jumonji domain containing 1C	Pancreas	+	4.63	0
+171	DEFB1	defensin, beta 1	Pancreas	-	4.63	0
+172	EPSTI1	epithelial stromal interaction 1 (breast)	Pancreas	+	4.62	0
+173	CD109	CD109 molecule	Pancreas	+	4.61	0
+174	LCP2	lymphocyte cytosolic protein 2 (SH2 domain containing leukocyte protein of 76kDa)	Pancreas	+	4.59	0
+175	ARSE	arylsulfatase E (chondrodysplasia punctata 1)	Pancreas	-	4.58	0
+176	CTSK	cathepsin K	Pancreas	+	4.57	0
+177	CD52	CD52 molecule	Pancreas	+	4.57	0
+178	REG1A	regenerating islet-derived 1 alpha	Pancreas	-	4.56	0.016
+179	TGFBR1	transforming growth factor, beta receptor 1	Pancreas	+	4.55	0
+180	CASP1	caspase 1, apoptosis-related cysteine peptidase	Pancreas	+	4.55	0
+181	CCDC80	coiled-coil domain containing 80	Pancreas	+	4.55	0
+182	CST1	cystatin SN	Pancreas	+	4.53	0
+183	FBN1	fibrillin 1	Pancreas	+	4.52	0
+184	DPEP1	dipeptidase 1 (renal)	Pancreas	-	4.5	0
+185	GPR183	G protein-coupled receptor 183	Pancreas	+	4.5	0
+186	IGL	immunoglobulin lambda locus	Pancreas	+	4.49	0
+187	PTGS2	prostaglandin-endoperoxide synthase 2 (prostaglandin G/H synthase and cyclooxygenase)	Pancreas	+	4.49	0.001
+188	GLT8D2	glycosyltransferase 8 domain containing 2	Pancreas	+	4.46	0
+189	EGR2	early growth response 2	Pancreas	+	4.46	0
+190	KLK10	kallikrein-related peptidase 10	Pancreas	+	4.44	0.002
+191	THBS2	thrombospondin 2	Pancreas	+	4.44	0
+192	CAPN8	calpain 8	Pancreas	+	4.43	0
+193	NR5A2	nuclear receptor subfamily 5, group A, member 2	Pancreas	-	4.43	0
+194	PDLIM3	PDZ and LIM domain 3	Pancreas	+	4.43	0
+195	ANTXR1	anthrax toxin receptor 1	Pancreas	+	4.42	0
+196	ANPEP	alanyl (membrane) aminopeptidase	Pancreas	-	4.42	0.002
+197	ADCY7	adenylate cyclase 7	Pancreas	+	4.41	0
+198	OAS1	2'-5'-oligoadenylate synthetase 1, 40/46kDa	Pancreas	+	4.4	0
+199	PDK4	pyruvate dehydrogenase kinase, isozyme 4	Pancreas	-	4.39	0
+200	COCH	cochlin	Pancreas	-	4.38	0
+201	GUCA1C	guanylate cyclase activator 1C	Pancreas	-	4.38	0
+202	P2RX1	purinergic receptor P2X, ligand gated ion channel, 1	Pancreas	-	4.37	0
+203	FAM26F	family with sequence similarity 26, member F	Pancreas	+	4.37	0
+204	TAGAP	T-cell activation RhoGTPase activating protein	Pancreas	+	4.36	0
+205	IGKV4-1	immunoglobulin kappa variable 4-1	Pancreas	+	4.36	0
+206	PRDM1	PR domain containing 1, with ZNF domain	Pancreas	+	4.36	0
+207	EVI2B	ecotropic viral integration site 2B	Pancreas	+	4.35	0
+208	LOC284454	uncharacterized LOC284454	Pancreas	+	4.34	0
+209	C5	complement component 5	Pancreas	-	4.34	0
+210	TRIM14	tripartite motif containing 14	Pancreas	+	4.34	0
+211	CEMIP	cell migration inducing protein, hyaluronan binding	Pancreas	+	4.33	0
+212	OSBPL3	oxysterol binding protein-like 3	Pancreas	+	4.33	0
+213	KIAA1324	KIAA1324	Pancreas	-	4.32	0
+214	HNRNPU-AS1	HNRNPU antisense RNA 1	Pancreas	+	4.32	0
+215	GPR34	G protein-coupled receptor 34	Pancreas	+	4.31	0
+216	ERO1B	endoplasmic reticulum oxidoreductase beta	Pancreas	-	4.31	0
+217	CXCL8	chemokine (C-X-C motif) ligand 8	Pancreas	+	4.3	0
+218	C19orf33	chromosome 19 open reading frame 33	Pancreas	+	4.3	0
+219	C15orf48	chromosome 15 open reading frame 48	Pancreas	+	4.3	0
+220	CDKN2B	cyclin-dependent kinase inhibitor 2B (p15, inhibits CDK4)	Pancreas	+	4.29	0
+221	IL18	interleukin 18	Pancreas	+	4.29	0
+222	IGFBP3	insulin-like growth factor binding protein 3	Pancreas	+	4.29	0.001
+223	NOX4	NADPH oxidase 4	Pancreas	+	4.29	0
+224	KCNJ16	potassium channel, inwardly rectifying subfamily J, member 16	Pancreas	-	4.29	0
+225	SERPINB5	serpin peptidase inhibitor, clade B (ovalbumin), member 5	Pancreas	+	4.28	0
+226	IL1RN	interleukin 1 receptor antagonist	Pancreas	+	4.28	0
+227	GPR137B	G protein-coupled receptor 137B	Pancreas	+	4.28	0
+228	CA12	carbonic anhydrase XII	Pancreas	-	4.28	0
+229	FPR3	formyl peptide receptor 3	Pancreas	+	4.27	0
+230	HSPA6	heat shock 70kDa protein 6 (HSP70B')	Pancreas	+	4.27	0
+231	RUNX1	runt-related transcription factor 1	Pancreas	+	4.27	0
+232	DPY19L1	dpy-19-like 1 (C. elegans)	Pancreas	+	4.27	0
+233	HPN	hepsin	Pancreas	-	4.27	0
+234	CD69	CD69 molecule	Pancreas	+	4.26	0
+235	GBP3	guanylate binding protein 3	Pancreas	+	4.25	0
+236	CXCL3	chemokine (C-X-C motif) ligand 3	Pancreas	+	4.24	0
+237	COA1	cytochrome c oxidase assembly factor 1 homolog	Pancreas	+	4.24	0
+238	NCF2	neutrophil cytosolic factor 2	Pancreas	+	4.24	0
+239	DLEU2	deleted in lymphocytic leukemia 2 (non-protein coding)	Pancreas	+	4.24	0
+240	LAMB3	laminin, beta 3	Pancreas	+	4.24	0
+241	ADAM28	ADAM metallopeptidase domain 28	Pancreas	+	4.23	0
+242	PSAT1	phosphoserine aminotransferase 1	Pancreas	-	4.23	0
+243	CHRM3	cholinergic receptor, muscarinic 3	Pancreas	-	4.22	0
+244	SLC38A5	solute carrier family 38, member 5	Pancreas	-	4.21	0
+245	OLR1	oxidized low density lipoprotein (lectin-like) receptor 1	Pancreas	+	4.21	0
+246	CMAHP	cytidine monophospho-N-acetylneuraminic acid hydroxylase, pseudogene	Pancreas	+	4.21	0
+247	GPRC5A	G protein-coupled receptor, class C, group 5, member A	Pancreas	+	4.21	0
+248	AHNAK2	AHNAK nucleoprotein 2	Pancreas	+	4.2	0
+249	CSF2RB	colony stimulating factor 2 receptor, beta, low-affinity (granulocyte-macrophage)	Pancreas	+	4.2	0
+250	OSBPL10	oxysterol binding protein-like 10	Pancreas	+	4.2	0
+251	SH3KBP1	SH3-domain kinase binding protein 1	Pancreas	+	4.19	0
+252	IL2RG	interleukin 2 receptor, gamma	Pancreas	+	4.19	0
+253	ACSL5	acyl-CoA synthetase long-chain family member 5	Pancreas	+	4.18	0
+254	KRT17	keratin 17, type I	Pancreas	+	4.18	0
+255	IGHM	immunoglobulin heavy constant mu	Pancreas	+	4.17	0
+256	SDR16C5	short chain dehydrogenase/reductase family 16C, member 5	Pancreas	+	4.17	0.001
+257	CD86	CD86 molecule	Pancreas	+	4.17	0
+258	AKR1B10	aldo-keto reductase family 1, member B10 (aldose reductase)	Pancreas	+	4.17	0.003
+259	BIRC3	baculoviral IAP repeat containing 3	Pancreas	+	4.17	0
+260	SLC2A3	solute carrier family 2 (facilitated glucose transporter), member 3	Pancreas	+	4.17	0
+261	TRIO	trio Rho guanine nucleotide exchange factor	Pancreas	+	4.17	0
+262	TPSAB1	tryptase alpha/beta 1	Pancreas	+	4.16	0
+263	FAM150B	family with sequence similarity 150, member B	Pancreas	-	4.16	0
+264	GIMAP2	GTPase, IMAP family member 2	Pancreas	+	4.15	0
+265	PLAUR	plasminogen activator, urokinase receptor	Pancreas	+	4.14	0
+266	LOX	lysyl oxidase	Pancreas	+	4.14	0
+267	MS4A6A	membrane-spanning 4-domains, subfamily A, member 6A	Pancreas	+	4.14	0
+268	CTSS	cathepsin S	Pancreas	+	4.13	0
+269	PLXNC1	plexin C1	Pancreas	+	4.12	0
+270	PHLDA2	pleckstrin homology-like domain, family A, member 2	Pancreas	+	4.11	0
+271	RBP1	retinol binding protein 1, cellular	Pancreas	-	4.11	0
+272	GZMA	granzyme A (granzyme 1, cytotoxic T-lymphocyte-associated serine esterase 3)	Pancreas	+	4.11	0
+273	POU2AF1	POU class 2 associating factor 1	Pancreas	+	4.1	0
+274	OGN	osteoglycin	Pancreas	+	4.1	0
+275	DKK3	dickkopf WNT signaling pathway inhibitor 3	Pancreas	+	4.1	0
+276	FCGR2B	Fc fragment of IgG, low affinity IIb, receptor (CD32)	Pancreas	+	4.1	0
+277	RASGRP1	RAS guanyl releasing protein 1 (calcium and DAG-regulated)	Pancreas	+	4.09	0
+278	SPON1	spondin 1, extracellular matrix protein	Pancreas	+	4.08	0
+279	ACADL	acyl-CoA dehydrogenase, long chain	Pancreas	-	4.08	0
+280	LOXL1	lysyl oxidase-like 1	Pancreas	+	4.08	0
+281	CD74	CD74 molecule, major histocompatibility complex, class II invariant chain	Pancreas	+	4.07	0
+282	CLEC7A	C-type lectin domain family 7, member A	Pancreas	+	4.06	0
+283	REG4	regenerating islet-derived family, member 4	Pancreas	+	4.06	0.038
+284	CEACAM1	carcinoembryonic antigen-related cell adhesion molecule 1 (biliary glycoprotein)	Pancreas	+	4.06	0
+285	LACC1	laccase (multicopper oxidoreductase) domain containing 1	Pancreas	+	4.06	0
+286	UHRF1BP1L	UHRF1 binding protein 1-like	Pancreas	+	4.06	0
+287	ALG13	ALG13, UDP-N-acetylglucosaminyltransferase subunit	Pancreas	+	4.05	0
+288	ZBTB16	zinc finger and BTB domain containing 16	Pancreas	-	4.02	0
+289	SLC7A1	solute carrier family 7 (cationic amino acid transporter, y+ system), member 1	Pancreas	-	4	0
+290	H19	H19, imprinted maternally expressed transcript (non-protein coding)	Pancreas	-	3.98	0.01
+291	ITIH4	inter-alpha-trypsin inhibitor heavy chain family, member 4	Pancreas	-	3.96	0
+292	LGALS2	lectin, galactoside-binding, soluble, 2	Pancreas	-	3.94	0.001
+293	PRSS2	protease, serine, 2 (trypsin 2)	Pancreas	-	3.93	0.026
+294	ACSM3	acyl-CoA synthetase medium-chain family member 3	Pancreas	-	3.92	0
+295	KIF1A	kinesin family member 1A	Pancreas	-	3.92	0
+296	INSR	insulin receptor	Pancreas	-	3.89	0
+297	PDCD4	programmed cell death 4 (neoplastic transformation inhibitor)	Pancreas	-	3.88	0
+298	SERPINA4	serpin peptidase inhibitor, clade A (alpha-1 antiproteinase, antitrypsin), member 4	Pancreas	-	3.87	0
+299	C6	complement component 6	Pancreas	-	3.84	0
+300	KCNK3	potassium channel, two pore domain subfamily K, member 3	Pancreas	-	3.83	0
+301	GPT2	glutamic pyruvate transaminase (alanine aminotransferase) 2	Pancreas	-	3.81	0
+302	COMTD1	catechol-O-methyltransferase domain containing 1	Pancreas	-	3.81	0
+303	F8	coagulation factor VIII, procoagulant component	Pancreas	-	3.79	0
+304	PGBD5	piggyBac transposable element derived 5	Pancreas	-	3.79	0
+305	SFRP5	secreted frizzled-related protein 5	Pancreas	-	3.79	0
+306	LEFTY1	left-right determination factor 1	Pancreas	-	3.77	0.005
+307	KIRREL2	kin of IRRE like 2 (Drosophila)	Pancreas	-	3.76	0
+308	TM7SF2	transmembrane 7 superfamily member 2	Pancreas	-	3.76	0
+309	DAPL1	death associated protein-like 1	Pancreas	-	3.75	0
+310	IMPA2	inositol(myo)-1(or 4)-monophosphatase 2	Pancreas	-	3.75	0
+311	FXYD2	FXYD domain containing ion transport regulator 2	Pancreas	-	3.74	0
+312	PLXNA2	plexin A2	Pancreas	-	3.73	0
+313	NPTX2	neuronal pentraxin II	Pancreas	-	3.71	0
+314	SSFA2	sperm specific antigen 2	Pancreas	-	3.7	0
+315	SLC25A15	solute carrier family 25 (mitochondrial carrier; ornithine transporter) member 15	Pancreas	-	3.66	0
+316	NTRK2	neurotrophic tyrosine kinase, receptor, type 2	Pancreas	-	3.65	0
+317	DLK1	delta-like 1 homolog (Drosophila)	Pancreas	-	3.65	0.001
+318	FABP4	fatty acid binding protein 4, adipocyte	Pancreas	-	3.63	0.008
+319	LOC553137	uncharacterized LOC553137	Pancreas	-	3.61	0
+320	ECHDC3	enoyl CoA hydratase domain containing 3	Pancreas	-	3.61	0
+321	GATM	glycine amidinotransferase (L-arginine:glycine amidinotransferase)	Pancreas	-	3.6	0
+322	PHGDH	phosphoglycerate dehydrogenase	Pancreas	-	3.58	0
+323	SLC7A2	solute carrier family 7 (cationic amino acid transporter, y+ system), member 2	Pancreas	-	3.56	0
+324	CRYBA2	crystallin, beta A2	Pancreas	-	3.56	0
+325	KCNJ8	potassium channel, inwardly rectifying subfamily J, member 8	Pancreas	-	3.54	0
+326	HSD17B8	hydroxysteroid (17-beta) dehydrogenase 8	Pancreas	-	3.53	0
+327	SLC1A4	solute carrier family 1 (glutamate/neutral amino acid transporter), member 4	Pancreas	-	3.52	0
+328	SLC39A8	solute carrier family 39 (zinc transporter), member 8	Pancreas	-	3.5	0
+329	FOXA3	forkhead box A3	Pancreas	-	3.46	0
+330	FAM3B	family with sequence similarity 3, member B	Pancreas	-	3.43	0.003
+331	SERPINA5	serpin peptidase inhibitor, clade A (alpha-1 antiproteinase, antitrypsin), member 5	Pancreas	-	3.42	0.001
+332	SERPINA3	serpin peptidase inhibitor, clade A (alpha-1 antiproteinase, antitrypsin), member 3	Pancreas	-	3.4	0.007
+333	S100A12	S100 calcium binding protein A12	Pancreas	-	3.37	0
+334	C19orf48	chromosome 19 open reading frame 48	Pancreas	-	3.35	0
+335	SPAG4	sperm associated antigen 4	Pancreas	-	3.34	0
+336	PARM1	prostate androgen-regulated mucin-like protein 1	Pancreas	-	3.34	0
+337	RHOBTB3	Rho-related BTB domain containing 3	Pancreas	-	3.33	0
+338	CLDN10	claudin 10	Pancreas	-	3.3	0.025
+339	RPH3AL	rabphilin 3A-like (without C2 domains)	Pancreas	-	3.3	0
+340	MTUS2	microtubule associated tumor suppressor candidate 2	Pancreas	-	3.29	0
+341	CTNND2	catenin (cadherin-associated protein), delta 2	Pancreas	-	3.29	0
+342	BSPRY	B-box and SPRY domain containing	Pancreas	-	3.29	0
+343	LINC00261	long intergenic non-protein coding RNA 261	Pancreas	-	3.29	0
+344	SST	somatostatin	Pancreas	-	3.26	0.033
+345	RAB3D	RAB3D, member RAS oncogene family	Pancreas	-	3.25	0
+346	BTG2	BTG family, member 2	Pancreas	-	3.24	0
+347	NLE1	notchless homolog 1 (Drosophila)	Pancreas	-	3.23	0
+348	CFTR	cystic fibrosis transmembrane conductance regulator (ATP-binding cassette sub-family C, member 7)	Pancreas	-	3.21	0.016
+349	DCDC2	doublecortin domain containing 2	Pancreas	-	3.2	0.001
+350	ANXA9	annexin A9	Pancreas	-	3.18	0
+351	TPST2	tyrosylprotein sulfotransferase 2	Pancreas	-	3.17	0
+352	UST	uronyl-2-sulfotransferase	Pancreas	-	3.17	0
+353	MSRB1	methionine sulfoxide reductase B1	Pancreas	-	3.17	0
+354	MAOA	monoamine oxidase A	Pancreas	-	3.15	0
+355	PAK3	p21 protein (Cdc42/Rac)-activated kinase 3	Pancreas	-	3.13	0
+356	PDE8B	phosphodiesterase 8B	Pancreas	-	3.12	0
+357	TMEM125	transmembrane protein 125	Pancreas	-	3.12	0
+358	CLDN3	claudin 3	Pancreas	-	3.12	0.011
+359	C21orf2	chromosome 21 open reading frame 2	Pancreas	-	3.12	0
+360	P4HB	prolyl 4-hydroxylase, beta polypeptide	Pancreas	-	3.12	0
+361	SLC38A4	solute carrier family 38, member 4	Pancreas	-	3.11	0
+362	SYTL1	synaptotagmin-like 1	Pancreas	-	3.11	0
+363	VEPH1	ventricular zone expressed PH domain-containing 1	Pancreas	-	3.1	0
+364	STXBP6	syntaxin binding protein 6 (amisyn)	Pancreas	-	3.09	0
+365	TPM1	tropomyosin 1 (alpha)	Pancreas	-	3.09	0
+366	PIFO	primary cilia formation	Pancreas	-	3.09	0
+367	KLHDC10	kelch domain containing 10	Pancreas	-	3.08	0
+368	SLC3A1	solute carrier family 3 (amino acid transporter heavy chain), member 1	Pancreas	-	3.08	0.034
+369	DHRS12	dehydrogenase/reductase (SDR family) member 12	Pancreas	-	3.08	0
+370	SLC37A4	solute carrier family 37 (glucose-6-phosphate transporter), member 4	Pancreas	-	3.07	0
+371	ARRB1	arrestin, beta 1	Pancreas	-	3.07	0
+372	APLP1	amyloid beta (A4) precursor-like protein 1	Pancreas	-	3.02	0
+373	MUC15	mucin 15, cell surface associated	Pancreas	-	3.02	0
+374	STC2	stanniocalcin 2	Pancreas	-	3.02	0
+375	BEX5	brain expressed, X-linked 5	Pancreas	-	3.01	0.001

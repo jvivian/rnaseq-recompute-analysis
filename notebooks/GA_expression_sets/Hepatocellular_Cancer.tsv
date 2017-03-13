@@ -1,0 +1,5 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+1	EIF3H	eukaryotic translation initiation factor 3, subunit H	Liver	+	4.39	0
+2	C9	complement component 9	Liver	-	4.36	0
+3	UBD	ubiquitin D	Liver	+	3.39	0
+4	PSMD6	proteasome 26S subunit, non-ATPase 6	Liver	+	3.23	0

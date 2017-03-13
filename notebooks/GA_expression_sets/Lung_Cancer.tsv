@@ -1,0 +1,217 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+1	SFTPC	surfactant protein C	Lung	-	6.58	0
+2	CLDN18	claudin 18	Lung	-	6.41	0
+3	ADH1B	alcohol dehydrogenase 1B (class I), beta polypeptide	Lung	-	6.18	0
+4	KRT6A	keratin 6A, type II	Lung	+	5.85	0
+5	AGER	advanced glycosylation end product-specific receptor	Lung	-	5.7	0
+6	MMP12	matrix metallopeptidase 12	Lung	+	5.63	0
+7	CLIC5	chloride intracellular channel 5	Lung	-	5.51	0
+8	AQP4	aquaporin 4	Lung	-	5.29	0
+9	CYP4B1	cytochrome P450, family 4, subfamily B, polypeptide 1	Lung	-	5.27	0
+10	SPRR1B	small proline-rich protein 1B	Lung	+	5.25	0
+11	AKR1B10	aldo-keto reductase family 1, member B10 (aldose reductase)	Lung	+	5.16	0
+12	MMP1	matrix metallopeptidase 1	Lung	+	5.11	0
+13	KRT6B	keratin 6B, type II	Lung	+	5.1	0
+14	TMEM100	transmembrane protein 100	Lung	-	5.07	0
+15	FABP4	fatty acid binding protein 4, adipocyte	Lung	-	5.03	0
+16	GKN2	gastrokine 2	Lung	-	4.99	0
+17	FAM107A	family with sequence similarity 107, member A	Lung	-	4.95	0
+18	MT1M	metallothionein 1M	Lung	-	4.94	0
+19	CPB2	carboxypeptidase B2 (plasma)	Lung	-	4.88	0
+20	KRT17	keratin 17, type I	Lung	+	4.87	0
+21	S100A2	S100 calcium binding protein A2	Lung	+	4.84	0
+22	SERPINB5	serpin peptidase inhibitor, clade B (ovalbumin), member 5	Lung	+	4.83	0
+23	GJB2	gap junction protein, beta 2, 26kDa	Lung	+	4.78	0
+24	SPRR1A	small proline-rich protein 1A	Lung	+	4.77	0
+25	KRT5	keratin 5, type II	Lung	+	4.73	0
+26	GPM6A	glycoprotein M6A	Lung	-	4.71	0
+27	GREM1	gremlin 1, DAN family BMP antagonist	Lung	+	4.69	0
+28	COL11A1	collagen, type XI, alpha 1	Lung	+	4.68	0
+29	TOP2A	topoisomerase (DNA) II alpha	Lung	+	4.66	0
+30	GJB6	gap junction protein, beta 6, 30kDa	Lung	+	4.62	0
+31	PEBP4	phosphatidylethanolamine-binding protein 4	Lung	-	4.61	0
+32	DST	dystonin	Lung	+	4.52	0
+33	TNNC1	troponin C type 1 (slow)	Lung	-	4.46	0
+34	DSG3	desmoglein 3	Lung	+	4.45	0
+35	FIGF	c-fos induced growth factor (vascular endothelial growth factor D)	Lung	-	4.43	0
+36	MCEMP1	mast cell-expressed membrane protein 1	Lung	-	4.43	0
+37	CLEC3B	C-type lectin domain family 3, member B	Lung	-	4.42	0
+38	SPRR3	small proline-rich protein 3	Lung	+	4.36	0
+39	FCN3	ficolin (collagen/fibrinogen domain containing) 3	Lung	-	4.34	0
+40	PSAT1	phosphoserine aminotransferase 1	Lung	+	4.33	0
+41	SPP1	secreted phosphoprotein 1	Lung	+	4.32	0
+42	KRT15	keratin 15, type I	Lung	+	4.3	0
+43	KRT14	keratin 14, type I	Lung	+	4.3	0
+44	GPX2	glutathione peroxidase 2	Lung	+	4.29	0
+45	SLC2A1	solute carrier family 2 (facilitated glucose transporter), member 1	Lung	+	4.27	0
+46	WIF1	WNT inhibitory factor 1	Lung	-	4.27	0
+47	SOX2	SRY (sex determining region Y)-box 2	Lung	+	4.25	0
+48	ABCA8	ATP-binding cassette, sub-family A (ABC1), member 8	Lung	-	4.25	0
+49	ANLN	anillin actin binding protein	Lung	+	4.21	0
+50	SFTPD	surfactant protein D	Lung	-	4.2	0
+51	CA4	carbonic anhydrase IV	Lung	-	4.18	0
+52	CD36	CD36 molecule (thrombospondin receptor)	Lung	-	4.17	0
+53	ADAMTS8	ADAM metallopeptidase with thrombospondin type 1 motif, 8	Lung	-	4.15	0
+54	CDC20	cell division cycle 20	Lung	+	4.13	0
+55	CLCA2	chloride channel accessory 2	Lung	+	4.11	0
+56	INMT	indolethylamine N-methyltransferase	Lung	-	4.09	0
+57	MAMDC2	MAM domain containing 2	Lung	-	4.05	0
+58	TMPRSS4	transmembrane protease, serine 4	Lung	+	4.05	0
+59	TPX2	TPX2, microtubule-associated	Lung	+	4.04	0
+60	RRM2	ribonucleotide reductase M2	Lung	+	4.02	0
+61	SCN7A	sodium channel, voltage gated, type VII alpha subunit	Lung	-	4.01	0
+62	VEPH1	ventricular zone expressed PH domain-containing 1	Lung	-	4.01	0
+63	LRRK2	leucine-rich repeat kinase 2	Lung	-	4.01	0
+64	CHRDL1	chordin-like 1	Lung	-	3.99	0
+65	BIRC5	baculoviral IAP repeat containing 5	Lung	+	3.98	0
+66	KRT16	keratin 16, type I	Lung	+	3.98	0
+67	ASPM	abnormal spindle microtubule assembly	Lung	+	3.96	0
+68	COL4A3	collagen, type IV, alpha 3 (Goodpasture antigen)	Lung	-	3.95	0
+69	PTHLH	parathyroid hormone-like hormone	Lung	+	3.95	0
+70	SUSD2	sushi domain containing 2	Lung	-	3.94	0
+71	IGF2BP3	insulin-like growth factor 2 mRNA binding protein 3	Lung	+	3.93	0
+72	TCF21	transcription factor 21	Lung	-	3.92	0
+73	PGC	progastricsin (pepsinogen C)	Lung	-	3.92	0
+74	SCGB1A1	secretoglobin, family 1A, member 1 (uteroglobin)	Lung	-	3.91	0
+75	CCNB1	cyclin B1	Lung	+	3.91	0
+76	TP63	tumor protein p63	Lung	+	3.88	0
+77	WDR72	WD repeat domain 72	Lung	+	3.86	0
+78	DSC3	desmocollin 3	Lung	+	3.85	0
+79	NTS	neurotensin	Lung	+	3.84	0
+80	CXCL14	chemokine (C-X-C motif) ligand 14	Lung	+	3.82	0
+81	FHL1	four and a half LIM domains 1	Lung	-	3.81	0
+82	DSP	desmoplakin	Lung	+	3.8	0
+83	CCNB2	cyclin B2	Lung	+	3.8	0
+84	GPR87	G protein-coupled receptor 87	Lung	+	3.79	0
+85	SFTPA2	surfactant protein A2	Lung	-	3.79	0
+86	DLGAP5	discs, large (Drosophila) homolog-associated protein 5	Lung	+	3.78	0
+87	EDNRB	endothelin receptor type B	Lung	-	3.78	0
+88	SFTA2	surfactant associated 2	Lung	-	3.76	0
+89	KIAA0101	KIAA0101	Lung	+	3.76	0
+90	ADRB1	adrenoceptor beta 1	Lung	-	3.75	0
+91	EMCN	endomucin	Lung	-	3.75	0
+92	FOSB	FBJ murine osteosarcoma viral oncogene homolog B	Lung	-	3.73	0
+93	FAM150B	family with sequence similarity 150, member B	Lung	-	3.72	0
+94	SFTA3	surfactant associated 3	Lung	-	3.72	0
+95	CXCL2	chemokine (C-X-C motif) ligand 2	Lung	-	3.71	0
+96	AGR3	anterior gradient 3, protein disulphide isomerase family member	Lung	-	3.7	0
+97	PDK4	pyruvate dehydrogenase kinase, isozyme 4	Lung	-	3.7	0
+98	FOLR1	folate receptor 1 (adult)	Lung	-	3.7	0
+99	C2orf40	chromosome 2 open reading frame 40	Lung	-	3.7	0
+100	LPL	lipoprotein lipase	Lung	-	3.69	0
+101	UBE2C	ubiquitin-conjugating enzyme E2C	Lung	+	3.68	0
+102	FAM83D	family with sequence similarity 83, member D	Lung	+	3.67	0
+103	FMO2	flavin containing monooxygenase 2 (non-functional)	Lung	-	3.67	0
+104	CALML3	calmodulin-like 3	Lung	+	3.67	0
+105	SULF1	sulfatase 1	Lung	+	3.66	0
+106	TRIM29	tripartite motif containing 29	Lung	+	3.66	0
+107	SERPINB3	serpin peptidase inhibitor, clade B (ovalbumin), member 3	Lung	+	3.65	0
+108	COL10A1	collagen, type X, alpha 1	Lung	+	3.65	0
+109	STXBP6	syntaxin binding protein 6 (amisyn)	Lung	-	3.63	0
+110	TFAP2A	transcription factor AP-2 alpha (activating enhancer binding protein 2 alpha)	Lung	+	3.63	0
+111	CTHRC1	collagen triple helix repeat containing 1	Lung	+	3.63	0
+112	NOSTRIN	nitric oxide synthase trafficking	Lung	-	3.63	0
+113	SCGB3A2	secretoglobin, family 3A, member 2	Lung	-	3.62	0
+114	PKP1	plakophilin 1	Lung	+	3.62	0
+115	SELE	selectin E	Lung	-	3.61	0
+116	BUB1B	BUB1 mitotic checkpoint serine/threonine kinase B	Lung	+	3.6	0
+117	SPRR2B	small proline-rich protein 2B	Lung	+	3.59	0
+118	LIMCH1	LIM and calponin homology domains 1	Lung	-	3.59	0
+119	MAD2L1	MAD2 mitotic arrest deficient-like 1 (yeast)	Lung	+	3.58	0
+120	C7	complement component 7	Lung	-	3.57	0
+121	SDPR	serum deprivation response	Lung	-	3.56	0
+122	HBB	hemoglobin, beta	Lung	-	3.55	0
+123	PTPRB	protein tyrosine phosphatase, receptor type, B	Lung	-	3.54	0
+124	CDCA7	cell division cycle associated 7	Lung	+	3.54	0
+125	BTNL9	butyrophilin-like 9	Lung	-	3.52	0
+126	CENPF	centromere protein F, 350/400kDa	Lung	+	3.51	0
+127	COL1A1	collagen, type I, alpha 1	Lung	+	3.51	0
+128	UHRF1	ubiquitin-like with PHD and ring finger domains 1	Lung	+	3.51	0
+129	SERPINB13	serpin peptidase inhibitor, clade B (ovalbumin), member 13	Lung	+	3.5	0
+130	PLA2G1B	phospholipase A2, group IB (pancreas)	Lung	-	3.5	0
+131	PBK	PDZ binding kinase	Lung	+	3.5	0
+132	ANKRD29	ankyrin repeat domain 29	Lung	-	3.5	0
+133	SFTPB	surfactant protein B	Lung	-	3.49	0
+134	CENPA	centromere protein A	Lung	+	3.48	0
+135	GINS1	GINS complex subunit 1 (Psf1 homolog)	Lung	+	3.48	0
+136	CEP55	centrosomal protein 55kDa	Lung	+	3.48	0
+137	SFTA1P	surfactant associated 1, pseudogene	Lung	-	3.46	0
+138	TTK	TTK protein kinase	Lung	+	3.46	0
+139	PRC1	protein regulator of cytokinesis 1	Lung	+	3.44	0
+140	C4BPA	complement component 4 binding protein, alpha	Lung	-	3.44	0
+141	CDK1	cyclin-dependent kinase 1	Lung	+	3.43	0
+142	ZNF385B	zinc finger protein 385B	Lung	-	3.43	0
+143	HPGD	hydroxyprostaglandin dehydrogenase 15-(NAD)	Lung	-	3.42	0
+144	MELK	maternal embryonic leucine zipper kinase	Lung	+	3.42	0
+145	PTPRZ1	protein tyrosine phosphatase, receptor-type, Z polypeptide 1	Lung	+	3.41	0
+146	ADAM12	ADAM metallopeptidase domain 12	Lung	+	3.41	0
+147	S100A7	S100 calcium binding protein A7	Lung	+	3.39	0
+148	ACKR1	atypical chemokine receptor 1 (Duffy blood group)	Lung	-	3.39	0
+149	HSD17B6	hydroxysteroid (17-beta) dehydrogenase 6	Lung	-	3.39	0
+150	KRT13	keratin 13, type I	Lung	+	3.39	0
+151	CACNA2D2	calcium channel, voltage-dependent, alpha 2/delta subunit 2	Lung	-	3.39	0
+152	MARCO	macrophage receptor with collagenous structure	Lung	-	3.38	0
+153	MAGEA3	melanoma antigen family A3	Lung	+	3.37	0
+154	KCNK3	potassium channel, two pore domain subfamily K, member 3	Lung	-	3.36	0
+155	SLC6A8	solute carrier family 6 (neurotransmitter transporter), member 8	Lung	+	3.36	0
+156	OLR1	oxidized low density lipoprotein (lectin-like) receptor 1	Lung	-	3.34	0
+157	NEK2	NIMA-related kinase 2	Lung	+	3.34	0
+158	CDKN3	cyclin-dependent kinase inhibitor 3	Lung	+	3.31	0
+159	MAGEA6	melanoma antigen family A6	Lung	+	3.31	0
+160	FERMT1	fermitin family member 1	Lung	+	3.3	0
+161	KIF2C	kinesin family member 2C	Lung	+	3.29	0
+162	GPIHBP1	glycosylphosphatidylinositol anchored high density lipoprotein binding protein 1	Lung	-	3.29	0
+163	ABI3BP	ABI family, member 3 (NESH) binding protein	Lung	-	3.29	0
+164	C16orf89	chromosome 16 open reading frame 89	Lung	-	3.29	0
+165	UBE2T	ubiquitin-conjugating enzyme E2T	Lung	+	3.28	0
+166	ZBTB16	zinc finger and BTB domain containing 16	Lung	-	3.27	0
+167	ADIRF	adipogenesis regulatory factor	Lung	-	3.26	0
+168	HHIP	hedgehog interacting protein	Lung	-	3.26	0
+169	CCNA2	cyclin A2	Lung	+	3.25	0
+170	AFF3	AF4/FMR2 family, member 3	Lung	-	3.25	0
+171	SCARA5	scavenger receptor class A, member 5	Lung	-	3.24	0
+172	UCHL1	ubiquitin carboxyl-terminal esterase L1 (ubiquitin thiolesterase)	Lung	+	3.23	0
+173	BUB1	BUB1 mitotic checkpoint serine/threonine kinase	Lung	+	3.23	0
+174	FAM189A2	family with sequence similarity 189, member A2	Lung	-	3.22	0
+175	CA12	carbonic anhydrase XII	Lung	+	3.22	0
+176	SIX1	SIX homeobox 1	Lung	+	3.22	0
+177	PITX1	paired-like homeodomain 1	Lung	+	3.21	0
+178	OGN	osteoglycin	Lung	-	3.21	0
+179	ID4	inhibitor of DNA binding 4, dominant negative helix-loop-helix protein	Lung	-	3.2	0
+180	SCGB3A1	secretoglobin, family 3A, member 1	Lung	-	3.2	0
+181	FOXM1	forkhead box M1	Lung	+	3.19	0
+182	IL6	interleukin 6	Lung	-	3.19	0
+183	GLDN	gliomedin	Lung	-	3.18	0
+184	ACADL	acyl-CoA dehydrogenase, long chain	Lung	-	3.17	0
+185	CDH3	cadherin 3, type 1, P-cadherin (placental)	Lung	+	3.16	0
+186	PPBP	pro-platelet basic protein (chemokine (C-X-C motif) ligand 7)	Lung	-	3.16	0
+187	PLAC9	placenta-specific 9	Lung	-	3.16	0
+188	HS6ST2	heparan sulfate 6-O-sulfotransferase 2	Lung	+	3.14	0
+189	POSTN	periostin, osteoblast specific factor	Lung	+	3.14	0
+190	NUSAP1	nucleolar and spindle associated protein 1	Lung	+	3.14	0
+191	CD52	CD52 molecule	Lung	-	3.13	0
+192	LEPR	leptin receptor	Lung	-	3.12	0
+193	TRIP13	thyroid hormone receptor interactor 13	Lung	+	3.1	0
+194	ECT2	epithelial cell transforming 2	Lung	+	3.09	0
+195	STX11	syntaxin 11	Lung	-	3.08	0
+196	MFAP4	microfibrillar-associated protein 4	Lung	-	3.08	0
+197	GPX3	glutathione peroxidase 3	Lung	-	3.07	0
+198	WDR66	WD repeat domain 66	Lung	+	3.07	0
+199	DAPL1	death associated protein-like 1	Lung	+	3.06	0
+200	DLC1	DLC1 Rho GTPase activating protein	Lung	-	3.05	0
+201	SELENBP1	selenium binding protein 1	Lung	-	3.05	0
+202	AK4	adenylate kinase 4	Lung	+	3.04	0
+203	MACROD2	MACRO domain containing 2	Lung	-	3.03	0
+204	CFD	complement factor D (adipsin)	Lung	-	3.03	0
+205	MMP10	matrix metallopeptidase 10	Lung	+	3.03	0
+206	C1orf116	chromosome 1 open reading frame 116	Lung	-	3.03	0
+207	ALOX5	arachidonate 5-lipoxygenase	Lung	-	3.02	0
+208	TEK	TEK tyrosine kinase, endothelial	Lung	-	3.02	0
+209	KIF11	kinesin family member 11	Lung	+	3.02	0
+210	KIF4A	kinesin family member 4A	Lung	+	3.01	0
+211	NAPSA	napsin A aspartic peptidase	Lung	-	3.01	0
+212	SLC1A1	solute carrier family 1 (neuronal/epithelial high affinity glutamate transporter, system Xag), member 1	Lung	-	3.01	0
+213	FLRT3	fibronectin leucine rich transmembrane protein 3	Lung	-	3.01	0
+214	CX3CR1	chemokine (C-X3-C motif) receptor 1	Lung	-	3.01	0
+215	TK1	thymidine kinase 1, soluble	Lung	+	3.01	0
+216	PRR11	proline rich 11	Lung	+	3	0

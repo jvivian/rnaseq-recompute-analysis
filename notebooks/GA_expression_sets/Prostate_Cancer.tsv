@@ -1,0 +1,190 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+1	KLK3	kallikrein-related peptidase 3	Bone	+	7.74	0
+2	KLK2	kallikrein-related peptidase 2	Bone	+	7.14	0
+3	LTF	lactotransferrin	Bone	-	6.47	0
+4	DEFA4	defensin, alpha 4, corticostatin	Bone	-	6.27	0
+5	S100A8	S100 calcium binding protein A8	Bone	-	6.25	0
+6	S100A9	S100 calcium binding protein A9	Bone	-	6.18	0
+7	HBD	hemoglobin, delta	Bone	-	6.02	0
+8	CAMP	cathelicidin antimicrobial peptide	Bone	-	5.9	0
+9	ALAS2	5'-aminolevulinate synthase 2	Bone	-	5.74	0
+10	FOLH1	folate hydrolase (prostate-specific membrane antigen) 1	Bone	+	5.7	0
+11	MPO	myeloperoxidase	Bone	-	5.7	0
+12	GOLM1	golgi membrane protein 1	Bone	+	5.64	0
+13	MS4A3	membrane-spanning 4-domains, subfamily A, member 3 (hematopoietic cell-specific)	Bone	-	5.61	0
+14	CEACAM8	carcinoembryonic antigen-related cell adhesion molecule 8	Bone	-	5.56	0
+15	SLC4A1	solute carrier family 4 (anion exchanger), member 1 (Diego blood group)	Bone	-	5.56	0
+16	MNDA	myeloid cell nuclear differentiation antigen	Bone	-	5.53	0
+17	IKZF4	IKAROS family zinc finger 4 (Eos)	Prostate	-	5.49	0.026
+18	S100A12	S100 calcium binding protein A12	Bone	-	5.49	0
+19	CA1	carbonic anhydrase I	Bone	-	5.48	0
+20	EPB42	erythrocyte membrane protein band 4.2	Bone	-	5.47	0
+21	CYP3A5	cytochrome P450, family 3, subfamily A, polypeptide 5	Prostate	-	5.46	0.013
+22	PPBP	pro-platelet basic protein (chemokine (C-X-C motif) ligand 7)	Bone	-	5.45	0
+23	LCN2	lipocalin 2	Bone	-	5.45	0
+24	PRG2	proteoglycan 2, bone marrow (natural killer cell activator, eosinophil granule major basic protein)	Bone	-	5.35	0
+25	FOLH1B	folate hydrolase 1B	Bone	+	5.31	0
+26	RNASE2	ribonuclease, RNase A family, 2 (liver, eosinophil-derived neurotoxin)	Bone	-	5.31	0
+27	KIRREL3	kin of IRRE like 3 (Drosophila)	Prostate	-	5.28	0.024
+28	CYP3A4	cytochrome P450, family 3, subfamily A, polypeptide 4	Prostate	-	5.18	0.01
+29	BPI	bactericidal/permeability-increasing protein	Bone	-	5.11	0
+30	GYPA	glycophorin A (MNS blood group)	Bone	-	5.04	0
+31	ELANE	elastase, neutrophil expressed	Bone	-	5.04	0
+32	AHSP	alpha hemoglobin stabilizing protein	Bone	-	5.01	0
+33	CTSG	cathepsin G	Bone	-	4.89	0
+34	CLC	Charcot-Leyden crystal galectin	Bone	-	4.89	0
+35	GYPB	glycophorin B (MNS blood group)	Bone	-	4.88	0
+36	WIF1	WNT inhibitory factor 1	Prostate	-	4.87	0.008
+37	LYZ	lysozyme	Bone	-	4.83	0
+38	CA2	carbonic anhydrase II	Bone	-	4.75	0
+39	NKX3-1	NK3 homeobox 1	Bone	+	4.7	0
+40	DUOXA1	dual oxidase maturation factor 1	Prostate	-	4.69	0.01
+41	RHD	Rh blood group, D antigen	Bone	-	4.69	0
+42	ARG1	arginase 1	Bone	-	4.67	0
+43	CD177	CD177 molecule	Prostate	-	4.67	0.014
+44	PF4	platelet factor 4	Bone	-	4.66	0
+45	SPTA1	spectrin, alpha, erythrocytic 1	Bone	-	4.65	0
+46	FXYD3	FXYD domain containing ion transport regulator 3	Bone	+	4.62	0
+47	PDLIM5	PDZ and LIM domain 5	Bone	+	4.54	0
+48	LAMB3	laminin, beta 3	Prostate	-	4.53	0.014
+49	SRGN	serglycin	Bone	-	4.49	0
+50	ACPP	acid phosphatase, prostate	Bone	+	4.48	0
+51	RNASE3	ribonuclease, RNase A family, 3	Bone	-	4.48	0
+52	AGR2	anterior gradient 2, protein disulphide isomerase family member	Bone	+	4.45	0.002
+53	RHAG	Rh-associated glycoprotein	Bone	-	4.45	0
+54	OLFM4	olfactomedin 4	Bone	-	4.43	0
+55	NFE2	nuclear factor, erythroid 2	Bone	-	4.3	0
+56	KRT18	keratin 18, type I	Bone	+	4.23	0
+57	TSPAN1	tetraspanin 1	Bone	+	4.22	0
+58	SLC14A1	solute carrier family 14 (urea transporter), member 1 (Kidd blood group)	Prostate	-	4.14	0.017
+59	PLPP1	phospholipid phosphatase 1	Bone	+	4.12	0
+60	STEAP1	six transmembrane epithelial antigen of the prostate 1	Bone	+	4.07	0
+61	SLC39A6	solute carrier family 39 (zinc transporter), member 6	Bone	+	4.07	0
+62	HK3	hexokinase 3 (white cell)	Bone	-	4.06	0
+63	RHCE	Rh blood group, CcEe antigens	Bone	-	4.04	0
+64	TRIM10	tripartite motif containing 10	Bone	-	4.03	0
+65	SNCA	synuclein, alpha (non A4 component of amyloid precursor)	Bone	-	4.02	0
+66	PTPRT	protein tyrosine phosphatase, receptor type, T	Prostate	+	4.01	0.047
+67	MRPL2	mitochondrial ribosomal protein L2	Prostate	-	4	0.009
+68	VNN2	vanin 2	Bone	-	3.99	0
+69	ALOX5	arachidonate 5-lipoxygenase	Bone	-	3.99	0
+70	PADI4	peptidyl arginine deiminase, type IV	Bone	-	3.99	0
+71	PIK3CD	phosphatidylinositol-4,5-bisphosphate 3-kinase, catalytic subunit delta	Bone	-	3.98	0
+72	CYP4F3	cytochrome P450, family 4, subfamily F, polypeptide 3	Bone	-	3.96	0
+73	PRG3	proteoglycan 3	Bone	-	3.96	0
+74	APOBEC3A	apolipoprotein B mRNA editing enzyme, catalytic polypeptide-like 3A	Bone	-	3.96	0
+75	ITGAM	integrin, alpha M (complement component 3 receptor 3 subunit)	Bone	-	3.95	0
+76	TPD52	tumor protein D52	Bone	+	3.88	0
+77	TMEM246	transmembrane protein 246	Prostate	-	3.88	0.041
+78	TMOD1	tropomodulin 1	Bone	-	3.88	0
+79	PDE9A	phosphodiesterase 9A	Bone	+	3.86	0
+80	AMACR	alpha-methylacyl-CoA racemase	Bone	+	3.82	0
+81	CEACAM6	carcinoembryonic antigen-related cell adhesion molecule 6 (non-specific cross reacting antigen)	Bone	-	3.82	0
+82	CD36	CD36 molecule (thrombospondin receptor)	Bone	-	3.82	0
+83	TRIM58	tripartite motif containing 58	Bone	-	3.78	0
+84	FOXA2	forkhead box A2	Prostate	-	3.77	0.042
+85	KLF1	Kruppel-like factor 1 (erythroid)	Bone	-	3.71	0
+86	EFNA1	ephrin-A1	Bone	+	3.69	0
+87	SPOCK1	sparc/osteonectin, cwcv and kazal-like domains proteoglycan (testican) 1	Bone	+	3.68	0.001
+88	SPDEF	SAM pointed domain containing ETS transcription factor	Bone	+	3.66	0
+89	PGLYRP1	peptidoglycan recognition protein 1	Bone	-	3.66	0
+90	DCXR	dicarbonyl/L-xylulose reductase	Bone	+	3.65	0
+91	ACACA	acetyl-CoA carboxylase alpha	Bone	+	3.64	0
+92	IL18RAP	interleukin 18 receptor accessory protein	Bone	-	3.63	0
+93	ANK1	ankyrin 1, erythrocytic	Bone	-	3.61	0
+94	TAL1	T-cell acute lymphocytic leukemia 1	Bone	-	3.61	0
+95	MAOA	monoamine oxidase A	Bone	+	3.59	0.001
+96	SH3BP4	SH3-domain binding protein 4	Bone	+	3.58	0
+97	DSP	desmoplakin	Bone	+	3.56	0
+98	S100P	S100 calcium binding protein P	Bone	-	3.55	0.02
+99	ALCAM	activated leukocyte cell adhesion molecule	Bone	+	3.55	0
+100	CPA6	carboxypeptidase A6	Prostate	-	3.54	0.023
+101	HP	haptoglobin	Bone	-	3.54	0
+102	EPOR	erythropoietin receptor	Bone	-	3.52	0
+103	NCF1C	neutrophil cytosolic factor 1C pseudogene	Bone	-	3.52	0
+104	LST1	leukocyte specific transcript 1	Bone	-	3.52	0
+105	RAB25	RAB25, member RAS oncogene family	Bone	+	3.52	0
+106	SLC2A3	solute carrier family 2 (facilitated glucose transporter), member 3	Bone	-	3.51	0
+107	CHI3L1	chitinase 3-like 1 (cartilage glycoprotein-39)	Bone	-	3.51	0
+108	ACSL3	acyl-CoA synthetase long-chain family member 3	Bone	+	3.5	0
+109	FCGR3B	Fc fragment of IgG, low affinity IIIb, receptor (CD16b)	Bone	-	3.5	0
+110	C1orf116	chromosome 1 open reading frame 116	Bone	+	3.49	0
+111	MLPH	melanophilin	Bone	+	3.48	0
+112	UCP2	uncoupling protein 2 (mitochondrial, proton carrier)	Bone	-	3.45	0.001
+113	JUN	jun proto-oncogene	Bone	+	3.45	0
+114	FAR2	fatty acyl CoA reductase 2	Bone	-	3.45	0
+115	ARHGAP25	Rho GTPase activating protein 25	Bone	-	3.43	0
+116	TARP	TCR gamma alternate reading frame protein	Bone	+	3.42	0
+117	KEL	Kell blood group, metallo-endopeptidase	Bone	-	3.4	0
+118	TFRC	transferrin receptor	Bone	-	3.38	0
+119	SLC2A5	solute carrier family 2 (facilitated glucose/fructose transporter), member 5	Bone	-	3.38	0
+120	PTPRF	protein tyrosine phosphatase, receptor type, F	Bone	+	3.37	0
+121	ATP6V0E2	ATPase, H+ transporting V0 subunit e2	Bone	+	3.36	0
+122	TFR2	transferrin receptor 2	Bone	-	3.36	0
+123	ADD2	adducin 2 (beta)	Bone	-	3.36	0
+124	NCF4	neutrophil cytosolic factor 4, 40kDa	Bone	-	3.36	0
+125	LILRA2	leukocyte immunoglobulin-like receptor, subfamily A (with TM domain), member 2	Bone	-	3.35	0
+126	EVPLL	envoplakin-like	Prostate	-	3.34	0.012
+127	AZGP1	alpha-2-glycoprotein 1, zinc-binding	Bone	+	3.33	0.042
+128	EPCAM	epithelial cell adhesion molecule	Bone	+	3.33	0
+129	SERPINB1	serpin peptidase inhibitor, clade B (ovalbumin), member 1	Bone	-	3.33	0
+130	PRTN3	proteinase 3	Bone	-	3.32	0
+131	DUOX1	dual oxidase 1	Prostate	-	3.32	0.033
+132	WFDC2	WAP four-disulfide core domain 2	Prostate	-	3.32	0.044
+133	CORO1A	coronin, actin binding protein, 1A	Bone	-	3.31	0
+134	LYL1	lymphoblastic leukemia associated hematopoiesis regulator 1	Bone	-	3.3	0
+135	TF	transferrin	Bone	-	3.29	0
+136	AR	androgen receptor	Bone	+	3.29	0
+137	AZU1	azurocidin 1	Bone	-	3.29	0
+138	TRAF3IP3	TRAF3 interacting protein 3	Bone	-	3.29	0
+139	CEACAM1	carcinoembryonic antigen-related cell adhesion molecule 1 (biliary glycoprotein)	Bone	-	3.27	0
+140	EMX2OS	EMX2 opposite strand/antisense RNA	Prostate	-	3.26	0.042
+141	NCF2	neutrophil cytosolic factor 2	Bone	-	3.26	0
+142	PLBD1	phospholipase B domain containing 1	Bone	-	3.25	0
+143	MMP8	matrix metallopeptidase 8	Bone	-	3.25	0
+144	MSMB	microseminoprotein, beta-	Bone	+	3.25	0.015
+145	MYO6	myosin VI	Bone	+	3.25	0.002
+146	GLUD1	glutamate dehydrogenase 1	Bone	+	3.24	0
+147	FCN1	ficolin (collagen/fibrinogen domain containing) 1	Bone	-	3.24	0
+148	RAC2	ras-related C3 botulinum toxin substrate 2 (rho family, small GTP binding protein Rac2)	Bone	-	3.22	0
+149	MGAM	maltase-glucoamylase	Bone	-	3.22	0
+150	RDH11	retinol dehydrogenase 11 (all-trans/9-cis/11-cis)	Bone	+	3.21	0
+151	IGFBP7	insulin-like growth factor binding protein 7	Bone	+	3.21	0.002
+152	CDS1	CDP-diacylglycerol synthase (phosphatidate cytidylyltransferase) 1	Bone	+	3.21	0
+153	CFAP69	cilia and flagella associated protein 69	Bone	+	3.21	0.008
+154	RWDD2A	RWD domain containing 2A	Bone	+	3.19	0
+155	ANK3	ankyrin 3, node of Ranvier (ankyrin G)	Bone	+	3.18	0
+156	TCN1	transcobalamin I (vitamin B12 binding protein, R binder family)	Bone	-	3.18	0
+157	SLC25A29	solute carrier family 25 (mitochondrial carnitine/acylcarnitine carrier), member 29	Prostate	-	3.17	0.028
+158	CLEC5A	C-type lectin domain family 5, member A	Bone	-	3.17	0
+159	IGL	immunoglobulin lambda locus	Bone	-	3.16	0.025
+160	CST7	cystatin F (leukocystatin)	Bone	-	3.14	0
+161	FOLR3	folate receptor 3 (gamma)	Bone	-	3.13	0
+162	CRISP2	cysteine-rich secretory protein 2	Bone	-	3.13	0.003
+163	SELL	selectin L	Bone	-	3.13	0
+164	CXCL12	chemokine (C-X-C motif) ligand 12	Bone	-	3.13	0
+165	FAXDC2	fatty acid hydroxylase domain containing 2	Bone	-	3.12	0
+166	SLA	Src-like-adaptor	Bone	-	3.11	0.002
+167	SLC25A6	solute carrier family 25 (mitochondrial carrier; adenine nucleotide translocator), member 6	Bone	+	3.1	0.001
+168	COBL	cordon-bleu WH2 repeat protein	Bone	+	3.08	0
+169	PCDH9	protocadherin 9	Prostate	-	3.08	0.038
+170	NAAA	N-acylethanolamine acid amidase	Bone	+	3.08	0
+171	FGR	FGR proto-oncogene, Src family tyrosine kinase	Bone	-	3.08	0
+172	STOM	stomatin	Bone	-	3.08	0
+173	MTUS1	microtubule associated tumor suppressor 1	Bone	+	3.08	0
+174	PLAC8	placenta-specific 8	Bone	-	3.07	0
+175	CDH1	cadherin 1, type 1	Bone	+	3.07	0
+176	CXCR4	chemokine (C-X-C motif) receptor 4	Bone	-	3.07	0
+177	GDF15	growth differentiation factor 15	Bone	+	3.07	0.003
+178	PRSS23	protease, serine, 23	Bone	+	3.06	0.001
+179	CWH43	cell wall biogenesis 43 C-terminal homolog	Bone	+	3.04	0.001
+180	TPD52L1	tumor protein D52-like 1	Bone	+	3.03	0
+181	EVI2B	ecotropic viral integration site 2B	Bone	-	3.03	0
+182	TNS1	tensin 1	Bone	-	3.03	0
+183	CYP4F11	cytochrome P450, family 4, subfamily F, polypeptide 11	Prostate	+	3.02	0.047
+184	LILRA3	leukocyte immunoglobulin-like receptor, subfamily A (without TM domain), member 3	Bone	-	3.02	0
+185	TMED10	transmembrane p24 trafficking protein 10	Bone	+	3.02	0
+186	SIGLEC5	sialic acid binding Ig-like lectin 5	Bone	-	3.01	0
+187	COL3A1	collagen, type III, alpha 1	Bone	+	3.01	0.002
+188	JCHAIN	joining chain of multimeric IgA and IgM	Bone	-	3.01	0.001
+189	FAM162A	family with sequence similarity 162, member A	Bone	+	3	0

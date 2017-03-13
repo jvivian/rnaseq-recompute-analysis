@@ -1,0 +1,279 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+1	SLC12A1	solute carrier family 12 (sodium/potassium/chloride transporter), member 1	Kidney	-	9.35	0
+2	CALB1	calbindin 1, 28kDa	Kidney	-	8.95	0
+3	FXYD4	FXYD domain containing ion transport regulator 4	Kidney	-	8.29	0
+4	CLDN8	claudin 8	Kidney	-	8.2	0
+5	KCNJ1	potassium channel, inwardly rectifying subfamily J, member 1	Kidney	-	8.2	0
+6	NPHS2	nephrosis 2, idiopathic, steroid-resistant (podocin)	Kidney	-	8.18	0
+7	MUC15	mucin 15, cell surface associated	Kidney	-	7.96	0
+8	SCNN1G	sodium channel, non voltage gated 1 gamma subunit	Kidney	-	7.91	0
+9	HPD	4-hydroxyphenylpyruvate dioxygenase	Kidney	-	7.78	0
+10	FABP1	fatty acid binding protein 1, liver	Kidney	-	7.74	0
+11	DNASE1	deoxyribonuclease I	Kidney	-	7.59	0
+12	SLC7A13	solute carrier family 7 (anionic amino acid transporter), member 13	Kidney	-	7.29	0
+13	ANGPTL4	angiopoietin-like 4	Kidney	+	7.25	0
+14	TNFAIP6	tumor necrosis factor, alpha-induced protein 6	Kidney	+	7.16	0
+15	ATP6V0A4	ATPase, H+ transporting, lysosomal V0 subunit a4	Kidney	-	7.13	0
+16	PCP4	Purkinje cell protein 4	Kidney	-	7.13	0
+17	KNG1	kininogen 1	Kidney	-	7.12	0
+18	TYRP1	tyrosinase-related protein 1	Kidney	-	7.1	0
+19	FGF9	fibroblast growth factor 9	Kidney	-	6.99	0
+20	EGF	epidermal growth factor	Kidney	-	6.92	0
+21	RALYL	RALY RNA binding protein-like	Kidney	-	6.81	0
+22	PVALB	parvalbumin	Kidney	-	6.73	0
+23	KCNJ10	potassium channel, inwardly rectifying subfamily J, member 10	Kidney	-	6.69	0
+24	TMEM213	transmembrane protein 213	Kidney	-	6.64	0
+25	SLC22A8	solute carrier family 22 (organic anion transporter), member 8	Kidney	-	6.58	0
+26	IRX2	iroquois homeobox 2	Kidney	-	6.56	0
+27	SLC26A7	solute carrier family 26 (anion exchanger), member 7	Kidney	-	6.56	0
+28	SLC4A1	solute carrier family 4 (anion exchanger), member 1 (Diego blood group)	Kidney	-	6.53	0
+29	GPC5	glypican 5	Kidney	-	6.53	0
+30	RHCG	Rh family, C glycoprotein	Kidney	-	6.52	0
+31	SOST	sclerostin	Kidney	-	6.51	0
+32	SFRP1	secreted frizzled-related protein 1	Kidney	-	6.49	0
+33	HEPACAM2	HEPACAM family member 2	Kidney	-	6.45	0
+34	NELL1	neural EGFL like 1	Kidney	-	6.38	0
+35	SERPINA5	serpin peptidase inhibitor, clade A (alpha-1 antiproteinase, antitrypsin), member 5	Kidney	-	6.34	0
+36	RAB25	RAB25, member RAS oncogene family	Kidney	-	6.32	0
+37	TMPRSS2	transmembrane protease, serine 2	Kidney	-	6.31	0
+38	TMEM52B	transmembrane protein 52B	Kidney	-	6.28	0
+39	ERBB4	erb-b2 receptor tyrosine kinase 4	Kidney	-	6.26	0
+40	SOSTDC1	sclerostin domain containing 1	Kidney	-	6.25	0
+41	SH3GL2	SH3-domain GRB2-like 2	Kidney	-	6.16	0
+42	ALDOB	aldolase B, fructose-bisphosphate	Kidney	-	6.13	0.003
+43	APOC1	apolipoprotein C-I	Kidney	+	6.11	0
+44	UMOD	uromodulin	Kidney	-	6.07	0
+45	NPTX2	neuronal pentraxin II	Kidney	+	6.05	0
+46	LOC284578	uncharacterized LOC284578	Kidney	-	6.02	0
+47	ESRRB	estrogen-related receptor beta	Kidney	-	5.99	0
+48	SLC13A3	solute carrier family 13 (sodium-dependent dicarboxylate transporter), member 3	Kidney	-	5.96	0.001
+49	TSPAN8	tetraspanin 8	Kidney	-	5.96	0
+50	WNK4	WNK lysine deficient protein kinase 4	Kidney	-	5.94	0
+51	DIO1	deiodinase, iodothyronine, type I	Kidney	-	5.93	0
+52	PTHLH	parathyroid hormone-like hormone	Kidney	+	5.88	0.001
+53	NDUFA4L2	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex, 4-like 2	Kidney	+	5.76	0
+54	ATP6V1G3	ATPase, H+ transporting, lysosomal 13kDa, V1 subunit G3	Kidney	-	5.73	0
+55	NOS1	nitric oxide synthase 1 (neuronal)	Kidney	-	5.73	0
+56	FABP7	fatty acid binding protein 7, brain	Kidney	+	5.71	0.042
+57	SIM2	single-minded family bHLH transcription factor 2	Kidney	-	5.66	0
+58	XPNPEP2	X-prolyl aminopeptidase (aminopeptidase P) 2, membrane-bound	Kidney	-	5.65	0
+59	G6PC	glucose-6-phosphatase, catalytic subunit	Kidney	-	5.64	0.013
+60	SCNN1A	sodium channel, non voltage gated 1 alpha subunit	Kidney	-	5.63	0.002
+61	ATP6V1B1	ATPase, H+ transporting, lysosomal 56/58kDa, V1 subunit B1	Kidney	-	5.62	0
+62	HSD11B2	hydroxysteroid (11-beta) dehydrogenase 2	Kidney	-	5.6	0
+63	CCL20	chemokine (C-C motif) ligand 20	Kidney	+	5.55	0.007
+64	HS6ST2	heparan sulfate 6-O-sulfotransferase 2	Kidney	-	5.52	0
+65	CDCA2	cell division cycle associated 2	Kidney	+	5.52	0
+66	DPEP1	dipeptidase 1 (renal)	Kidney	-	5.49	0
+67	SLC4A9	solute carrier family 4, sodium bicarbonate cotransporter, member 9	Kidney	-	5.49	0
+68	C16orf89	chromosome 16 open reading frame 89	Kidney	-	5.48	0
+69	CTXN3	cortexin 3	Kidney	-	5.47	0.001
+70	LOC285556	uncharacterized LOC285556	Kidney	-	5.47	0
+71	FAM3B	family with sequence similarity 3, member B	Kidney	-	5.43	0
+72	HRG	histidine-rich glycoprotein	Kidney	-	5.4	0
+73	PLG	plasminogen	Kidney	-	5.4	0
+74	STC2	stanniocalcin 2	Kidney	+	5.39	0
+75	ENPP6	ectonucleotide pyrophosphatase/phosphodiesterase 6	Kidney	-	5.38	0
+76	MST1L	macrophage stimulating 1-like	Kidney	-	5.34	0
+77	PAH	phenylalanine hydroxylase	Kidney	-	5.32	0.003
+78	MFSD4	major facilitator superfamily domain containing 4	Kidney	-	5.31	0
+79	SCNN1B	sodium channel, non voltage gated 1 beta subunit	Kidney	-	5.29	0
+80	PRDM16	PR domain containing 16	Kidney	-	5.29	0
+81	FAM151A	family with sequence similarity 151, member A	Kidney	-	5.29	0.004
+82	MAL	mal, T-cell differentiation protein	Kidney	-	5.29	0.001
+83	CA10	carbonic anhydrase X	Kidney	-	5.29	0
+84	GRM1	glutamate receptor, metabotropic 1	Kidney	-	5.28	0
+85	RANBP3L	RAN binding protein 3-like	Kidney	-	5.27	0
+86	CLCNKB	chloride channel, voltage-sensitive Kb	Kidney	-	5.26	0
+87	NRK	Nik related kinase	Kidney	-	5.26	0
+88	VTCN1	V-set domain containing T cell activation inhibitor 1	Kidney	-	5.26	0
+89	ESRP1	epithelial splicing regulatory protein 1	Kidney	-	5.25	0.001
+90	TOP2A	topoisomerase (DNA) II alpha	Kidney	+	5.24	0
+91	CYP4F2	cytochrome P450, family 4, subfamily F, polypeptide 2	Kidney	-	5.21	0
+92	ZNF44	zinc finger protein 44	Kidney	-	5.19	0
+93	DUSP9	dual specificity phosphatase 9	Kidney	-	5.15	0
+94	AQP2	aquaporin 2 (collecting duct)	Kidney	-	5.15	0
+95	SLC22A7	solute carrier family 22 (organic anion transporter), member 7	Kidney	-	5.13	0.008
+96	VGLL1	vestigial-like family member 1	Kidney	-	5.12	0
+97	EGLN3	egl-9 family hypoxia-inducible factor 3	Kidney	+	5.12	0
+98	DMRT2	doublesex and mab-3 related transcription factor 2	Kidney	-	5.11	0
+99	TACSTD2	tumor-associated calcium signal transducer 2	Kidney	-	5.11	0
+100	CASR	calcium-sensing receptor	Kidney	-	5.11	0
+101	SLC13A2	solute carrier family 13 (sodium-dependent dicarboxylate transporter), member 2	Kidney	-	5.11	0
+102	UPP2	uridine phosphorylase 2	Kidney	-	5.1	0
+103	PLPPR1	phospholipid phosphatase related 1	Kidney	-	5.08	0
+104	CRYAA	crystallin, alpha A	Kidney	-	5.08	0
+105	NKG7	natural killer cell granule protein 7	Kidney	+	5.07	0
+106	C7	complement component 7	Kidney	-	5.07	0.002
+107	RALGAPA2	Ral GTPase activating protein, alpha subunit 2 (catalytic)	Kidney	-	5.05	0
+108	NNMT	nicotinamide N-methyltransferase	Kidney	+	5.05	0
+109	MYO3B	myosin IIIB	Kidney	-	5.05	0.001
+110	CWH43	cell wall biogenesis 43 C-terminal homolog	Kidney	-	5.03	0.002
+111	ADH1B	alcohol dehydrogenase 1B (class I), beta polypeptide	Kidney	-	5.02	0.001
+112	TMEM61	transmembrane protein 61	Kidney	-	4.99	0
+113	SLC22A12	solute carrier family 22 (organic anion/urate transporter), member 12	Kidney	-	4.97	0.001
+114	ELF5	E74-like factor 5 (ets domain transcription factor)	Kidney	-	4.96	0
+115	TOX3	TOX high mobility group box family member 3	Kidney	-	4.94	0.019
+116	FLJ22763	uncharacterized LOC401081	Kidney	-	4.94	0.006
+117	FABP6	fatty acid binding protein 6, ileal	Kidney	+	4.94	0.005
+118	TCEAL2	transcription elongation factor A (SII)-like 2	Kidney	-	4.92	0.003
+119	CA9	carbonic anhydrase IX	Kidney	+	4.92	0
+120	LOC149703	uncharacterized LOC149703	Kidney	-	4.92	0.001
+121	TMEM45B	transmembrane protein 45B	Kidney	-	4.92	0.003
+122	EHF	ets homologous factor	Kidney	-	4.9	0
+123	ATP6V1C2	ATPase, H+ transporting, lysosomal 42kDa, V1 subunit C2	Kidney	-	4.9	0
+124	ISG20	interferon stimulated exonuclease gene 20kDa	Kidney	+	4.89	0
+125	BMPR1B	bone morphogenetic protein receptor, type IB	Kidney	-	4.88	0.001
+126	SLC22A6	solute carrier family 22 (organic anion transporter), member 6	Kidney	-	4.87	0.011
+127	SCN2A	sodium channel, voltage gated, type II alpha subunit	Kidney	-	4.87	0.001
+128	SLC7A8	solute carrier family 7 (amino acid transporter light chain, L system), member 8	Kidney	-	4.86	0
+129	KLRG2	killer cell lectin-like receptor subfamily G, member 2	Kidney	-	4.84	0
+130	GGT6	gamma-glutamyltransferase 6	Kidney	-	4.83	0
+131	ACPP	acid phosphatase, prostate	Kidney	-	4.83	0
+132	PROM2	prominin 2	Kidney	-	4.77	0
+133	PLCXD3	phosphatidylinositol-specific phospholipase C, X domain containing 3	Kidney	-	4.77	0
+134	CLDN16	claudin 16	Kidney	-	4.77	0
+135	AFM	afamin	Kidney	-	4.76	0.001
+136	KCNE1	potassium channel, voltage gated subfamily E regulatory beta subunit 1	Kidney	-	4.76	0
+137	CLIC5	chloride intracellular channel 5	Kidney	-	4.73	0
+138	ADGRF1	adhesion G protein-coupled receptor F1	Kidney	-	4.72	0
+139	GATA3	GATA binding protein 3	Kidney	-	4.72	0.002
+140	ATP6V0D2	ATPase, H+ transporting, lysosomal 38kDa, V0 subunit d2	Kidney	-	4.71	0
+141	HK2	hexokinase 2	Kidney	+	4.71	0
+142	TFCP2L1	transcription factor CP2-like 1	Kidney	-	4.71	0
+143	GABRA2	gamma-aminobutyric acid (GABA) A receptor, alpha 2	Kidney	-	4.7	0
+144	CLDN19	claudin 19	Kidney	-	4.68	0
+145	PPP1R1A	protein phosphatase 1, regulatory (inhibitor) subunit 1A	Kidney	-	4.67	0.021
+146	KISS1R	KISS1 receptor	Kidney	+	4.67	0.001
+147	ADH1C	alcohol dehydrogenase 1C (class I), gamma polypeptide	Kidney	-	4.65	0
+148	TFAP2B	transcription factor AP-2 beta (activating enhancer binding protein 2 beta)	Kidney	-	4.63	0
+149	PTGER1	prostaglandin E receptor 1 (subtype EP1), 42kDa	Kidney	-	4.62	0
+150	STAP1	signal transducing adaptor family member 1	Kidney	-	4.61	0
+151	ARL11	ADP-ribosylation factor-like 11	Kidney	+	4.6	0
+152	LINC00982	long intergenic non-protein coding RNA 982	Kidney	-	4.6	0
+153	CHL1	cell adhesion molecule L1-like	Kidney	-	4.6	0.001
+154	FOXI1	forkhead box I1	Kidney	-	4.59	0
+155	C5orf46	chromosome 5 open reading frame 46	Kidney	+	4.59	0.016
+156	ANKRD2	ankyrin repeat domain 2 (stretch responsive muscle)	Kidney	-	4.58	0.001
+157	ALB	albumin	Kidney	-	4.57	0
+158	L1CAM	L1 cell adhesion molecule	Kidney	-	4.57	0.004
+159	PDGFRA	platelet-derived growth factor receptor, alpha polypeptide	Kidney	-	4.56	0.009
+160	FGF1	fibroblast growth factor 1 (acidic)	Kidney	-	4.56	0
+161	C3	complement component 3	Kidney	+	4.55	0
+162	TMEM207	transmembrane protein 207	Kidney	-	4.55	0
+163	CTHRC1	collagen triple helix repeat containing 1	Kidney	+	4.54	0
+164	KLHL14	kelch-like family member 14	Kidney	-	4.53	0.001
+165	ANGPTL1	angiopoietin-like 1	Kidney	-	4.53	0.002
+166	SLC12A3	solute carrier family 12 (sodium/chloride transporter), member 3	Kidney	-	4.5	0
+167	CD300A	CD300a molecule	Kidney	+	4.49	0.001
+168	TMEM178A	transmembrane protein 178A	Kidney	-	4.48	0
+169	SEMA6D	sema domain, transmembrane domain (TM), and cytoplasmic domain, (semaphorin) 6D	Kidney	-	4.47	0
+170	CCL18	chemokine (C-C motif) ligand 18 (pulmonary and activation-regulated)	Kidney	+	4.45	0.012
+171	TCF21	transcription factor 21	Kidney	-	4.45	0.002
+172	SLAMF7	SLAM family member 7	Kidney	+	4.45	0.001
+173	PDE1A	phosphodiesterase 1A, calmodulin-dependent	Kidney	-	4.44	0
+174	MIR155HG	MIR155 host gene	Kidney	+	4.44	0.001
+175	SOWAHA	sosondowah ankyrin repeat domain family member A	Kidney	-	4.44	0.007
+176	HMGCS2	3-hydroxy-3-methylglutaryl-CoA synthase 2 (mitochondrial)	Kidney	-	4.43	0.036
+177	RBP4	retinol binding protein 4, plasma	Kidney	-	4.43	0.009
+178	SLFN13	schlafen family member 13	Kidney	+	4.32	0
+179	SLC16A3	solute carrier family 16 (monocarboxylate transporter), member 3	Kidney	+	4.24	0
+180	FAM26F	family with sequence similarity 26, member F	Kidney	+	4.18	0
+181	SPAG4	sperm associated antigen 4	Kidney	+	4.13	0
+182	EHD2	EH-domain containing 2	Kidney	+	4.12	0
+183	CXCL9	chemokine (C-X-C motif) ligand 9	Kidney	+	4.11	0.001
+184	LOX	lysyl oxidase	Kidney	+	4.1	0
+185	CCNE2	cyclin E2	Kidney	+	4.08	0
+186	ENO2	enolase 2 (gamma, neuronal)	Kidney	+	4.08	0
+187	COL23A1	collagen, type XXIII, alpha 1	Kidney	+	4.03	0.003
+188	RGS1	regulator of G-protein signaling 1	Kidney	+	4.03	0
+189	CD86	CD86 molecule	Kidney	+	3.99	0
+190	CYP2J2	cytochrome P450, family 2, subfamily J, polypeptide 2	Kidney	+	3.99	0.023
+191	HAPLN1	hyaluronan and proteoglycan link protein 1	Kidney	+	3.98	0.009
+192	TLR8	toll-like receptor 8	Kidney	+	3.98	0
+193	ST8SIA4	ST8 alpha-N-acetyl-neuraminide alpha-2,8-sialyltransferase 4	Kidney	+	3.9	0
+194	AHNAK2	AHNAK nucleoprotein 2	Kidney	+	3.9	0
+195	BIRC3	baculoviral IAP repeat containing 3	Kidney	+	3.88	0
+196	TTK	TTK protein kinase	Kidney	+	3.88	0
+197	HIST1H2AG	histone cluster 1, H2ag	Kidney	+	3.87	0.007
+198	LILRB2	leukocyte immunoglobulin-like receptor, subfamily B (with TM and ITIM domains), member 2	Kidney	+	3.87	0
+199	LOC100289026	uncharacterized LOC100289026	Kidney	+	3.86	0.006
+200	C4orf47	chromosome 4 open reading frame 47	Kidney	+	3.85	0
+201	INHBB	inhibin, beta B	Kidney	+	3.84	0.001
+202	PLA2G7	phospholipase A2, group VII (platelet-activating factor acetylhydrolase, plasma)	Kidney	+	3.84	0.003
+203	CP	ceruloplasmin (ferroxidase)	Kidney	+	3.83	0.021
+204	BRIP1	BRCA1 interacting protein C-terminal helicase 1	Kidney	+	3.83	0.003
+205	HMHA1	histocompatibility (minor) HA-1	Kidney	+	3.83	0
+206	GAS2L3	growth arrest-specific 2 like 3	Kidney	+	3.83	0
+207	TEX11	testis expressed 11	Kidney	+	3.79	0.029
+208	HILPDA	hypoxia inducible lipid droplet-associated	Kidney	+	3.79	0
+209	TREM2	triggering receptor expressed on myeloid cells 2	Kidney	+	3.79	0
+210	BHLHE41	basic helix-loop-helix family, member e41	Kidney	+	3.72	0
+211	TMCC1	transmembrane and coiled-coil domain family 1	Kidney	+	3.72	0
+212	KIF20A	kinesin family member 20A	Kidney	+	3.72	0
+213	TPX2	TPX2, microtubule-associated	Kidney	+	3.7	0
+214	SEC16B	SEC16 homolog B, endoplasmic reticulum export factor	Kidney	+	3.7	0
+215	PVT1	Pvt1 oncogene (non-protein coding)	Kidney	+	3.69	0
+216	TRDV3	T cell receptor delta variable 3	Kidney	+	3.64	0
+217	HTRA4	HtrA serine peptidase 4	Kidney	+	3.63	0.005
+218	TMEM45A	transmembrane protein 45A	Kidney	+	3.63	0.016
+219	SLC6A3	solute carrier family 6 (neurotransmitter transporter), member 3	Kidney	+	3.62	0.012
+220	CDKN2A	cyclin-dependent kinase inhibitor 2A	Kidney	+	3.59	0
+221	RHOH	ras homolog family member H	Kidney	+	3.59	0
+222	PTPN22	protein tyrosine phosphatase, non-receptor type 22 (lymphoid)	Kidney	+	3.59	0.003
+223	NETO2	neuropilin (NRP) and tolloid (TLL)-like 2	Kidney	+	3.57	0.001
+224	NEK2	NIMA-related kinase 2	Kidney	+	3.57	0
+225	P2RX7	purinergic receptor P2X, ligand gated ion channel, 7	Kidney	+	3.57	0
+226	SIRPG	signal-regulatory protein gamma	Kidney	+	3.54	0.015
+227	ALOX5	arachidonate 5-lipoxygenase	Kidney	+	3.53	0
+228	TRD	T cell receptor delta locus	Kidney	+	3.52	0
+229	TEN1	TEN1 CST complex subunit	Kidney	+	3.5	0
+230	SLAMF8	SLAM family member 8	Kidney	+	3.5	0.001
+231	CCR5	chemokine (C-C motif) receptor 5 (gene/pseudogene)	Kidney	+	3.49	0
+232	BIN2	bridging integrator 2	Kidney	+	3.46	0
+233	TNFRSF4	tumor necrosis factor receptor superfamily, member 4	Kidney	+	3.44	0.001
+234	FCGR2C	Fc fragment of IgG, low affinity IIc, receptor for (CD32) (gene/pseudogene)	Kidney	+	3.42	0
+235	BRCA2	breast cancer 2, early onset	Kidney	+	3.39	0
+236	SLC17A4	solute carrier family 17, member 4	Kidney	+	3.38	0.019
+237	CXCL10	chemokine (C-X-C motif) ligand 10	Kidney	+	3.38	0.007
+238	PIK3R5	phosphoinositide-3-kinase, regulatory subunit 5	Kidney	+	3.37	0
+239	IGFBP3	insulin-like growth factor binding protein 3	Kidney	+	3.36	0
+240	VSIG1	V-set and immunoglobulin domain containing 1	Kidney	+	3.35	0.013
+241	ASPM	abnormal spindle microtubule assembly	Kidney	+	3.33	0.004
+242	HIST1H3H	histone cluster 1, H3h	Kidney	+	3.32	0.012
+243	GIT2	G protein-coupled receptor kinase interacting ArfGAP 2	Kidney	+	3.3	0
+244	CDKN3	cyclin-dependent kinase inhibitor 3	Kidney	+	3.29	0
+245	FANCI	Fanconi anemia, complementation group I	Kidney	+	3.27	0
+246	CDC25C	cell division cycle 25C	Kidney	+	3.26	0.01
+247	DUSP4	dual specificity phosphatase 4	Kidney	+	3.26	0.003
+248	CCL5	chemokine (C-C motif) ligand 5	Kidney	+	3.24	0.003
+249	DTL	denticleless E3 ubiquitin protein ligase homolog (Drosophila)	Kidney	+	3.23	0
+250	CXCL11	chemokine (C-X-C motif) ligand 11	Kidney	+	3.21	0.01
+251	CST7	cystatin F (leukocystatin)	Kidney	+	3.2	0.004
+252	TNFSF13B	tumor necrosis factor (ligand) superfamily, member 13b	Kidney	+	3.19	0
+253	RAC2	ras-related C3 botulinum toxin substrate 2 (rho family, small GTP binding protein Rac2)	Kidney	+	3.19	0.002
+254	PARVG	parvin, gamma	Kidney	+	3.18	0
+255	BUB1	BUB1 mitotic checkpoint serine/threonine kinase	Kidney	+	3.18	0.012
+256	ZNF395	zinc finger protein 395	Kidney	+	3.17	0.021
+257	MCM10	minichromosome maintenance 10 replication initiation factor	Kidney	+	3.17	0.007
+258	TMEM44	transmembrane protein 44	Kidney	+	3.15	0
+259	LOXL2	lysyl oxidase-like 2	Kidney	+	3.14	0.003
+260	CD8A	CD8a molecule	Kidney	+	3.14	0.011
+261	XCL1	chemokine (C motif) ligand 1	Kidney	+	3.12	0.002
+262	VNN2	vanin 2	Kidney	+	3.11	0.005
+263	CENPK	centromere protein K	Kidney	+	3.11	0.001
+264	RRM2	ribonucleotide reductase M2	Kidney	+	3.09	0.006
+265	CHPF2	chondroitin polymerizing factor 2	Kidney	+	3.09	0
+266	CRTAM	cytotoxic and regulatory T cell molecule	Kidney	+	3.08	0.012
+267	SCD	stearoyl-CoA desaturase (delta-9-desaturase)	Kidney	+	3.08	0.001
+268	IL7R	interleukin 7 receptor	Kidney	+	3.07	0.018
+269	LPCAT1	lysophosphatidylcholine acyltransferase 1	Kidney	+	3.05	0
+270	LCK	LCK proto-oncogene, Src family tyrosine kinase	Kidney	+	3.05	0
+271	SAP30	Sin3A-associated protein, 30kDa	Kidney	+	3.05	0
+272	PCSK6	proprotein convertase subtilisin/kexin type 6	Kidney	+	3.05	0.025
+273	TEAD4	TEA domain family member 4	Kidney	+	3.05	0
+274	SCARB1	scavenger receptor class B, member 1	Kidney	+	3.04	0.001
+275	CLEC12A	C-type lectin domain family 12, member A	Kidney	+	3.03	0.003
+276	MYO9B	myosin IXB	Kidney	+	3.01	0.001
+277	LILRB1	leukocyte immunoglobulin-like receptor, subfamily B (with TM and ITIM domains), member 1	Kidney	+	3.01	0.002
+278	PRR11	proline rich 11	Kidney	+	3	0.001

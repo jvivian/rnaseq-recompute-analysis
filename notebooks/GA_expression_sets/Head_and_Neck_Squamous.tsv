@@ -1,0 +1,16 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+1	MMP1	matrix metallopeptidase 1	Head Mesenchyme	+	5.25	0
+2	TMPRSS11B	transmembrane protease, serine 11B	Head Mesenchyme	-	4.81	0
+3	CRISP3	cysteine-rich secretory protein 3	Head Mesenchyme	-	4.48	0
+4	MAL	mal, T-cell differentiation protein	Head Mesenchyme	-	4.39	0
+5	INHBA	inhibin, beta A	Head Mesenchyme	+	4.13	0
+6	CRNN	cornulin	Head Mesenchyme	-	4	0
+7	KRT17	keratin 17, type I	Head Mesenchyme	+	3.94	0
+8	KRT4	keratin 4, type II	Head Mesenchyme	-	3.41	0
+9	PTHLH	parathyroid hormone-like hormone	Head Mesenchyme	+	3.36	0
+10	CTHRC1	collagen triple helix repeat containing 1	Head Mesenchyme	+	3.32	0
+11	CLCA4	chloride channel accessory 4	Head Mesenchyme	-	3.31	0
+12	WDR72	WD repeat domain 72	Head Mesenchyme	+	3.23	0
+13	MMP10	matrix metallopeptidase 10	Head Mesenchyme	+	3.14	0.001
+14	TGM3	transglutaminase 3	Head Mesenchyme	-	3.08	0
+15	GBP1	guanylate binding protein 1, interferon-inducible	Head Mesenchyme	+	3.06	0

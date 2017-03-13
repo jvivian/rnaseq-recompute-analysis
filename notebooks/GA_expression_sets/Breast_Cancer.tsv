@@ -1,0 +1,205 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+1	PI15	peptidase inhibitor 15	Breast	-	5.84	0
+2	TOP2A	topoisomerase (DNA) II alpha	Breast	+	5.44	0.005
+3	KRT14	keratin 14, type I	Breast	-	5.37	0.001
+4	ARHGAP36	Rho GTPase activating protein 36	Breast	-	5.16	0.008
+5	WIF1	WNT inhibitory factor 1	Breast	-	5.12	0.004
+6	ATP1A2	ATPase, Na+/K+ transporting, alpha 2 polypeptide	Breast	-	5.04	0
+7	KRT14	keratin 14, type I	Breast	-	4.98	0
+8	SCGB1D2	secretoglobin, family 1D, member 2	Breast	-	4.97	0.005
+9	THSD7B	thrombospondin, type I, domain containing 7B	Breast	-	4.96	0
+10	MUCL1	mucin-like 1	Breast	-	4.91	0.013
+11	KRT5	keratin 5, type II	Breast	-	4.84	0.001
+12	COL11A1	collagen, type XI, alpha 1	Breast	+	4.79	0.005
+13	KRT16	keratin 16, type I	Breast	-	4.78	0
+14	COL11A1	collagen, type XI, alpha 1	Breast	+	4.67	0.001
+15	KRT5	keratin 5, type II	Breast	-	4.66	0.002
+16	FAM3B	family with sequence similarity 3, member B	Breast	-	4.62	0
+17	COL10A1	collagen, type X, alpha 1	Breast	+	4.54	0.003
+18	GABRP	gamma-aminobutyric acid (GABA) A receptor, pi	Breast	-	4.52	0.002
+19	CNN1	calponin 1, basic, smooth muscle	Breast	-	4.5	0.002
+20	COL8A1	collagen, type VIII, alpha 1	Breast	+	4.45	0.007
+21	SMYD1	SET and MYND domain containing 1	Breast	-	4.43	0
+22	CTHRC1	collagen triple helix repeat containing 1	Breast	+	4.42	0.012
+23	COL17A1	collagen, type XVII, alpha 1	Breast	-	4.39	0
+24	SCGB3A1	secretoglobin, family 3A, member 1	Breast	-	4.38	0.01
+25	SCGB2A2	secretoglobin, family 2A, member 2	Breast	-	4.38	0.005
+26	MYBPC1	myosin binding protein C, slow type	Breast	-	4.38	0.001
+27	MPPED2	metallophosphoesterase domain containing 2	Breast	-	4.37	0.002
+28	SERPINB5	serpin peptidase inhibitor, clade B (ovalbumin), member 5	Breast	-	4.31	0.001
+29	PLEKHS1	pleckstrin homology domain containing, family S member 1	Breast	-	4.29	0.006
+30	VTCN1	V-set domain containing T cell activation inhibitor 1	Breast	-	4.28	0.005
+31	PIGR	polymeric immunoglobulin receptor	Breast	-	4.26	0.003
+32	ASPM	abnormal spindle microtubule assembly	Breast	+	4.26	0.031
+33	SERPINB5	serpin peptidase inhibitor, clade B (ovalbumin), member 5	Breast	-	4.24	0
+34	FOSB	FBJ murine osteosarcoma viral oncogene homolog B	Breast	-	4.23	0.001
+35	LYZ	lysozyme	Breast	+	4.19	0.017
+36	KRT15	keratin 15, type I	Breast	-	4.19	0.01
+37	TFPI2	tissue factor pathway inhibitor 2	Breast	-	4.17	0.043
+38	KRT17	keratin 17, type I	Breast	-	4.16	0.001
+39	COL1A2	collagen, type I, alpha 2	Breast	+	4.16	0.003
+40	MUCL1	mucin-like 1	Breast	-	4.13	0.02
+41	ACTA2	actin, alpha 2, smooth muscle, aorta	Breast	-	4.1	0.011
+42	KRT17	keratin 17, type I	Breast	-	4.08	0.001
+43	SAMD5	sterile alpha motif domain containing 5	Breast	-	4.05	0.004
+44	COL1A2	collagen, type I, alpha 2	Breast	+	4.04	0.007
+45	PDLIM3	PDZ and LIM domain 3	Breast	-	4.04	0.008
+46	TFPI2	tissue factor pathway inhibitor 2	Breast	-	4.01	0.015
+47	PPP4R4	protein phosphatase 4, regulatory subunit 4	Breast	-	4.01	0.009
+48	ANGPT2	angiopoietin 2	Breast	+	3.99	0.02
+49	ASPN	asporin	Breast	+	3.97	0.012
+50	GNA13	guanine nucleotide binding protein (G protein), alpha 13	Breast	+	3.95	0.02
+51	CLEC2B	C-type lectin domain family 2, member B	Breast	+	3.92	0.007
+52	HMGCS2	3-hydroxy-3-methylglutaryl-CoA synthase 2 (mitochondrial)	Breast	-	3.91	0.014
+53	CLIC6	chloride intracellular channel 6	Breast	-	3.86	0.015
+54	DST	dystonin	Breast	-	3.86	0.006
+55	RARRES1	retinoic acid receptor responder (tazarotene induced) 1	Breast	-	3.83	0.033
+56	COL5A1	collagen, type V, alpha 1	Breast	+	3.83	0.015
+57	ELF5	E74-like factor 5 (ets domain transcription factor)	Breast	-	3.81	0.001
+58	CLEC7A	C-type lectin domain family 7, member A	Breast	+	3.8	0.001
+59	FBN1	fibrillin 1	Breast	+	3.79	0.011
+60	KRT16	keratin 16, type I	Breast	-	3.78	0.003
+61	SOX10	SRY (sex determining region Y)-box 10	Breast	-	3.78	0
+62	PIGR	polymeric immunoglobulin receptor	Breast	-	3.76	0.027
+63	CHPT1	choline phosphotransferase 1	Breast	-	3.75	0.007
+64	TLE4	transducin-like enhancer of split 4	Breast	-	3.75	0.017
+65	TFAP2B	transcription factor AP-2 beta (activating enhancer binding protein 2 beta)	Breast	-	3.74	0.023
+66	TCF4	transcription factor 4	Breast	+	3.73	0.018
+67	SERPINA6	serpin peptidase inhibitor, clade A (alpha-1 antiproteinase, antitrypsin), member 6	Breast	-	3.72	0.029
+68	GPM6B	glycoprotein M6B	Breast	-	3.71	0.023
+69	ARHGAP36	Rho GTPase activating protein 36	Breast	-	3.7	0.028
+70	FAR2	fatty acyl CoA reductase 2	Breast	+	3.68	0.009
+71	MUC15	mucin 15, cell surface associated	Breast	-	3.66	0.015
+72	PDE1C	phosphodiesterase 1C, calmodulin-dependent 70kDa	Breast	-	3.66	0.041
+73	TSPAN5	tetraspanin 5	Breast	-	3.64	0.023
+74	LOC388692	uncharacterized LOC388692	Breast	-	3.62	0
+75	BEND7	BEN domain containing 7	Breast	-	3.62	0.003
+76	MARVELD3	MARVEL domain containing 3	Breast	-	3.61	0.013
+77	TFDP2	transcription factor Dp-2 (E2F dimerization partner 2)	Breast	-	3.6	0
+78	PPP4R3A	protein phosphatase 4, regulatory subunit 3A	Breast	+	3.6	0.009
+79	MME	membrane metallo-endopeptidase	Breast	-	3.58	0.009
+80	TUBB2B	tubulin, beta 2B class IIb	Breast	-	3.57	0.034
+81	IBSP	integrin-binding sialoprotein	Breast	+	3.57	0.046
+82	MEX3C	mex-3 RNA binding family member C	Breast	-	3.56	0.02
+83	VCAN	versican	Breast	+	3.56	0.034
+84	FNDC1	fibronectin type III domain containing 1	Breast	+	3.55	0.034
+85	MET	MET proto-oncogene, receptor tyrosine kinase	Breast	-	3.55	0.019
+86	ERICH3	glutamate-rich 3	Breast	-	3.55	0.001
+87	RBMS2	RNA binding motif, single stranded interacting protein 2	Breast	-	3.55	0
+88	KCNC4	potassium channel, voltage gated Shaw related subfamily C, member 4	Breast	-	3.55	0.012
+89	HSD17B2	hydroxysteroid (17-beta) dehydrogenase 2	Breast	-	3.55	0.036
+90	C2orf40	chromosome 2 open reading frame 40	Breast	-	3.55	0.039
+91	COL10A1	collagen, type X, alpha 1	Breast	+	3.54	0.005
+92	FN1	fibronectin 1	Breast	+	3.54	0.049
+93	PAMR1	peptidase domain containing associated with muscle regeneration 1	Breast	-	3.54	0.002
+94	LRRC15	leucine rich repeat containing 15	Breast	+	3.53	0.022
+95	COBL	cordon-bleu WH2 repeat protein	Breast	-	3.53	0.013
+96	KRT15	keratin 15, type I	Breast	-	3.52	0.049
+97	ZNF204P	zinc finger protein 204, pseudogene	Breast	-	3.52	0.035
+98	CDH1	cadherin 1, type 1	Breast	-	3.52	0.017
+99	TMEM55A	transmembrane protein 55A	Breast	+	3.52	0.03
+100	LOC389906	zinc finger protein 839 pseudogene	Breast	-	3.52	0.002
+101	SYNM	synemin, intermediate filament protein	Breast	-	3.52	0.001
+102	DTL	denticleless E3 ubiquitin protein ligase homolog (Drosophila)	Breast	+	3.52	0.02
+103	GABRP	gamma-aminobutyric acid (GABA) A receptor, pi	Breast	-	3.51	0.013
+104	CYP4F8	cytochrome P450, family 4, subfamily F, polypeptide 8	Breast	-	3.5	0.045
+105	TCEAL2	transcription elongation factor A (SII)-like 2	Breast	-	3.47	0.007
+106	FAP	fibroblast activation protein, alpha	Breast	+	3.46	0.039
+107	CA2	carbonic anhydrase II	Breast	-	3.46	0.047
+108	FBN1	fibrillin 1	Breast	+	3.46	0.044
+109	KCNJ16	potassium channel, inwardly rectifying subfamily J, member 16	Breast	-	3.45	0.001
+110	NTF4	neurotrophin 4	Breast	-	3.45	0.016
+111	HMMR	hyaluronan-mediated motility receptor (RHAMM)	Breast	+	3.44	0.036
+112	ADAM28	ADAM metallopeptidase domain 28	Breast	-	3.43	0.022
+113	EIF1	eukaryotic translation initiation factor 1	Breast	-	3.42	0.009
+114	FSIP1	fibrous sheath interacting protein 1	Breast	+	3.42	0.008
+115	KIAA1217	KIAA1217	Breast	-	3.41	0.002
+116	CDC14A	cell division cycle 14A	Breast	-	3.41	0.005
+117	SYNM	synemin, intermediate filament protein	Breast	-	3.4	0.003
+118	BBOX1	butyrobetaine (gamma), 2-oxoglutarate dioxygenase (gamma-butyrobetaine hydroxylase) 1	Breast	-	3.39	0.03
+119	CLDN8	claudin 8	Breast	-	3.39	0.008
+120	GSTA1	glutathione S-transferase alpha 1	Breast	-	3.38	0.015
+121	IFIT5	interferon-induced protein with tetratricopeptide repeats 5	Breast	+	3.37	0.002
+122	SLC27A6	solute carrier family 27 (fatty acid transporter), member 6	Breast	-	3.37	0.026
+123	MIR205HG	MIR205 host gene	Breast	-	3.37	0.005
+124	CTH	cystathionine gamma-lyase	Breast	-	3.36	0.013
+125	RMST	rhabdomyosarcoma 2 associated transcript (non-protein coding)	Breast	-	3.36	0.018
+126	EPB41L5	erythrocyte membrane protein band 4.1 like 5	Breast	-	3.36	0.032
+127	DYNC2LI1	dynein, cytoplasmic 2, light intermediate chain 1	Breast	+	3.35	0.02
+128	KRT23	keratin 23, type I	Breast	-	3.34	0.013
+129	EHF	ets homologous factor	Breast	-	3.34	0.017
+130	MAOB	monoamine oxidase B	Breast	-	3.33	0.039
+131	LOC728705	uncharacterized LOC728705	Breast	-	3.33	0.026
+132	FNDC1	fibronectin type III domain containing 1	Breast	+	3.33	0.039
+133	EIF2AK1	eukaryotic translation initiation factor 2-alpha kinase 1	Breast	+	3.32	0.04
+134	SOSTDC1	sclerostin domain containing 1	Breast	-	3.31	0.025
+135	GINS2	GINS complex subunit 2 (Psf2 homolog)	Breast	+	3.31	0.046
+136	MCM10	minichromosome maintenance 10 replication initiation factor	Breast	+	3.29	0.015
+137	SERPINA1	serpin peptidase inhibitor, clade A (alpha-1 antiproteinase, antitrypsin), member 1	Breast	-	3.27	0.017
+138	PPP1R1A	protein phosphatase 1, regulatory (inhibitor) subunit 1A	Breast	-	3.27	0.013
+139	C2orf40	chromosome 2 open reading frame 40	Breast	-	3.27	0.005
+140	CCL28	chemokine (C-C motif) ligand 28	Breast	-	3.27	0.018
+141	RSAD2	radical S-adenosyl methionine domain containing 2	Breast	+	3.26	0.01
+142	BUB1	BUB1 mitotic checkpoint serine/threonine kinase	Breast	+	3.26	0.046
+143	AMDHD1	amidohydrolase domain containing 1	Breast	-	3.26	0.013
+144	DCDC2	doublecortin domain containing 2	Breast	-	3.26	0.027
+145	COL1A1	collagen, type I, alpha 1	Breast	+	3.25	0.004
+146	GSTA1	glutathione S-transferase alpha 1	Breast	-	3.24	0.011
+147	FBXO11	F-box protein 11	Breast	+	3.23	0.009
+148	FAM201A	family with sequence similarity 201, member A	Breast	-	3.23	0.032
+149	VCAN	versican	Breast	+	3.23	0.015
+150	CCDC102B	coiled-coil domain containing 102B	Breast	+	3.23	0.027
+151	TRIM59	tripartite motif containing 59	Breast	+	3.23	0.027
+152	ARMCX4	armadillo repeat containing, X-linked 4	Breast	-	3.22	0.009
+153	INHBA	inhibin, beta A	Breast	+	3.22	0.015
+154	GOPC	golgi-associated PDZ and coiled-coil motif containing	Breast	-	3.22	0.041
+155	TMEFF1	transmembrane protein with EGF-like and two follistatin-like domains 1	Breast	+	3.22	0.005
+156	TRIM29	tripartite motif containing 29	Breast	-	3.21	0.012
+157	ZNF382	zinc finger protein 382	Breast	+	3.21	0.017
+158	GLRA3	glycine receptor, alpha 3	Breast	-	3.21	0.048
+159	NTF4	neurotrophin 4	Breast	-	3.2	0.013
+160	KIT	v-kit Hardy-Zuckerman 4 feline sarcoma viral oncogene homolog	Breast	-	3.2	0.021
+161	CHST9	carbohydrate (N-acetylgalactosamine 4-0) sulfotransferase 9	Breast	-	3.2	0.04
+162	ASPN	asporin	Breast	+	3.19	0.038
+163	TMF1	TATA element modulatory factor 1	Breast	+	3.19	0.015
+164	SLC27A2	solute carrier family 27 (fatty acid transporter), member 2	Breast	+	3.19	0.012
+165	PM20D2	peptidase M20 domain containing 2	Breast	-	3.19	0.032
+166	RNFT2	ring finger protein, transmembrane 2	Breast	+	3.18	0.027
+167	UBE4B	ubiquitination factor E4B	Breast	-	3.17	0.049
+168	NRP2	neuropilin 2	Breast	+	3.17	0.031
+169	SFRP1	secreted frizzled-related protein 1	Breast	-	3.17	0.004
+170	SULF1	sulfatase 1	Breast	+	3.15	0.039
+171	PTN	pleiotrophin	Breast	-	3.14	0.019
+172	PDE4D	phosphodiesterase 4D, cAMP-specific	Breast	-	3.14	0.011
+173	ANGPTL7	angiopoietin-like 7	Breast	-	3.14	0.003
+174	DST	dystonin	Breast	-	3.13	0.017
+175	C1orf168	chromosome 1 open reading frame 168	Breast	-	3.13	0.011
+176	TMEM119	transmembrane protein 119	Breast	+	3.13	0.018
+177	KCMF1	potassium channel modulatory factor 1	Breast	+	3.12	0.032
+178	OXTR	oxytocin receptor	Breast	-	3.12	0.016
+179	CHST9	carbohydrate (N-acetylgalactosamine 4-0) sulfotransferase 9	Breast	-	3.12	0.021
+180	ULK4	unc-51 like kinase 4	Breast	-	3.12	0.035
+181	PIGY	phosphatidylinositol glycan anchor biosynthesis, class Y	Breast	-	3.11	0.011
+182	LRRC15	leucine rich repeat containing 15	Breast	+	3.1	0.032
+183	NPL	N-acetylneuraminate pyruvate lyase (dihydrodipicolinate synthase)	Breast	+	3.1	0.031
+184	DMD	dystrophin	Breast	-	3.1	0.05
+185	MLLT10	myeloid/lymphoid or mixed-lineage leukemia; translocated to, 10	Breast	+	3.1	0.025
+186	COL5A2	collagen, type V, alpha 2	Breast	+	3.1	0.03
+187	BCAT1	branched chain amino-acid transaminase 1, cytosolic	Breast	+	3.09	0.022
+188	BBOX1	butyrobetaine (gamma), 2-oxoglutarate dioxygenase (gamma-butyrobetaine hydroxylase) 1	Breast	-	3.09	0.025
+189	CHL1	cell adhesion molecule L1-like	Breast	-	3.07	0.022
+190	RAI14	retinoic acid induced 14	Breast	-	3.07	0.022
+191	CCNB1	cyclin B1	Breast	+	3.07	0.031
+192	B3GALNT1	beta-1,3-N-acetylgalactosaminyltransferase 1 (globoside blood group)	Breast	+	3.07	0.006
+193	IQCA1	IQ motif containing with AAA domain 1	Breast	-	3.07	0.03
+194	TMEM133	transmembrane protein 133	Breast	-	3.06	0.022
+195	PDE7B	phosphodiesterase 7B	Breast	+	3.05	0.029
+196	FUT8	fucosyltransferase 8 (alpha (1,6) fucosyltransferase)	Breast	+	3.04	0.014
+197	CYP2J2	cytochrome P450, family 2, subfamily J, polypeptide 2	Breast	-	3.03	0.034
+198	CDK5R1	cyclin-dependent kinase 5, regulatory subunit 1 (p35)	Breast	+	3.03	0.024
+199	THBS2	thrombospondin 2	Breast	+	3.02	0.018
+200	CSGALNACT2	chondroitin sulfate N-acetylgalactosaminyltransferase 2	Breast	+	3.02	0.026
+201	MPZL3	myelin protein zero-like 3	Breast	-	3.01	0.025
+202	NCOA3	nuclear receptor coactivator 3	Breast	+	3.01	0.022
+203	OAS1	2'-5'-oligoadenylate synthetase 1, 40/46kDa	Breast	+	3	0.014
+204	HSD17B6	hydroxysteroid (17-beta) dehydrogenase 6	Breast	+	3	0.034

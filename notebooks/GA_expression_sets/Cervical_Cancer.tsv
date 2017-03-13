@@ -1,0 +1,71 @@
+id	Gene	Description	Tissue	Up/Dn	Fold Change (log2)	P value
+1	KRT1	keratin 1, type II	Uterus	-	5.47	0
+2	KRTDAP	keratinocyte differentiation-associated protein	Uterus	-	4.96	0
+3	CTHRC1	collagen triple helix repeat containing 1	Uterus	+	4.65	0
+4	TMPRSS11B	transmembrane protease, serine 11B	Uterus	-	4.58	0
+5	CDKN2A	cyclin-dependent kinase inhibitor 2A	Uterus	+	4.45	0
+6	CMPK2	cytidine monophosphate (UMP-CMP) kinase 2, mitochondrial	Uterus	+	4.32	0
+7	CRNN	cornulin	Uterus	-	4.25	0
+8	MAL	mal, T-cell differentiation protein	Uterus	-	4.21	0
+9	DSG1	desmoglein 1	Uterus	-	4.17	0
+10	ECT2	epithelial cell transforming 2	Uterus	+	4.1	0
+11	SYCP2	synaptonemal complex protein 2	Uterus	+	3.95	0
+12	HS6ST2	heparan sulfate 6-O-sulfotransferase 2	Uterus	+	3.94	0
+13	KIF14	kinesin family member 14	Uterus	+	3.88	0
+14	IFI44	interferon-induced protein 44	Uterus	+	3.88	0
+15	MMP1	matrix metallopeptidase 1	Uterus	+	3.83	0.001
+16	GREB1	growth regulation by estrogen in breast cancer 1	Uterus	-	3.78	0
+17	KRT17	keratin 17, type I	Uterus	+	3.71	0
+18	SPINK7	serine peptidase inhibitor, Kazal type 7 (putative)	Uterus	-	3.7	0
+19	NUF2	NUF2, NDC80 kinetochore complex component	Uterus	+	3.7	0
+20	NCEH1	neutral cholesterol ester hydrolase 1	Uterus	+	3.64	0
+21	PLSCR1	phospholipid scramblase 1	Uterus	+	3.63	0
+22	E2F7	E2F transcription factor 7	Uterus	+	3.62	0
+23	SLF1	SMC5-SMC6 complex localization factor 1	Uterus	+	3.61	0
+24	INHBA	inhibin, beta A	Uterus	+	3.59	0.001
+25	DAPL1	death associated protein-like 1	Uterus	-	3.57	0
+26	KRT4	keratin 4, type II	Uterus	-	3.53	0
+27	SMC4	structural maintenance of chromosomes 4	Uterus	+	3.5	0
+28	CEP55	centrosomal protein 55kDa	Uterus	+	3.49	0
+29	LOX	lysyl oxidase	Uterus	+	3.48	0
+30	ANLN	anillin actin binding protein	Uterus	+	3.48	0
+31	ITGB1	integrin, beta 1 (fibronectin receptor, beta polypeptide, antigen CD29 includes MDF2, MSK12)	Uterus	+	3.46	0
+32	CRISP3	cysteine-rich secretory protein 3	Uterus	-	3.46	0.001
+33	HELLS	helicase, lymphoid-specific	Uterus	+	3.44	0
+34	KRT19	keratin 19, type I	Uterus	+	3.44	0.002
+35	SPP1	secreted phosphoprotein 1	Uterus	+	3.43	0
+36	CNFN	cornifelin	Uterus	-	3.42	0
+37	EPCAM	epithelial cell adhesion molecule	Uterus	+	3.39	0
+38	NDC80	NDC80 kinetochore complex component	Uterus	+	3.35	0
+39	SCD	stearoyl-CoA desaturase (delta-9-desaturase)	Uterus	+	3.31	0
+40	CRCT1	cysteine-rich C-terminal 1	Uterus	-	3.31	0.002
+41	KRT13	keratin 13, type I	Uterus	-	3.3	0.01
+42	CDK1	cyclin-dependent kinase 1	Uterus	+	3.3	0
+43	DDIT4	DNA-damage-inducible transcript 4	Uterus	+	3.29	0
+44	ARMT1	acidic residue methyltransferase 1	Uterus	+	3.29	0
+45	ALOX12	arachidonate 12-lipoxygenase	Uterus	-	3.28	0
+46	ATAD2	ATPase family, AAA domain containing 2	Uterus	+	3.27	0
+47	ZIC2	Zic family member 2	Uterus	+	3.26	0
+48	ARHGAP21	Rho GTPase activating protein 21	Uterus	+	3.24	0
+49	LYN	LYN proto-oncogene, Src family tyrosine kinase	Uterus	+	3.24	0
+50	PPIB	peptidylprolyl isomerase B (cyclophilin B)	Uterus	+	3.23	0
+51	CSTF3	cleavage stimulation factor, 3' pre-RNA, subunit 3, 77kDa	Uterus	+	3.2	0
+52	TFRC	transferrin receptor	Uterus	+	3.19	0
+53	TOP2A	topoisomerase (DNA) II alpha	Uterus	+	3.18	0
+54	S100A8	S100 calcium binding protein A8	Uterus	-	3.18	0
+55	ASPM	abnormal spindle microtubule assembly	Uterus	+	3.16	0
+56	B4GALT4	UDP-Gal:betaGlcNAc beta 1,4- galactosyltransferase, polypeptide 4	Uterus	+	3.15	0
+57	EDN3	endothelin 3	Uterus	-	3.15	0
+58	CXCL8	chemokine (C-X-C motif) ligand 8	Uterus	+	3.14	0
+59	RAD51AP1	RAD51 associated protein 1	Uterus	+	3.12	0
+60	HNRNPH2	heterogeneous nuclear ribonucleoprotein H2 (H')	Uterus	+	3.12	0
+61	DTL	denticleless E3 ubiquitin protein ligase homolog (Drosophila)	Uterus	+	3.12	0
+62	NASP	nuclear autoantigenic sperm protein (histone-binding)	Uterus	+	3.09	0
+63	ESRG	embryonic stem cell related (non-protein coding)	Uterus	-	3.07	0
+64	CENPK	centromere protein K	Uterus	+	3.06	0
+65	PLAT	plasminogen activator, tissue	Uterus	+	3.04	0
+66	SPINK5	serine peptidase inhibitor, Kazal type 5	Uterus	-	3.03	0
+67	TMEFF2	transmembrane protein with EGF-like and two follistatin-like domains 2	Uterus	-	3.02	0
+68	EREG	epiregulin	Uterus	-	3.02	0
+69	ISG15	ISG15 ubiquitin-like modifier	Uterus	+	3.01	0.001
+70	KNTC1	kinetochore associated 1	Uterus	+	3.01	0
