@@ -13,6 +13,7 @@ ovary	Ovary.tsv	Ovarian_serous_cystadenocarcinoma.tsv
 pancreas	Pancreas.tsv	Pancreatic_adenocarcinoma.tsv
 prostate	Prostate.tsv	Prostate_adenocarcinoma.tsv
 skin	Skin_Sun_Exposed_(Lower_leg).tsv,Skin_Not_Sun_Exposed_(Suprapubic).tsv	Skin_Cutaneous_Melanoma.tsv
+head_and_neck Skin_Sun_Exposed_(Lower_leg).tsv,Skin_Not_Sun_Exposed_(Suprapubic).tsv	Head_and_Neck_squamous_cell_carcinoma.tsv
 stomach	Stomach.tsv	Stomach_adenocarcinoma.tsv
 testis	Testis.tsv	Testicular_Germ_Cell_Tumors.tsv
 thyroid	Thyroid.tsv	Thyroid_carcinoma.tsv
