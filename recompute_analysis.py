@@ -3,6 +3,7 @@ import argparse
 import logging
 import sys
 
+from experiments.deseq2_time_test import DESeq2TimeTest
 from experiments.pairwise_gtex import PairwiseGTEx
 from experiments.pairwise_gtex_vs_tcga import PairwiseTcgaVsGtex
 from experiments.pairwise_tcga import PairwiseTCGA
@@ -26,6 +27,8 @@ def runner(instance):
 def main():
     """
     Launchpoint for all experiments associated with the CGL RNA-seq recompute analysis
+
+    WARNING: Some of these experiments take a rather long time to run (days / weeks)
 
     First run create_project.py (or create-project entrypoint) to create the necessary
     prerequisite project directory
@@ -80,12 +83,11 @@ def main():
     parser_tissue_clustering.add_argument('--project-dir', required=True,
                                           help='Full path to project dir (rna-seq-analysis')
 
-    # Ambiguous Tissue Clustering
-    parser_ambiguous_clustering = subparsers.add_parser('ambiguous-tissue-clustering', parents=[parser],
-                                                        help='Run PCA / t-SNE clustering to help determine pairing for '
-                                                             'tissues that are ambiguous.')
-    parser_ambiguous_clustering.add_argument('--project-dir', required=True,
-                                             help='Full path to project dir (rna-seq-analysis')
+    # DeSeq2 Time Test
+    parser_deseq2 = subparsers.add_parser('deseq2-time-test', help='Runs DeSeq2 with increasing number of samples and '
+                                                                   'records how long it takes to run')
+    parser_deseq2.add_argument('--project-dir', require=True, help='Full path to project dir (rna-seq-analysis)')
+    parser_deseq2.add_argument('--cores', required=True, help='Number of cores to utilize during run.')
 
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
@@ -128,6 +130,10 @@ def main():
     elif params.command == 'pairwise-tcga':
         log.info('Pairwise TCGA Tumor vs Normal')
         runner(PairwiseTCGA(params.project_dir, params.cores))
+
+    elif params.command == 'deseq2-time-test':
+        log.info('DESeq2 Time Test')
+        runner(DESeq2TimeTest(params.project_dir, params.cores))
 
 if __name__ == '__main__':
     main()
