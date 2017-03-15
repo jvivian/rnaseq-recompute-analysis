@@ -86,7 +86,7 @@ def main():
     # DeSeq2 Time Test
     parser_deseq2 = subparsers.add_parser('deseq2-time-test', help='Runs DeSeq2 with increasing number of samples and '
                                                                    'records how long it takes to run')
-    parser_deseq2.add_argument('--project-dir', require=True, help='Full path to project dir (rna-seq-analysis)')
+    parser_deseq2.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis)')
     parser_deseq2.add_argument('--cores', required=True, help='Number of cores to utilize during run.')
 
     # If no arguments provided, print full help menu
