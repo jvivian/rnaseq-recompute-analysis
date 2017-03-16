@@ -18,8 +18,10 @@ def pairwise_sig_top_genes(df, tissues, n=100, cutoff=0.90):
     sig_genes_down = {}
     top_genes_up = {}
     top_genes_down = {}
+    top_genes = {}
 
     for t in tissues:
+        top_genes[t] = set(df[t].head(n).index)
         df_up = df[t][df[t].fc > 0]
         df_down = df[t][df[t].fc < 0]
 
@@ -29,4 +31,4 @@ def pairwise_sig_top_genes(df, tissues, n=100, cutoff=0.90):
         sig_genes_up[t] = set(df_up[df_up.pval_counts > cutoff].index)
         sig_genes_down[t] = set(df_down[df_down.pval_counts > cutoff].index)
 
-    return sig_genes_up, sig_genes_down, top_genes_up, top_genes_down
+    return sig_genes_up, sig_genes_down, top_genes_up, top_genes_down, top_genes
