@@ -77,18 +77,20 @@ def create_paired_tissues(root_dir):
                 # Some GTEx tissues need to be combined in the final dataframe
                 gtex = gtex.split(',') if ',' in gtex else [gtex]
                 tissue_dir = os.path.join(root_dir, 'data/tissue-pairs', dirname)
-                mkdir_p(tissue_dir)
-                gtex_dfs = [os.path.join(root_dir, 'data/tissue-dataframes/', g) for g in gtex]
-                tcga_df = os.path.join(root_dir, 'data/tissue-dataframes/', tcga)
-                # Create combined dataframe and group tissues together
                 combined_path = os.path.join(tissue_dir, 'combined-gtex-tcga-counts.tsv')
-                concat_frames(gtex_df_paths=gtex_dfs, tcga_df_path=tcga_df, output_path=combined_path)
-                # Copy input dataframes over for clarity
-                [shutil.copy(gtex_df, os.path.join(tissue_dir)) for gtex_df in gtex_dfs]
-                shutil.copy(tcga_df, os.path.join(tissue_dir, tcga))
-                # Create dataframe of just protein-coding genes
-                gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
-                remove_nonprotein_coding_genes(df_path=combined_path, gencode_path=gencode_path)
+                if not os.path.exists(combined_path):
+                    mkdir_p(tissue_dir)
+                    gtex_dfs = [os.path.join(root_dir, 'data/tissue-dataframes/', g) for g in gtex]
+                    tcga_df = os.path.join(root_dir, 'data/tissue-dataframes/', tcga)
+                    # Create combined dataframe and group tissues together
+                    concat_frames(gtex_df_paths=gtex_dfs, tcga_df_path=tcga_df, output_path=combined_path)
+                    # Copy input dataframe NAMES over for clarity
+                    for name in gtex_dfs + [tcga_df]:
+                        with open(os.path.join(tissue_dir, os.path.basename(name)), 'w') as f:
+                            f.write('\n')
+                    # Create dataframe of just protein-coding genes
+                    gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
+                    remove_nonprotein_coding_genes(df_path=combined_path, gencode_path=gencode_path)
 
 
 def synpase_download(blob):
