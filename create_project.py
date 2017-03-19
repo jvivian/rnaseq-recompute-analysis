@@ -117,6 +117,7 @@ def main():
     parser.add_argument('--username', type=str, help='Synapse username (email). Create account at Synpase.org and set '
                                                      'the password in the environment variable "SYNAPSE_PASSWORD".')
     parser.add_argument('--cores', type=int, help='Number of cores to use when running R.', default=1)
+    parser.add_argument('--no-download', action='store_true', help='Flag for disabling downloading from Synapse')
     params = parser.parse_args()
 
     # If no arguments provided, print full help menu
@@ -128,7 +129,11 @@ def main():
     root_dir = os.path.join(params.location, 'rna-seq-analysis')
     [mkdir_p(os.path.join(root_dir, x)) for x in leaves]
 
-    download_input_data(root_dir=root_dir, user_name=params.username, cores=params.cores)
+    if not params.no_download:
+        download_input_data(root_dir=root_dir, user_name=params.username, cores=params.cores)
+    else:
+        log.info('--no-download enabled, skipping downloads from Synapse. Warning: missing files'
+                 'will cause failures downstream.')
 
     gtex_metadata_path = os.path.join(root_dir, 'metadata/gtex-table.txt')
     tcga_metadata_path = os.path.join(root_dir, 'metadata/tcga-summary.tsv')
