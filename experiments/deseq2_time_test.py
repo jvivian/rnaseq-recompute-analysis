@@ -6,6 +6,7 @@ from subprocess import Popen, PIPE
 from experiments.AbstractExperiment import AbstractExperiment
 from utils import write_script
 from random import sample
+import pandas as pd
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
@@ -19,35 +20,43 @@ class DESeq2TimeTest(AbstractExperiment):
         self.vector_dir = os.path.join(self.experiment_dir, 'vectors')
         self.results_dir = os.path.join(self.experiment_dir, 'results')
         self.script_path = None
-        self.df = None
+        self.df_b = os.path.join(self.tissue_pair_dir, 'breast', 'combined-gtex-tcga-counts-protein-coding.tsv')
+        self.df_h = os.path.join(self.tissue_pair_dir, 'head_and_neck', 'combined-gtex-tcga-counts-protein-coding.tsv')
         self.results = os.path.join(self.experiment_dir, 'results.tsv')
+        self.df_path = os.path.join(self.experiment_dir, 'arbitary_df.tsv')
 
     def setup(self):
-        self.create_directories([self.vector_dir])
+        self.create_directories([self.vector_dir, self.results_dir])
         self.script_path = write_script(self.deseq2_script, directory=self.experiment_dir)
 
-        log.info('Creating vectors')
-        self.df = os.path.join(self.tissue_pair_dir, 'breast', 'combined-gtex-tcga-counts-protein-coding.tsv')
-        with open(self.df, 'r') as f:
-            samples = [x for x in f.readline().strip().split('\t')]
+        log.info('Creating large dataframe to sample from')
+        df = pd.concat([self.df_b, self.df_h], axis=1)
+        df.to_csv(self.df_path, sep='\t')
 
-        for i in xrange(10):
-            i = 2**(i+1)
+
+        log.info('Creating vectors')
+        samples = list(df.columns)
+
+        for i in [1, 50, 100, 250, 500, 750, 1000, 1250, 1500, 1750, 2000]:
             s = [x.replace('-', '.') for x in sample(samples, i)]
             with open(os.path.join(self.vector_dir, '{}-vector'.format(i)), 'w') as f:
-                f.write('\n'.join(s))
+                f.write('\n'.join(s) + '\n')
 
     def run_experiment(self):
-        vectors = [os.path.join(self.vector_dir, x) for x in sorted(os.listdir(self.vector_dir))]
-        for vector in vectors:
+        vectors = [os.path.join(self.vector_dir, x) for x in
+                   sorted(os.listdir(self.vector_dir), key=lambda x: float(x.split('-')[0]))]  # Sort by # of samples
+        for i, vector in enumerate(vectors):
+            log.info('Running {} number of samples'.format((i)))
             err = self.run_deseq2(vector)
             with open(self.results, 'a') as f:
-                f.write('{}\t{}\n'.format(vector, err[0]))
+                f.write('{}\t{}\n'.format(vector, err))
 
     def run_deseq2(self, vector):
-        p = Popen(['time', 'Rscript', self.script_path] + [vector], stderr=PIPE)
+        p = Popen(['time', 'Rscript', self.script_path] + [vector], stderr=PIPE, stdout=PIPE)
         out, err = p.communicate()
-        return err.split('\t')
+        log.info('Out: ' + out + '\n\n')
+        log.info('Err: ' + err + '\n\n')
+        return err
 
     def deseq2_script(self):
         return textwrap.dedent("""
@@ -58,7 +67,7 @@ class DESeq2TimeTest(AbstractExperiment):
 
             # Argument parsing
             args <- commandArgs(trailingOnly = TRUE)
-            df_path <- {df_path}
+            df_path <- '{df_path}'
             vector_path <- args[1]
             tissue <- basename(substr(vector_path, 1, nchar(vector_path)-7))
             results_dir <- paste(dirname(dirname(vector_path)), 'results', sep='/')
@@ -85,7 +94,7 @@ class DESeq2TimeTest(AbstractExperiment):
             res_name <- paste(tissue, 'results.tsv', sep='-')
             res_path <- paste(results_dir, res_name, sep='/')
             write.table(as.data.frame(resOrdered), file=res_path, col.names=NA, sep='\\t',  quote=FALSE)
-            """.format(cores=self.cores, df_path=self.df))
+            """.format(cores=self.cores, df_path=self.df_path))
 
     def teardown(self):
         shutil.rmtree(self.results_dir)
