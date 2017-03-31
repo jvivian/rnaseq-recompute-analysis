@@ -4,6 +4,7 @@ import logging
 import sys
 
 from experiments.deseq2_time_test import DESeq2TimeTest
+from experiments.gtex_vs_tcga import GTExVsTCGA
 from experiments.pairwise_gtex import PairwiseGTEx
 from experiments.pairwise_gtex_vs_tcga import PairwiseTcgaVsGtex
 from experiments.pairwise_tcga import PairwiseTCGA
@@ -49,15 +50,20 @@ def main():
     parser_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
     # Pairwise TCGA Tumor vs Normal
-    parser_pairwise = subparsers.add_parser('pairwise-tcga',
-                                            help='Performs pairwise comparison between TCGA tumor and normal.')
-    parser_pairwise.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
-    parser_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
+    parser_pwise_tcga = subparsers.add_parser('pairwise-tcga',
+                                              help='Performs pairwise comparison between TCGA tumor and normal.')
+    parser_pwise_tcga.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
+    parser_pwise_tcga.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
     # TCGA Tumor Vs Normal
     parser_tcga = subparsers.add_parser('tcga-tumor-vs-normal', help='Run TCGA T/N Analysis')
     parser_tcga.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
     parser_tcga.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
+
+    # GTEX (Normal) Vs TCGA Tumor
+    parser_gtex_tcga = subparsers.add_parser('gtex-vs-tcga', help='Run GTEX normals against TCGA tumor samples')
+    parser_gtex_tcga.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
+    parser_gtex_tcga.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
     # TCGA Matched
     parser_tcga_matched = subparsers.add_parser('tcga-matched', help='Run TCGA T/N analysis, matching T/N patients.')
@@ -134,6 +140,10 @@ def main():
     elif params.command == 'deseq2-time-test':
         log.info('DESeq2 Time Test')
         runner(DESeq2TimeTest(params.project_dir, params.cores))
+
+    elif params.command == 'gtex-vs-tcga':
+        log.info('GTEx vs. TCGA')
+        runner(GTExVsTCGA(params.project_dir, params.cores))
 
 if __name__ == '__main__':
     main()
