@@ -8,6 +8,7 @@ import sys
 import textwrap
 from collections import defaultdict
 from urlparse import urlparse
+import stat
 
 import numpy as np
 import pandas as pd
@@ -24,7 +25,7 @@ schemes = ('http', 'file', 's3', 'ftp', 'gnos')
 
 
 def root(job, samples, gene_map, output_dir):
-
+    log(job, 'Starting root job')
     # Download gene_map
     gene_map_id = job.addChildJobFn(download_url_job, gene_map).rv()
 
@@ -40,27 +41,27 @@ def sample_staging(job, sample, gene_map_id, output_dir):
     df_id = job.addChildJobFn(download_url_job, df_url).rv()
     group_path = download_url(group_url, work_dir=work_dir)
 
-    # Parse group info
+    log(job, 'Parsing group information')
     with open(group_path, 'r') as f:
         group_1, group_2 = [], []
         for line in f:
-            line = line.strip().split('\t')
-            group_1.append(line[0])
-            group_2.append(line[1])
+            sample, group = line.strip().split('\t')
+            group_1.append(sample) if group == 1 else group_2.append(sample)
 
     # Sort so group 1 is smaller
     group_1, group_2 = sorted([group_1, group_2], key=lambda x: len(x))
 
-    # Write out vectors, one per sample in the larger group
+    log(job, 'Writing out vectors, one per sample in the larger group.')
     for sample in group_2:
         with open(os.path.join(work_dir, sample), 'w') as f:
-            f.write('\n'.join(group_1 + [sample]))
+            vector = [x.replace('-', '.') for x in group_1 + [sample]]  # Precaution for R
+            f.write('\n'.join(vector))
 
-    # Save vector_ids to jobStore
+    log(job, 'Saving vectors to jobStore')
     vector_ids = [job.fileStore.writeGlobalFile(os.path.join(work_dir, x)) for x in group_2]
 
-    # Create one job per vector id
-    results = [job.addChildJobFn(run_deseq2, df_id, vector_id).rv() for vector_id in vector_ids]
+    log(job, 'Creating one job per vector')
+    results = [job.addChildJobFn(run_deseq2, df_id, vector_id).rv() for vector_id in [vector_ids[0]]] ## TODO: FIX!
 
     # Follow-on --> combine_results, return
     job.addFollowOnJobFn(combine_results, results, gene_map_id, uuid, output_dir).rv()
@@ -70,19 +71,22 @@ def run_deseq2(job, df_id, vector_id):
     work_dir = job.fileStore.getLocalTempDir()
 
     # Read in inputs
-    df_path = job.fileStore.writeGlobalFile(df_id, os.path.join(work_dir, 'expression.tsv'))
-    vector_path = job.fileStore.writeGlobalFile(vector_id, os.path.join(work_dir, 'vector'))
+    df_path = job.fileStore.readGlobalFile(df_id, os.path.join(work_dir, 'expression.tsv'))
+    vector_path = job.fileStore.readGlobalFile(vector_id, os.path.join(work_dir, 'vector'))
 
     # Write out Rscript
     r_path = os.path.join(work_dir, 'deseq.R')
-    with open(r_path, 'w') as f:
+    with open(r_path, 'wb') as f:
         f.write(deseq2_script(df_path, vector_path, results_dir=work_dir, sample_name='results.tsv'))
+
+    st = os.stat(r_path)
+    os.chmod(r_path, st.st_mode | stat.S_IEXEC)
 
     # Run DESeq2 Docker
     docker_command = ['docker', 'run',
                       '--rm',
                       '--entrypoint=bash',
-                      '--log-driver=None',
+                      '--log-driver=none',
                       '-v', '{}:/data'.format(work_dir),
                       'genomicpariscentre/deseq2:1.4.5',
                       'Rscript', '/data/deseq.R']
@@ -242,8 +246,12 @@ def deseq2_script(df_path, vector_path, results_dir, sample_name):
         # Write out table
         resOrdered <- res[order(res$padj),]
         res_path <- paste(results_dir, sample_name, sep='/')
-        write.table(as.data.frame(resOrdered), file=res_path, col.names=NA, sep='\\t',  quote=FALSE)
+        write.table(as.data.frame(resOrdered), file=res_path, col.names=NA, sep='\\t', quote=FALSE)
         """.format(**locals()))
+
+
+def log(job, string):
+    job.fileStore.logToMaster('\n\n{}\n\n'.format(string))
 
 
 def main():
@@ -269,7 +277,7 @@ def main():
     4        3
 
     0 = Root job. Runs n jobs per samples submitted
-    1 = Samle staging. Runs m jobs per samples in the larger group.
+    1 = Sample staging. Runs m jobs per samples in the larger group.
     2 = Runs DESeq2 comparing the samller group to a single sample from the larger group
     3 = Combines results into a dataframe sorting genes by p-value counts. Moves results to output-dir
     =======================================
@@ -281,21 +289,20 @@ def main():
     parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawTextHelpFormatter)
     subparsers = parser.add_subparsers(dest='command')
     # Generate subparser
-    subparsers.add_parser('generate-manifest', help='Generates an editable manifest in the current working directory.')
+    subparsers.add_parser('generate', help='Generates an editable manifest in the current working directory.')
     # Run subparser
     parser_run = subparsers.add_parser('run', help='Runs the RNA-seq pipeline')
-    group = parser_run.add_mutually_exclusive_group()
-    parser_run.add_argument('--manifest', default='manifest-toil-rnaseq.tsv', type=str,
+    parser_run.add_argument('--manifest', default='manifest-pairwise-deseq2.tsv', type=str,
                             help='Path to the (filled in) manifest file, generated with "generate-manifest". '
                             '\nDefault value: "%(default)s"')
 
-    group.add_argument('--output-dir', required=True, help='Output location for pipeline. Either provide'
-                                                           'a full path to a directory or an s3:// URL'
-                                                           'where the samples will be uploaded.')
+    parser_run.add_argument('--output-dir', required=True, help='Output location for pipeline. Either provide '
+                                                                'a full path to a directory or an s3:// URL '
+                                                                'where the samples will be uploaded.')
 
-    group.add_argument('--gene_map', help='A python pickled dictionary mapping gene ids to gene names',
-                       default='https://raw.githubusercontent.com/jvivian/'
-                               'rnaseq-recompute-analysis/master/utils/gene_map.pickle')
+    parser_run.add_argument('--gene_map', help='A python pickled dictionary mapping gene ids to gene names',
+                            default='https://raw.githubusercontent.com/jvivian/'
+                                    'rnaseq-recompute-analysis/master/utils/gene_map.pickle')
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         parser.print_help()
@@ -305,8 +312,8 @@ def main():
     args = parser.parse_args()
     # Parse subparsers related to generation of config and manifest
     cwd = os.getcwd()
-    if args.command == 'generate-manifest':
-        generate_file(os.path.join(cwd, 'manifest-toil-rnaseq.tsv'), generate_manifest)
+    if args.command == 'generate':
+        generate_file(os.path.join(cwd, 'manifest-pairwise-deseq2.tsv'), generate_manifest)
     # Pipeline execution
     elif args.command == 'run':
         samples = parse_samples(path_to_manifest=args.manifest)
