@@ -119,7 +119,7 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
     # Create columns in the combined dataframe
     genes = pvals.keys()
     ranked['num_samples'] = [len(pvals[x]) for x in genes]
-    ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.001]) for x in genes]
+    ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.01]) for x in genes]
     ranked['pval'] = [np.median(pvals[x]) for x in genes]
     ranked['pval_std'] = [round(np.std(pvals[x]), 4) for x in genes]
     ranked['fc'] = [round(np.median(fc[x]), 4) for x in genes]
@@ -142,7 +142,7 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
     else:
         job.fileStore.logToMaster('Moving {} to output dir: {}'.format(uuid, output_dir))
         mkdir_p(output_dir)
-        copy_files(file_paths=[os.path.join(work_dir, uuid + '.tar.gz')], output_dir=output_dir)
+        copy_files(file_paths=[results_path], output_dir=output_dir)
 
 
 # Pipeline specific functions
