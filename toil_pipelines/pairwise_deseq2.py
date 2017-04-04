@@ -212,17 +212,17 @@ def parse_samples(path_to_manifest):
     return samples
 
 
-def deseq2_script(df_path, vector_path, results_dir, sample_name):
+def deseq2_script():
     return textwrap.dedent("""
-        install.packages("data.table")
+        install.packages('data.table')
         suppressMessages(library('DESeq2'))
         suppressMessages(library('data.table'))
 
         # Argument parsing
-        df_path <- '{df_path}'
-        vector_path <- '{vector_path}'
-        results_dir <- '{results_dir}'
-        sample_name <- '{sample_name}'
+        df_path <- '/data/expression.tsv'
+        vector_path <- '/data/vector'
+        results_dir <- '/data'
+        sample_name <- 'results.tsv'
 
         # Read in tables / patients
         n <- read.table(df_path, sep='\\t', header=1, row.names=1)
