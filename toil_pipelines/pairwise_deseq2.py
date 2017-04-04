@@ -77,21 +77,21 @@ def run_deseq2(job, df_id, vector_id):
     # Write out Rscript
     r_path = os.path.join(work_dir, 'deseq.R')
     with open(r_path, 'wb') as f:
-        f.write(deseq2_script(df_path, vector_path, results_dir=work_dir, sample_name='results.tsv'))
-
-    st = os.stat(r_path)
-    os.chmod(r_path, st.st_mode | stat.S_IEXEC)
+        f.write(deseq2_script())
 
     # Run DESeq2 Docker
-    docker_command = ['docker', 'run',
-                      '--rm',
-                      '--entrypoint=bash',
-                      '--log-driver=none',
-                      '-v', '{}:/data'.format(work_dir),
-                      'genomicpariscentre/deseq2:1.4.5',
-                      'Rscript', '/data/deseq.R']
+    tool = 'genomicpariscentre/deseq2:1.4.5'
+    base_command = ['docker', 'run',
+                    '--rm',
+                    '--log-driver=none',
+                    '-v', '{}:/data'.format(work_dir)]
 
-    subprocess.check_call(docker_command)
+    deseq2_command = base_command + ['--entrypoint=Rscript', tool, '/data/deseq.R']
+    check_call(deseq2_command)
+
+    # Fix permissions on output by reusing tool container
+    stat = os.stat(work_dir)
+    check_call(base_command + ['--entrypoint=chown', tool, '{}:{}'.format(stat.st_uid, stat.st_gid), '/data'])
 
     return job.fileStore.writeGlobalFile(os.path.join(work_dir, 'results.tsv'))
 
