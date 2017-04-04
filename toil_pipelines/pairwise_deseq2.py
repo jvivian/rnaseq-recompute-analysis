@@ -47,7 +47,7 @@ def sample_staging(job, sample, gene_map_id, output_dir):
         group_1, group_2 = [], []
         for line in f:
             sample, group = line.strip().split('\t')
-            group_1.append(sample) if group == 1 else group_2.append(sample)
+            group_1.append(sample) if group == '1' else group_2.append(sample)
 
     # Sort so group 1 is smaller
     group_1, group_2 = sorted([group_1, group_2], key=lambda x: len(x))
