@@ -15,7 +15,7 @@ from bd2k.util.files import mkdir_p
 from bd2k.util.processes import which
 from toil.common import Toil
 from toil.job import Job
-from toil_lib import require, UserError
+from toil_lib import require, UserError, flatten
 from toil_lib.files import copy_files
 from toil_lib.urls import download_url, s3am_upload, download_url_job
 
@@ -37,7 +37,7 @@ def root(job, samples, gene_map, output_dir):
     gene_map_id = job.addChildJobFn(download_url_job, gene_map).rv()
 
     # For every sample -> sample_staging
-    [job.addFollowOnJobFn(sample_staging, sample, gene_map_id, output_dir).rv() for sample in samples]
+    [job.addFollowOnJobFn(sample_staging, sample, gene_map_id, output_dir).rv() for sample in samples.iteritems()]
 
 
 def sample_staging(job, sample, gene_map_id, output_dir):
@@ -230,7 +230,7 @@ def parse_samples(path_to_manifest):
     :return: Samples and their attributes as defined in the manifest
     :rtype: list[list]
     """
-    samples = []
+    samples = {}
     with open(path_to_manifest, 'r') as f:
         for line in f.readlines():
             if not line.isspace() and not line.startswith('#'):
@@ -241,7 +241,7 @@ def parse_samples(path_to_manifest):
                 for url in [exp_url, group_url]:
                     require(urlparse(url).scheme in schemes, 'Samples must start with one of the '
                                                              'approved schemes: {}'.format(schemes))
-                samples.append(sample)
+                samples[uuid] = [exp_url, group_url]
     return samples
 
 
