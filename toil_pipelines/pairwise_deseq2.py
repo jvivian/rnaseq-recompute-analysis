@@ -97,6 +97,7 @@ def run_deseq2(job, df_id, vector_id):
 
 
 def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
+    log(job, 'Combining results for: ' + uuid)
     work_dir = job.fileStore.getLocalTempDir()
     gene_map_path = job.fileStore.readGlobalFile(gene_map_id, os.path.join(work_dir, 'gene_map.pickle'))
     gene_map = pickle.load(open(gene_map_path, 'rb'))
@@ -141,10 +142,10 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
 
     # Upload or move to directory
     if urlparse(output_dir).scheme == 's3':
-        job.fileStore.logToMaster('Uploading {} to S3: {}'.format(uuid, output_dir))
+        log(job, 'Uploading {} to S3: {}'.format(uuid, output_dir))
         s3am_upload(fpath=results_path, s3_dir=output_dir)
     else:
-        job.fileStore.logToMaster('Moving {} to output dir: {}'.format(uuid, output_dir))
+        log(job, 'Moving {} to output dir: {}'.format(uuid, output_dir))
         mkdir_p(output_dir)
         copy_files(file_paths=[results_path], output_dir=output_dir)
 
@@ -251,7 +252,7 @@ def deseq2_script(df_path, vector_path, results_dir, sample_name):
 
 
 def log(job, string):
-    job.fileStore.logToMaster('\n\n{}\n\n'.format(string))
+    job.fileStore.logToMaster('\n\n\n{}\n'.format(string))
 
 
 def main():
