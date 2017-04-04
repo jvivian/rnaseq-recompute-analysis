@@ -38,8 +38,9 @@ def sample_staging(job, sample, gene_map_id, output_dir):
     uuid, df_url, group_url = sample
 
     # Download dataframe and group info
-    df_id = job.addChildJobFn(download_url_job, df_url).rv()
     group_path = download_url(group_url, work_dir=work_dir)
+    df_path = download_url(df_url, work_dir=work_dir)
+    df_id = job.fileStore.writeGlobalFile(df_path)
 
     log(job, 'Parsing group information')
     with open(group_path, 'r') as f:
