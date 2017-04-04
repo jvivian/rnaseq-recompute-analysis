@@ -224,11 +224,11 @@ def generate_manifest():
 
 def parse_samples(path_to_manifest):
     """
-    Parses samples, specified in either a manifest or listed with --samples
+    Parses samples as specified in the manifest
 
     :param str path_to_manifest: Path to manifest
-    :return: Samples and their attributes as defined in the manifest
-    :rtype: list[list]
+    :return: Sample information from manifest
+    :rtype: dict
     """
     samples = {}
     with open(path_to_manifest, 'r') as f:
