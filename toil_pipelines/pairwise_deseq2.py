@@ -62,7 +62,7 @@ def sample_staging(job, sample, gene_map_id, output_dir):
     vector_ids = [job.fileStore.writeGlobalFile(os.path.join(work_dir, x)) for x in group_2]
 
     log(job, 'Creating one job per vector')
-    results = [job.addChildJobFn(run_deseq2, df_id, vector_id).rv() for vector_id in [vector_ids[0]]] ## TODO: FIX!
+    results = [job.addChildJobFn(run_deseq2, df_id, vector_id).rv() for vector_id in vector_ids]
 
     # Follow-on --> combine_results, return
     job.addFollowOnJobFn(combine_results, results, gene_map_id, uuid, output_dir).rv()
