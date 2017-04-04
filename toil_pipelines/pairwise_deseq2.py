@@ -90,7 +90,7 @@ def run_deseq2(job, df_id, vector_id):
 
     # Fix permissions on output by reusing tool container
     stat = os.stat(work_dir)
-    check_call(base_command + ['--entrypoint=chown', tool, '{}:{}'.format(stat.st_uid, stat.st_gid), '/data'])
+    check_call(base_command + ['--entrypoint=chown', tool, '-R', '{}:{}'.format(stat.st_uid, stat.st_gid), '/data'])
 
     return job.fileStore.writeGlobalFile(os.path.join(work_dir, 'results.tsv'))
 
