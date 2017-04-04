@@ -24,6 +24,14 @@ schemes = ('http', 'file', 's3', 'ftp', 'gnos')
 
 
 def root(job, samples, gene_map, output_dir):
+    """
+    Downloads input file and stages each sample
+
+    :param JobFunctionWrappingJob job: passed automatically by Toil
+    :param dict samples: key=UUID, value=[expression_url, group_url]
+    :param str gene_map: URL to gene_map used to map gene IDs to gene names
+    :param str output_dir: Full path/ S3 URL to output directory
+    """
     log(job, 'Starting root job')
     # Download gene_map
     gene_map_id = job.addChildJobFn(download_url_job, gene_map).rv()
@@ -33,15 +41,23 @@ def root(job, samples, gene_map, output_dir):
 
 
 def sample_staging(job, sample, gene_map_id, output_dir):
+    """
+    Derives vectors for a sample and spawns jobs for individual DESeq2 runs
+
+    :param JobFunctionWrappingJob job: passed automatically by Toil
+    :param tuple(str, [str, str]) sample: tuple containing UUID and URLs for the expression dataframe and group info
+    :param str gene_map_id: FileStoreID for the gene_map downloaded in the root job
+    :param str output_dir: Full path/ S3 URL to output directory
+    """
     work_dir = job.fileStore.getLocalTempDir()
-    uuid, df_url, group_url = sample
+    uuid, df_url, group_url = flatten(sample)
 
     # Download dataframe and group info
     group_path = download_url(group_url, work_dir=work_dir)
     df_path = download_url(df_url, work_dir=work_dir)
     df_id = job.fileStore.writeGlobalFile(df_path)
 
-    log(job, 'Parsing group information')
+    # Parse group information
     with open(group_path, 'r') as f:
         group_1, group_2 = [], []
         for line in f:
@@ -57,7 +73,7 @@ def sample_staging(job, sample, gene_map_id, output_dir):
             vector = [x.replace('-', '.') for x in group_1 + [sample]]  # Precaution for R
             f.write('\n'.join(vector))
 
-    log(job, 'Saving vectors to jobStore')
+    # Save vectors to jobStore
     vector_ids = [job.fileStore.writeGlobalFile(os.path.join(work_dir, x)) for x in group_2]
 
     log(job, 'Creating one job per vector')
@@ -68,6 +84,15 @@ def sample_staging(job, sample, gene_map_id, output_dir):
 
 
 def run_deseq2(job, df_id, vector_id):
+    """
+    Runs DEseq2 given a vector and expression dataframe
+
+    :param JobFunctionWrappingJob job: passed automatically by Toil
+    :param str df_id: FileStoreID of expression dataframe
+    :param str vector_id: FileStoreID of vector
+    :return: FileStoreID of the results
+    :rtype: str
+    """
     # Read in inputs
     work_dir = job.fileStore.getLocalTempDir()
     job.fileStore.readGlobalFile(df_id, os.path.join(work_dir, 'expression.tsv'))
@@ -96,6 +121,15 @@ def run_deseq2(job, df_id, vector_id):
 
 
 def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
+    """
+    Combines individual DESeq2 results into one meta-results TSV
+
+    :param JobFunctionWrappingJob job: passed automatically by Toil
+    :param list[str,] result_ids: FileStoreIDs of all the results for this sample
+    :param str gene_map_id: FileStoreID for the gene_map downloaded in the root job
+    :param str uuid: The UUID of the sample
+    :param str output_dir: Full path/ S3 URL to output directory
+    """
     log(job, 'Combining results for: ' + uuid)
     work_dir = job.fileStore.getLocalTempDir()
     gene_map_path = job.fileStore.readGlobalFile(gene_map_id, os.path.join(work_dir, 'gene_map.pickle'))
@@ -251,7 +285,7 @@ def deseq2_script():
 
 
 def log(job, string):
-    job.fileStore.logToMaster('\n\n\n{}\n'.format(string))
+    job.fileStore.logToMaster('\n\n\n{}\n\n'.format(string))
 
 
 def main():
