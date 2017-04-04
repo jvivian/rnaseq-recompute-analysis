@@ -3,12 +3,11 @@ from __future__ import print_function
 import argparse
 import os
 import pickle
-import subprocess
 import sys
 import textwrap
 from collections import defaultdict
+from subprocess import check_call
 from urlparse import urlparse
-import stat
 
 import numpy as np
 import pandas as pd
@@ -248,7 +247,7 @@ def deseq2_script():
         resOrdered <- res[order(res$padj),]
         res_path <- paste(results_dir, sample_name, sep='/')
         write.table(as.data.frame(resOrdered), file=res_path, col.names=NA, sep='\\t', quote=FALSE)
-        """.format(**locals()))
+        """)
 
 
 def log(job, string):
@@ -322,7 +321,7 @@ def main():
         for program in ['curl', 'docker']:
             require(next(which(program), None), program + ' must be installed on every node.'.format(program))
 
-        # Start the workflow, calling map_job() to run the pipeline for each sample
+        # Start the workflow
         with Toil(args) as toil:
             toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir))
 
