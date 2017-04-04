@@ -69,11 +69,10 @@ def sample_staging(job, sample, gene_map_id, output_dir):
 
 
 def run_deseq2(job, df_id, vector_id):
-    work_dir = job.fileStore.getLocalTempDir()
-
     # Read in inputs
-    df_path = job.fileStore.readGlobalFile(df_id, os.path.join(work_dir, 'expression.tsv'))
-    vector_path = job.fileStore.readGlobalFile(vector_id, os.path.join(work_dir, 'vector'))
+    work_dir = job.fileStore.getLocalTempDir()
+    job.fileStore.readGlobalFile(df_id, os.path.join(work_dir, 'expression.tsv'))
+    job.fileStore.readGlobalFile(vector_id, os.path.join(work_dir, 'vector'))
 
     # Write out Rscript
     r_path = os.path.join(work_dir, 'deseq.R')
