@@ -23,24 +23,25 @@ from toil_lib.urls import download_url, s3am_upload, download_url_job
 schemes = ('http', 'file', 's3', 'ftp', 'gnos')
 
 
-def root(job, samples, gene_map, output_dir):
+def root(job, samples, gene_map, output_dir, disk):
     """
     Downloads input file and stages each sample
 
     :param JobFunctionWrappingJob job: passed automatically by Toil
     :param dict samples: key=UUID, value=[expression_url, group_url]
     :param str gene_map: URL to gene_map used to map gene IDs to gene names
+    :param str|int disk:
     :param str output_dir: Full path/ S3 URL to output directory
     """
     log(job, 'Starting root job')
     # Download gene_map
     gene_map_id = job.addChildJobFn(download_url_job, gene_map).rv()
 
-    # For every sample -> sample_staging
-    [job.addFollowOnJobFn(sample_staging, sample, gene_map_id, output_dir).rv() for sample in samples.iteritems()]
+    # For every sample -> staging
+    [job.addFollowOnJobFn(staging, sample, gene_map_id, output_dir, disk=disk).rv() for sample in samples.iteritems()]
 
 
-def sample_staging(job, sample, gene_map_id, output_dir):
+def staging(job, sample, gene_map_id, output_dir):
     """
     Derives vectors for a sample and spawns jobs for individual DESeq2 runs
 
@@ -77,10 +78,11 @@ def sample_staging(job, sample, gene_map_id, output_dir):
     vector_ids = [job.fileStore.writeGlobalFile(os.path.join(work_dir, x)) for x in group_2]
 
     log(job, 'Creating one job per vector')
-    results = [job.addChildJobFn(run_deseq2, df_id, vector_id).rv() for vector_id in vector_ids]
+    results = [job.addChildJobFn(run_deseq2, df_id, vector_id, disk=df_id.size + 1e9).rv() for vector_id in vector_ids]
 
     # Follow-on --> combine_results, return
-    job.addFollowOnJobFn(combine_results, results, gene_map_id, uuid, output_dir).rv()
+    disk = sum([x.size for x in vector_ids]) + 1e9
+    job.addFollowOnJobFn(combine_results, results, gene_map_id, uuid, output_dir, disk=disk).rv()
 
 
 def run_deseq2(job, df_id, vector_id):
@@ -337,6 +339,9 @@ def main():
     parser_run.add_argument('--gene_map', help='A python pickled dictionary mapping gene ids to gene names',
                             default='https://raw.githubusercontent.com/jvivian/'
                                     'rnaseq-recompute-analysis/master/utils/gene_map.pickle')
+    parser_run.add_argument('--initial-size', default='10G', help='Initial disk allotted for each sample. Change'
+                                                                  'this value if your average sample is larger'
+                                                                  'than 10G.')
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         parser.print_help()
@@ -357,7 +362,7 @@ def main():
 
         # Start the workflow
         with Toil(args) as toil:
-            toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir))
+            toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir, args.initial_size))
 
 
 if __name__ == '__main__':
