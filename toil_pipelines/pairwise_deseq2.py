@@ -153,8 +153,8 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
                 line = line.strip().split('\t')
                 if line:
                     gene, mean, l2fc, lfcse, stat, pval, padj = line
-                    pvals[gene].append(padj)
-                    fc[gene].append(l2fc)
+                    pvals[gene].append(float(padj))
+                    fc[gene].append(float(l2fc))
 
     # Create columns in the combined dataframe
     genes = pvals.keys()
