@@ -362,7 +362,10 @@ def main():
 
         # Start the workflow
         with Toil(args) as toil:
-            toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir, args.initial_size))
+            if args.restart:
+                toil.restart()
+            else:
+                toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir, args.initial_size))
 
 
 if __name__ == '__main__':
