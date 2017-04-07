@@ -111,13 +111,13 @@ def run_deseq2(job, df_id, vector_id):
         f.write(deseq2_script())
 
     # Run DESeq2 Docker
-    tool = 'genomicpariscentre/deseq2:1.4.5'
+    tool = 'jvivian/deseq2:1.4.5'
     base_command = ['docker', 'run',
                     '--rm',
                     '--log-driver=none',
                     '-v', '{}:/data'.format(work_dir)]
 
-    deseq2_command = base_command + ['--entrypoint=Rscript', tool, '/data/deseq.R']
+    deseq2_command = base_command + [tool, '/data/deseq.R']
     check_call(deseq2_command)
 
     # Fix permissions on output by reusing tool container
@@ -145,7 +145,8 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
     # Read in results
     results = []
     for i, result_id in enumerate(result_ids):
-        results.append(job.fileStore.readGlobalFile(result_id, os.path.join(work_dir, '{}.tsv'.format(i))))
+        if result_id is not None:
+            results.append(job.fileStore.readGlobalFile(result_id, os.path.join(work_dir, '{}.tsv'.format(i))))
 
     # Collect results for each gene
     ranked = pd.DataFrame()
@@ -158,8 +159,9 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
                 line = line.strip().split('\t')
                 if line:
                     gene, mean, l2fc, lfcse, stat, pval, padj = line
-                    pvals[gene].append(float(padj))
-                    fc[gene].append(float(l2fc))
+                    if padj != 'NA':
+                        pvals[gene].append(float(padj))
+                        fc[gene].append(float(l2fc))
 
     # Create columns in the combined dataframe
     genes = pvals.keys()
@@ -254,7 +256,6 @@ def parse_samples(path_to_manifest):
 
 def deseq2_script():
     return textwrap.dedent("""
-        install.packages('data.table')
         suppressMessages(library('DESeq2'))
         suppressMessages(library('data.table'))
 
