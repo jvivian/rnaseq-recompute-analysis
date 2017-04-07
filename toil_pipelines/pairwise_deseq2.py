@@ -75,7 +75,7 @@ def staging(job, sample, gene_map_id, output_dir):
     for sample in group_2:
         with open(os.path.join(work_dir, sample), 'w') as f:
             vector = [x.replace('-', '.') for x in group_1 + [sample]]  # Precaution for R
-            f.write('\n'.join(vector))
+            f.write('\n'.join(vector) + '\n')
 
     # Save vectors to jobStore
     vector_ids = [job.fileStore.writeGlobalFile(os.path.join(work_dir, x)) for x in group_2]
