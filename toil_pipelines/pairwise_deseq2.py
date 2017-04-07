@@ -14,7 +14,7 @@ import pandas as pd
 from bd2k.util.files import mkdir_p
 from bd2k.util.processes import which
 from toil.common import Toil
-from toil.job import Job
+from toil.job import Job, PromisedRequirement
 from toil_lib import require, UserError, flatten
 from toil_lib.files import copy_files
 from toil_lib.urls import download_url, s3am_upload, download_url_job
