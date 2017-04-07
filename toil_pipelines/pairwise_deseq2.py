@@ -59,16 +59,19 @@ def staging(job, sample, gene_map_id, output_dir):
     df_id = job.fileStore.writeGlobalFile(df_path)
 
     # Parse group information
+    groups = defaultdict(list)
     with open(group_path, 'r') as f:
-        group_1, group_2 = [], []
         for line in f:
-            sample, group = line.strip().split('\t')
-            group_1.append(sample) if group == '1' else group_2.append(sample)
+            if not line.isspace():
+                sample, group = line.strip().split('\t')
+                groups[group].append(sample)
+    assert(len(groups.keys()) == 2 and '1' in groups.keys() and '2' in groups.keys(),
+           'Group requirements not met. Make sure only a 1 or a 2 is used: {}'.format(groups.keys()))
 
     # Sort so group 1 is smaller
-    group_1, group_2 = sorted([group_1, group_2], key=lambda x: len(x))
+    group_1, group_2 = sorted([groups['1'], groups['2']], key=lambda x: len(x))
 
-    log(job, 'Writing out vectors, one per sample in the larger group.')
+    log(job, 'Writing out vectors, one per sample in group 2. g1: {}  g2: {}'.format(len(group_1), len(group_2)))
     for sample in group_2:
         with open(os.path.join(work_dir, sample), 'w') as f:
             vector = [x.replace('-', '.') for x in group_1 + [sample]]  # Precaution for R
@@ -82,6 +85,8 @@ def staging(job, sample, gene_map_id, output_dir):
 
     # Follow-on --> combine_results, return
     disk = int(sum([x.size for x in vector_ids]) + 1e9)
+    disk = PromisedRequirement(lambda y: sum([x.size for x in y]) + 1e9, results)
+    # disk = int(len(group_2) * 1e9)
     job.addFollowOnJobFn(combine_results, results, gene_map_id, uuid, output_dir, disk=disk).rv()
 
 
