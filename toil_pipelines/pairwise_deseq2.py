@@ -171,6 +171,7 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
     genes = pvals.keys()
     ranked['num_samples'] = [len(pvals[x]) for x in genes]
     ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.01]) for x in genes]
+    ranked['pval_percentage'] = np.array([float(x) for x in ranked['pval_counts']]) / np.array(ranked['num_samples'])
     ranked['pval'] = [np.median(pvals[x]) for x in genes]
     ranked['pval_std'] = [round(np.std(pvals[x]), 4) for x in genes]
     ranked['fc'] = [round(np.median(fc[x]), 4) for x in genes]
