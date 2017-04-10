@@ -8,6 +8,7 @@ import textwrap
 from collections import defaultdict
 from subprocess import check_call
 from urlparse import urlparse
+from multiprocessing import cpu_count
 
 import numpy as np
 import pandas as pd
@@ -33,12 +34,15 @@ def root(job, samples, gene_map, output_dir, disk):
     :param str|int disk:
     :param str output_dir: Full path/ S3 URL to output directory
     """
-    log(job, 'Starting root job')
     # Download gene_map
     gene_map_id = job.addChildJobFn(download_url_job, gene_map).rv()
 
+    # Staging is IO intensive, and should run one job per machine if possible
+    cores = int(cpu_count())
+
     # For every sample -> staging
-    [job.addFollowOnJobFn(staging, sample, gene_map_id, output_dir, disk=disk).rv() for sample in samples.iteritems()]
+    for sample in samples.iteritems():
+        job.addFollowOnJobFn(staging, sample, gene_map_id, output_dir, disk=disk, cores=cores).rv()
 
 
 def staging(job, sample, gene_map_id, output_dir):
