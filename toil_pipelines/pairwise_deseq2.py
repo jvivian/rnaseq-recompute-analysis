@@ -65,8 +65,8 @@ def staging(job, sample, gene_map_id, output_dir):
             if not line.isspace():
                 sample, group = line.strip().split('\t')
                 groups[group].append(sample)
-    assert(len(groups.keys()) == 2 and '1' in groups.keys() and '2' in groups.keys(),
-           'Group requirements not met. Make sure only a 1 or a 2 is used: {}'.format(groups.keys()))
+    assert len(groups.keys()) == 2 and '1' in groups.keys() and '2' in groups.keys(), \
+        'Group requirements not met. Make sure only a 1 or a 2 is used: {}'.format(groups.keys())
 
     # Sort so group 1 is smaller
     group_1, group_2 = sorted([groups['1'], groups['2']], key=lambda x: len(x))
