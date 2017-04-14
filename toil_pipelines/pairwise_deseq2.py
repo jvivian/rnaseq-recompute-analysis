@@ -90,8 +90,7 @@ def staging(job, sample, gene_map_id, output_dir):
 
     # Follow-on --> combine_results
     disk = PromisedRequirement(lambda y: sum([x.size for x in y]) + int(1e9), results)
-    # disk = int(len(group_2) * 1e9)
-    job.addFollowOnJobFn(combine_results, results, gene_map_id, uuid, output_dir, disk=disk).rv()
+    job.addFollowOnJobFn(combine_results, results, vector_ids, gene_map_id, uuid, output_dir, disk=disk).rv()
 
 
 def run_deseq2(job, df_id, vector_id):
@@ -131,7 +130,7 @@ def run_deseq2(job, df_id, vector_id):
     return job.fileStore.writeGlobalFile(os.path.join(work_dir, 'results.tsv'))
 
 
-def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
+def combine_results(job, result_ids, vector_ids, gene_map_id, uuid, output_dir):
     """
     Combines individual DESeq2 results into one meta-results TSV
 
@@ -195,6 +194,9 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
         log(job, 'Moving {} to output dir: {}'.format(uuid, output_dir))
         mkdir_p(output_dir)
         copy_files(file_paths=[results_path], output_dir=output_dir)
+
+    # Clean up
+    [job.fileStore.deleteGlobalFile(x) for x in vector_ids + results]
 
 
 # Pipeline specific functions
