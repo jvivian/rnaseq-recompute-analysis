@@ -87,7 +87,7 @@ class TcgaTumorVsNormal(AbstractExperiment):
             disease_path <- args[3]
             tissue <- basename(substr(vector_path, 1, nchar(vector_path)-7))
             results_dir <- '/results'
-            plot_dir <- paste('/plots', tissue, sep='/')
+            plot_dir <- '/plots'
 
             # Read in tables / patients
             n <- read.table(df_path, sep='\\t', header=1, row.names=1)
