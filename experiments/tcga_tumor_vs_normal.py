@@ -1,9 +1,10 @@
 import logging
 import os
 import textwrap
+from subprocess import check_call
 
 from experiments.AbstractExperiment import AbstractExperiment
-from utils import run_deseq2, add_gene_names
+from utils import add_gene_names
 from utils import write_script
 
 logging.basicConfig(level=logging.INFO)
@@ -45,17 +46,26 @@ class TcgaTumorVsNormal(AbstractExperiment):
                         f.write('\n'.join(disease_vector))
 
     def run_experiment(self):
-        vectors = []
-        for df in self.protein_coding_paths:
-            tissue_vector = os.path.join(self.vector_dir, os.path.basename(os.path.dirname(df)) + '-vector')
+        log.info("what")
+        for df in sorted(self.protein_coding_paths):
+            tissue = os.path.basename(os.path.dirname(df))
+            tissue_vector = tissue + '-vector'
             disease_vector = tissue_vector.replace('-vector', '-disease')
-            if os.path.exists(tissue_vector):
-                vectors.append([df, tissue_vector, disease_vector])
-        blob = zip([self.script_path for _ in xrange(len(vectors))], vectors)
-
-        log.info('Starting DESeq2 Runs using {} cores'.format(self.cores))
-        for b in blob:
-            run_deseq2(b)
+            if os.path.exists(os.path.join(self.vector_dir, tissue_vector)):
+                cmd = ['docker', 'run',
+                       '--rm',
+                       '--log-driver=none',
+                       '-v', self.results_dir + ':/results',
+                       '-v', self.vector_dir + ':/vectors',
+                       '-v', self.plots_dir + '/' + tissue + ':/plots',
+                       '-v', os.path.dirname(df) + ':/df',
+                       '-v', self.experiment_dir + ':/data',
+                       'jvivian/deseq2:1.14.1', '/data/deseq2.R',
+                       '/df/' + os.path.basename(df),
+                       '/vectors/' + tissue_vector,
+                       '/vectors/' + disease_vector]
+                log.info('Starting DESeq2 Run for {} using {} cores'.format(tissue, self.cores))
+                check_call(cmd)
 
     def teardown(self):
         log.info('Adding gene names to results.')
@@ -76,8 +86,8 @@ class TcgaTumorVsNormal(AbstractExperiment):
             vector_path <- args[2]
             disease_path <- args[3]
             tissue <- basename(substr(vector_path, 1, nchar(vector_path)-7))
-            results_dir <- paste(dirname(dirname(vector_path)), 'results', sep='/')
-            plot_dir <- paste(dirname(dirname(vector_path)), 'plots', tissue, sep='/')
+            results_dir <- '/results'
+            plot_dir <- paste('/plots', tissue, sep='/')
 
             # Read in tables / patients
             n <- read.table(df_path, sep='\\t', header=1, row.names=1)
