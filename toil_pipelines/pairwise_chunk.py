@@ -83,6 +83,7 @@ def staging(job, sample, gene_map_id, output_dir):
     max_r = None
     for i in xrange(m):
         r = len(group_2) % m
+        r = m if r == 0 else r
         if r + m > max_val:
             max_val = r + m
             max_m = m
