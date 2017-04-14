@@ -110,7 +110,7 @@ class TcgaTumorVsNormal(AbstractExperiment):
 
             # Write out table
             resOrdered <- res[order(res$padj),]
-            res_name <- paste(tissue, 'results.tsv', sep='-')
+            res_name <- paste(tissue, '.tsv', sep='')
             res_path <- paste(results_dir, res_name, sep='/')
             write.table(as.data.frame(resOrdered), file=res_path, col.names=NA, sep='\\t',  quote=FALSE)
 
