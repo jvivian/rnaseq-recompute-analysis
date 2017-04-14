@@ -86,9 +86,9 @@ def staging(job, sample, gene_map_id, output_dir):
 
     log(job, 'Creating one job per vector: {}'.format(len(vector_ids)))
     disk = int(df_id.size + 1e9)
-    results = [job.addChildJobFn(run_deseq2, df_id, vector_id, disk=disk).rv() for vector_id in vector_ids]
+    results = [job.addChildJobFn(run_deseq2, df_id, vector_id, disk=disk, memory='4G').rv() for vector_id in vector_ids]
 
-    # Follow-on --> combine_results, return
+    # Follow-on --> combine_results
     disk = PromisedRequirement(lambda y: sum([x.size for x in y]) + int(1e9), results)
     # disk = int(len(group_2) * 1e9)
     job.addFollowOnJobFn(combine_results, results, gene_map_id, uuid, output_dir, disk=disk).rv()
