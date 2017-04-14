@@ -115,7 +115,7 @@ def run_deseq2(job, df_id, vector_id):
         f.write(deseq2_script())
 
     # Run DESeq2 Docker
-    tool = 'jvivian/deseq2:1.4.5'
+    tool = 'jvivian/deseq2:1.14.1'
     base_command = ['docker', 'run',
                     '--rm',
                     '--log-driver=none',
