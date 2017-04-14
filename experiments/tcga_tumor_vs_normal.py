@@ -1,7 +1,10 @@
 import logging
 import os
+import pickle
 import textwrap
 from subprocess import check_call
+
+import pandas as pd
 
 from experiments.AbstractExperiment import AbstractExperiment
 from utils import add_gene_names
@@ -66,6 +69,14 @@ class TcgaTumorVsNormal(AbstractExperiment):
                        '/vectors/' + disease_vector]
                 log.info('Starting DESeq2 Run for {} using {} cores'.format(tissue, self.cores))
                 check_call(cmd)
+
+                log.info('Mapping genes for ' + tissue)
+                gene_map = pickle.load(open(self.gene_map, 'rb'))
+                result_path = os.path.join(self.results_dir, tissue + '.tsv')
+                df = pd.read_csv(result_path, sep='\t', index_col=0)
+                df['gene_id'] = df.index
+                df.index = [gene_map[x] if x in gene_map.keys() else x for x in df.index]
+                df.to_csv(result_path, sep='\t')
 
     def teardown(self):
         log.info('Adding gene names to results.')
