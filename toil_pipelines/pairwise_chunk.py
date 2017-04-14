@@ -25,7 +25,7 @@ from toil_lib.urls import download_url, s3am_upload, download_url_job
 schemes = ('http', 'file', 's3', 'ftp', 'gnos')
 
 
-def root(job, samples, gene_map, output_dir, disk):
+def root(job, samples, gene_map, output_dir, max_chunk_size, disk):
     """
     Downloads input file and stages each sample
 
@@ -43,10 +43,10 @@ def root(job, samples, gene_map, output_dir, disk):
 
     # For every sample -> staging
     for sample in samples.iteritems():
-        job.addFollowOnJobFn(staging, sample, gene_map_id, output_dir, disk=disk, cores=cores).rv()
+        job.addFollowOnJobFn(staging, sample, gene_map_id, max_chunk_size, output_dir, disk=disk, cores=cores).rv()
 
 
-def staging(job, sample, gene_map_id, output_dir):
+def staging(job, sample, gene_map_id, max_chunk_size, output_dir):
     """
     Derives vectors for a sample and spawns jobs for individual DESeq2 runs
 
@@ -77,24 +77,23 @@ def staging(job, sample, gene_map_id, output_dir):
     group_1, group_2 = sorted([groups['1'], groups['2']], key=lambda x: len(x))
 
     # Chunk larger group into n groups by some value such that the modulo + m is maximized
-    m = 15
     max_val = 0
-    max_m = None
-    max_r = None
-    for i in xrange(m):
-        r = len(group_2) % m
-        r = m if r == 0 else r
-        if r + m > max_val:
-            max_val = r + m
-            max_m = m
-            max_r = r
-        m -= 1
+    chunk_size = None
+    remainder = None
+    for i in xrange(max_chunk_size):
+        r = len(group_2) % max_chunk_size
+        r = max_chunk_size if r == 0 else r
+        if r + max_chunk_size > max_val:
+            max_val = r + max_chunk_size
+            chunk_size = max_chunk_size
+            remainder = r
+        max_chunk_size -= 1
 
     log(job, 'Writing out vectors, one per {} samples in group 2 and one of size {}. g1: {}  g2: {}'
-             ''.format(max_m, max_r, len(group_1), len(group_2)))
+             ''.format(chunk_size, remainder, len(group_1), len(group_2)))
     random.shuffle(group_2)
     num_chunks = 0
-    for i, chunk in enumerate(chunks(group_2, max_m)):
+    for i, chunk in enumerate(chunks(group_2, chunk_size)):
         with open(os.path.join(work_dir, str(i)), 'w') as f:
             vector = [x.replace('-', '.') for x in group_1 + chunk]
             f.write('\n'.join(vector) + '\n')
@@ -105,10 +104,10 @@ def staging(job, sample, gene_map_id, output_dir):
 
     log(job, 'Creating one job per vector: {}'.format(len(vector_ids)))
     disk = int(df_id.size + 1e9)
-    results = [job.addChildJobFn(run_deseq2, df_id, vector_id, cores=max_m,
-                                 disk=disk, memory=str(3 * max_m) + 'G').rv() for vector_id in vector_ids[:-1]]
-    results.append(job.addChildJobFn(run_deseq2, df_id, vector_ids[-1], cores=max_r,
-                                     disk=disk, memory=str(3 * max_r) + 'G').rv())
+    results = [job.addChildJobFn(run_deseq2, df_id, vector_id, cores=chunk_size,
+                                 disk=disk, memory=str(3 * chunk_size) + 'G').rv() for vector_id in vector_ids[:-1]]
+    results.append(job.addChildJobFn(run_deseq2, df_id, vector_ids[-1], cores=remainder,
+                                     disk=disk, memory=str(3 * remainder) + 'G').rv())
 
     # Follow-on --> combine_results
     disk = PromisedRequirement(lambda y: sum([x.size for x in y]) + int(1e9), results)
@@ -376,16 +375,20 @@ def main():
                             help='Path to the (filled in) manifest file, generated with "generate-manifest". '
                             '\nDefault value: "%(default)s"')
 
-    parser_run.add_argument('--output-dir', required=True, help='Output location for pipeline. Either provide '
-                                                                'a full path to a directory or an s3:// URL '
-                                                                'where the samples will be uploaded.')
+    parser_run.add_argument('--output-dir', required=True,
+                            help='Output location for pipeline. Either provide a full path to a '
+                                 'directory or an s3:// URL where the samples will be uploaded.')
 
     parser_run.add_argument('--gene_map', help='A python pickled dictionary mapping gene ids to gene names',
                             default='https://raw.githubusercontent.com/jvivian/'
                                     'rnaseq-recompute-analysis/master/utils/gene_map.pickle')
-    parser_run.add_argument('--initial-size', default='10G', help='Initial disk allotted for each sample. Change'
-                                                                  'this value if your average sample is larger'
-                                                                  'than 10G.')
+
+    parser_run.add_argument('--initial-size', default='10G',
+                            help='Initial disk allotted for each sample. Change this '
+                                 'value if your average sample is larger than 10G.')
+
+    parser_run.add_argument('--max-chunk-size', type=int, default=15,
+                            help='The maximum chunk size to split the larger group of samples into.')
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         parser.print_help()
@@ -409,7 +412,8 @@ def main():
             if args.restart:
                 toil.restart()
             else:
-                toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir, args.initial_size))
+                toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir,
+                                         args.max_chunk_size, args.initial_size))
 
 
 if __name__ == '__main__':
