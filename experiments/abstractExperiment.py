@@ -26,6 +26,10 @@ class AbstractExperiment(object):
             os.path.join(self.tissue_pair_dir, x, 'combined-gtex-tcga-counts-protein-coding.tsv')
             for x in self.tissues]
 
+        self.combat_protein_paths= [
+            os.path.join(self.tissue_pair_dir, x, 'combat-2-batch-protein.tsv')
+            for x in self.tissues]
+
     def create_directories(self, dirtree):
         """
         Iterates over dirtree to make directories if they do not already exist
