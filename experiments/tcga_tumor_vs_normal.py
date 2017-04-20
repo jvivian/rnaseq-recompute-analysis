@@ -70,6 +70,15 @@ class TcgaTumorVsNormal(AbstractExperiment):
                 log.info('Starting DESeq2 Run for {} using {} cores'.format(tissue, self.cores))
                 check_call(cmd)
 
+                stat = os.stat(self.results_dir)
+                check_call(['docker', 'run',
+                            '--rm',
+                            '--log-driver=none',
+                            '--entrypoint=chown',
+                            '-v', self.results_dir + ':/results',
+                            'jvivian/deseq2:1.14.1',
+                            '-R', '{}:{}'.format(stat.st_uid, stat.st_gid), '/results'])
+
                 log.info('Mapping genes for ' + tissue)
                 gene_map = pickle.load(open(self.gene_map, 'rb'))
                 result_path = os.path.join(self.results_dir, tissue + '.tsv')
