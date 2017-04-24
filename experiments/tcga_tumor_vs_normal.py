@@ -49,7 +49,6 @@ class TcgaTumorVsNormal(AbstractExperiment):
                         f.write('\n'.join(disease_vector))
 
     def run_experiment(self):
-        log.info("what")
         for df in sorted(self.protein_coding_paths):
             tissue = os.path.basename(os.path.dirname(df))
             tissue_vector = tissue + '-vector'
