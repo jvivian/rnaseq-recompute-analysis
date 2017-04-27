@@ -3,17 +3,16 @@ import argparse
 import logging
 import sys
 
+from experiments.cbnt_clustering import CBNTClustering
 from experiments.deseq2_time_test import DESeq2TimeTest
 from experiments.gtex_vs_tcga import GTExVsTCGA
-from experiments.pairwise_gtex import PairwiseGTEx
-from experiments.pairwise_gtex_vs_tcga import PairwiseTcgaVsGtex
-from experiments.pairwise_tcga import PairwiseTCGA
-from experiments.tcga_matched import TcgaMatched
+from experiments.partition_pearson_relationship import PartitionPearsonRelationship
 from experiments.tcga_matched_negative_control import TcgaMatchedNegativeControl
 from experiments.tcga_tumor_vs_normal import TcgaTumorVsNormal
-from experiments.tcga_tvn_negative_control import TcgaNegativeControl
+from experiments.tcga_tumor_vs_normal_negative_control import TcgaNegativeControl
+from experiments.tcga_tumor_vs_normal_paired import TcgaMatched
 from experiments.tissue_clustering import TissueClustering
-from utils import cls, title_tcga_matched, title_pairwise_gtex_tcga
+from utils import cls, title_tcga_matched
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -37,23 +36,6 @@ def main():
     parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter,
                                      add_help=False)
     subparsers = parser.add_subparsers(dest='command')
-
-    # Pairwise GTEx
-    parser_gtex_pairwise = subparsers.add_parser('pairwise-gtex', help='Run GTEx Pairwise Comparison')
-    parser_gtex_pairwise.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis')
-    parser_gtex_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
-
-    # Pairwise TCGA v GTEx
-    parser_pairwise = subparsers.add_parser('pairwise-gtex-tcga',
-                                            help='Performs pairwise comparison between GTEx and TCGA')
-    parser_pairwise.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
-    parser_pairwise.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
-
-    # Pairwise TCGA Tumor vs Normal
-    parser_pwise_tcga = subparsers.add_parser('pairwise-tcga',
-                                              help='Performs pairwise comparison between TCGA tumor and normal.')
-    parser_pwise_tcga.add_argument('--project-dir', help='Full path to project dir (rna-seq-analysis')
-    parser_pwise_tcga.add_argument('--cores', required=True, type=int, help='Number of cores to utilize during run.')
 
     # TCGA Tumor Vs Normal
     parser_tcga = subparsers.add_parser('tcga-tumor-vs-normal', help='Run TCGA T/N Analysis')
@@ -89,11 +71,25 @@ def main():
     parser_tissue_clustering.add_argument('--project-dir', required=True,
                                           help='Full path to project dir (rna-seq-analysis')
 
+    # CBNT Clustering
+    parser_cbnt_clustering = subparsers.add_parser('cbnt-clustering',
+                                                   help='Run PCA / t-SNE clustering to examine similarity between'
+                                                        ' TCGA tumor, normal, and GTEx samples.'
+                                                        ' ComBat Nonparametric with Tissue Covariates')
+    parser_cbnt_clustering.add_argument('--project-dir', required=True,
+                                        help='Full path to project dir (rna-seq-analysis')
+
     # DeSeq2 Time Test
     parser_deseq2 = subparsers.add_parser('deseq2-time-test', help='Runs DeSeq2 with increasing number of samples and '
                                                                    'records how long it takes to run')
     parser_deseq2.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis)')
     parser_deseq2.add_argument('--cores', required=True, help='Number of cores to utilize during run.')
+
+    # Partition PearsonR Relationship
+    parser_ppr = subparsers.add_parser('partition-pearson', help='Collects individual partition results '
+                                                                 'to determine the pearsonR gain'
+                                                                 'when combining random groups')
+    parser_ppr.add_argument('--project-dir', required=True, help='Full path to project dir (rna-seq-analysis)')
 
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
@@ -109,13 +105,17 @@ def main():
         log.info('Tissue Clustering')
         runner(TissueClustering(params.project_dir))
 
+    elif params.command == 'partition-pearson':
+        log.info('Saves individual partition results for downstream analysis')
+        runner(PartitionPearsonRelationship(params.project_dir))
+
+    elif params.command == 'cbnt-clustering':
+        log.info('Clustering: ComBat nonparametric with tissue covariates')
+        runner(CBNTClustering(params.project_dir))
+
     elif params.command == 'tcga-matched':
         log.info(title_tcga_matched())
         runner(TcgaMatched(params.project_dir, params.cores))
-
-    elif params.command == 'pairwise-gtex-tcga':
-        log.info(title_pairwise_gtex_tcga())
-        runner(PairwiseTcgaVsGtex(params.project_dir, params.cores))
 
     elif params.command == 'tcga-tumor-vs-normal':
         log.info('TCGA Tumor Vs Normal')
@@ -129,14 +129,6 @@ def main():
         log.info('TCGA Matched Negative Control')
         runner(TcgaMatchedNegativeControl(params.project_dir, params.cores))
 
-    elif params.command == 'gtex-pairwise':
-        log.info('GTEx Pairwise Tissue Experiment')
-        runner(PairwiseGTEx(params.project_dir, params.cores))
-
-    elif params.command == 'pairwise-tcga':
-        log.info('Pairwise TCGA Tumor vs Normal')
-        runner(PairwiseTCGA(params.project_dir, params.cores))
-
     elif params.command == 'deseq2-time-test':
         log.info('DESeq2 Time Test')
         runner(DESeq2TimeTest(params.project_dir, params.cores))
@@ -144,6 +136,7 @@ def main():
     elif params.command == 'gtex-vs-tcga':
         log.info('GTEx vs. TCGA')
         runner(GTExVsTCGA(params.project_dir, params.cores))
+
 
 if __name__ == '__main__':
     main()
