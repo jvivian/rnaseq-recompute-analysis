@@ -30,6 +30,7 @@ class TissueClustering(AbstractExperiment):
         self.pickles = os.path.join(self.experiment_dir, 'pickles')
         self.tcga = os.path.join(self.experiment_dir, 'tcga-only')
         self.tcga_matched = os.path.join(self.experiment_dir, 'tcga-matched')
+        self.expression_dataframes = self.protein_coding_paths
 
     def setup(self):
         dirtree = [self.tsne_dir, self.pca_dir, self.tcga, self.tcga_matched] + \
@@ -50,7 +51,7 @@ class TissueClustering(AbstractExperiment):
         self.run_clustering(mode='tcga-matched')
 
     def run_clustering(self, mode='tsne'):
-        for tissue_path in tqdm(sorted(self.protein_coding_paths)):
+        for tissue_path in tqdm(sorted(self.expression_dataframes)):
             tissue = os.path.basename(os.path.dirname(tissue_path))
             pickle_path = os.path.join(self.pickles, mode, tissue + '.pickle')
             if os.path.exists(pickle_path):
@@ -74,7 +75,7 @@ class TissueClustering(AbstractExperiment):
                 label = get_label(df)
                 df = df.T  # Transpose so dataframe is samples x genes
 
-                # Normalization via log normalization
+                # log normalization
                 # Also experimented with Size Factor Rescaling (from DESeq2) and Quantile Normalization
                 # Log normalization seemed sufficient, is fast, and straight forward
                 df = df.apply(lambda y: np.log(y + 1))
