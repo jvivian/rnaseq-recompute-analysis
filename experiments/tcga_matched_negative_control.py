@@ -2,7 +2,7 @@ import logging
 import os
 import textwrap
 
-from experiments.tcga_matched import TcgaMatched
+from experiments.tcga_tumor_vs_normal_paired import TcgaMatched
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
