@@ -1,3 +1,4 @@
 *.ipynb_checkpoints
 *.pyc
 rnaseq_recompute_analysis.egg-info
+data/
