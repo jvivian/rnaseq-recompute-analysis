@@ -16,18 +16,22 @@ class AbstractExperiment(object):
         super(AbstractExperiment, self).__init__()
 
         self.root_dir = root_dir
+        self.experiments_dir = os.path.join(root_dir, 'experiments')
         self.gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
         self.tissue_dataframe_dir = os.path.join(root_dir, 'data/tissue-dataframes')
         self.tissue_pair_dir = os.path.join(root_dir, 'data/tissue-pairs')
         self.tissues = os.listdir(os.path.join(root_dir, 'data/tissue-pairs'))
         self.gene_map = os.path.join(root_dir, 'metadata/gene_map.pickle')
+        self.combat_script = os.path.join(root_dir, 'metadata/combat.r')
 
+        # Paths to expression dataframes containing only protien-coding genes for all tissues
         self.protein_coding_paths = [
             os.path.join(self.tissue_pair_dir, x, 'combined-gtex-tcga-counts-protein-coding.tsv')
             for x in self.tissues]
 
-        self.combat_protein_paths= [
-            os.path.join(self.tissue_pair_dir, x, 'combat-2-batch-protein.tsv')
+        # ComBat Nonparametric with Tissue Covariates
+        self.cbnt_pc = [
+            os.path.join(self.tissue_pair_dir, x, 'expression-CBNT-PC.tsv')
             for x in self.tissues]
 
     def create_directories(self, dirtree):
