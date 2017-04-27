@@ -15,10 +15,12 @@ setup(name='rnaseq_recompute_analysis',
                         'matplotlib',
                         'sklearn',
                         'scipy',
-                        'futures'],
+                        'futures',
+                        'toil>=3.6.0'],
       entry_points = {
           'console_scripts': [
               'create-project = create_project:main',
-              'recompute-analysis = recompute_analysis:main'
+              'recompute-analysis = recompute_analysis:main',
+              'pairwise-deseq2 = toil_pipelines.pairwise_deseq2:main'
           ]
       })

@@ -3,7 +3,6 @@ from __future__ import print_function
 import argparse
 import os
 import pickle
-import random
 import sys
 import textwrap
 from collections import defaultdict
@@ -25,36 +24,34 @@ from toil_lib.urls import download_url, s3am_upload, download_url_job
 schemes = ('http', 'file', 's3', 'ftp', 'gnos')
 
 
-def root(job, samples, gene_map, output_dir, max_partition, disk):
+def root(job, samples, gene_map, output_dir, disk):
     """
     Downloads input file and stages each sample
 
     :param JobFunctionWrappingJob job: passed automatically by Toil
     :param dict samples: key=UUID, value=[expression_url, group_url]
     :param str gene_map: URL to gene_map used to map gene IDs to gene names
-    :param str|int disk: Initial size of expression dataframe
-    :param id max_partition: Maximum size to use for forming subgroups for pairwise copmarison
+    :param str|int disk:
     :param str output_dir: Full path/ S3 URL to output directory
     """
-    # Download gene_map - Pickled dict mapping ENS gene IDs to gene names
+    # Download gene_map
     gene_map_id = job.addChildJobFn(download_url_job, gene_map).rv()
 
-    # Staging is IO intensive, and should run one job per machine
+    # Staging is IO intensive, and should run one job per machine if possible
     cores = int(cpu_count())
 
     # For every sample -> staging
     for sample in samples.iteritems():
-        job.addFollowOnJobFn(staging, sample, gene_map_id, max_partition, output_dir, disk=disk, cores=cores).rv()
+        job.addFollowOnJobFn(staging, sample, gene_map_id, output_dir, disk=disk, cores=cores).rv()
 
 
-def staging(job, sample, gene_map_id, max_partition, output_dir):
+def staging(job, sample, gene_map_id, output_dir):
     """
     Derives vectors for a sample and spawns jobs for individual DESeq2 runs
 
     :param JobFunctionWrappingJob job: passed automatically by Toil
     :param tuple(str, [str, str]) sample: tuple containing UUID and URLs for the expression dataframe and group info
     :param str gene_map_id: FileStoreID for the gene_map downloaded in the root job
-    :param id max_partition: Maximum size to use for forming subgroups for pairwise copmarison
     :param str output_dir: Full path/ S3 URL to output directory
     """
     work_dir = job.fileStore.getLocalTempDir()
@@ -78,54 +75,29 @@ def staging(job, sample, gene_map_id, max_partition, output_dir):
     # Sort so group 1 is smaller
     group_1, group_2 = sorted([groups['1'], groups['2']], key=lambda x: len(x))
 
-    # Partition larger group into n groups by some value such that the (N mod p) + r is maximized and the difference
-    # between the partition and the remainder is minimized
-    max_val = 0
-    partition = None
-    remainder = None
-    for i in xrange(max_partition):
-        r = len(group_2) % max_partition
-        r = max_partition if r == 0 else r  # Special case where 0 indicates the remainder is equal to the partition
-        if r + max_partition >= max_val:
-            max_val = r + max_partition
-            partition = max_partition
-            remainder = r
-        max_partition -= 1
-
-    log(job, 'Writing out vectors for {}, one per {} samples in group 2 and one of size {}. g1: {}  g2: {}'
-             ''.format(uuid, partition, remainder, len(group_1), len(group_2)))
-    random.shuffle(group_2)
-    num_partitions = 0
-    for i, p_vector in enumerate(partitions(group_2, partition)):
-        with open(os.path.join(work_dir, str(i)), 'w') as f:
-            vector = [x.replace('-', '.') for x in group_1 + p_vector]
+    log(job, 'Writing out vectors, one per sample in group 2. g1: {}  g2: {}'.format(len(group_1), len(group_2)))
+    for sample in group_2:
+        with open(os.path.join(work_dir, sample), 'w') as f:
+            vector = [x.replace('-', '.') for x in group_1 + [sample]]  # Precaution for R
             f.write('\n'.join(vector) + '\n')
-        num_partitions += 1
 
     # Save vectors to jobStore
-    vector_ids = [job.fileStore.writeGlobalFile(os.path.join(work_dir, str(x))) for x in xrange(num_partitions)]
+    vector_ids = [job.fileStore.writeGlobalFile(os.path.join(work_dir, x)) for x in group_2]
 
     log(job, 'Creating one job per vector: {}'.format(len(vector_ids)))
     disk = int(df_id.size + 1e9)
-    cores = min(partition, int(cpu_count()))
-    memory = str(min(partition, int(cpu_count()))) + 'G'
-    results = [job.addChildJobFn(run_deseq2, partition, df_id, vector_id, cores=cores,
-                                 disk=disk, memory=memory).rv() for vector_id in vector_ids[:-1]]
-    results.append(job.addChildJobFn(run_deseq2, remainder, df_id, vector_ids[-1], cores=cores,
-                                     disk=disk, memory=memory).rv())
+    results = [job.addChildJobFn(run_deseq2, df_id, vector_id, disk=disk, memory='4G').rv() for vector_id in vector_ids]
 
     # Follow-on --> combine_results
-    # weight_vector = [1.0 * partition / len(group_2), 1.0 * remainder / len(group_2)]
     disk = PromisedRequirement(lambda y: sum([x.size for x in y]) + int(1e9), results)
     job.addFollowOnJobFn(combine_results, results, vector_ids, gene_map_id, uuid, output_dir, disk=disk).rv()
 
 
-def run_deseq2(job, partition, df_id, vector_id):
+def run_deseq2(job, df_id, vector_id):
     """
     Runs DEseq2 given a vector and expression dataframe
 
     :param JobFunctionWrappingJob job: passed automatically by Toil
-    :param int partition: Length of the partition in group 2
     :param str df_id: FileStoreID of expression dataframe
     :param str vector_id: FileStoreID of vector
     :return: FileStoreID of the results
@@ -139,7 +111,7 @@ def run_deseq2(job, partition, df_id, vector_id):
     # Write out Rscript
     r_path = os.path.join(work_dir, 'deseq.R')
     with open(r_path, 'wb') as f:
-        f.write(deseq2_script(partition, job.cores))
+        f.write(deseq2_script())
 
     # Run DESeq2 Docker
     tool = 'jvivian/deseq2:1.14.1'
@@ -164,7 +136,6 @@ def combine_results(job, result_ids, vector_ids, gene_map_id, uuid, output_dir):
 
     :param JobFunctionWrappingJob job: passed automatically by Toil
     :param list[str,] result_ids: FileStoreIDs of all the results for this sample
-    :param list[str,] vector_ids: FileStoreIDs of all the vectors for this sample
     :param str gene_map_id: FileStoreID for the gene_map downloaded in the root job
     :param str uuid: The UUID of the sample
     :param str output_dir: Full path/ S3 URL to output directory
@@ -184,33 +155,26 @@ def combine_results(job, result_ids, vector_ids, gene_map_id, uuid, output_dir):
     ranked = pd.DataFrame()
     pvals = defaultdict(list)
     fc = defaultdict(list)
-    rank = defaultdict(list)
     for result in results:
         with open(result, 'r') as f:
             f.readline()
-            for i, line in enumerate(f):
+            for line in f:
                 line = line.strip().split('\t')
                 if line:
                     gene, mean, l2fc, lfcse, stat, pval, padj = line
                     if padj != 'NA':
                         pvals[gene].append(float(padj))
                         fc[gene].append(float(l2fc))
-                        rank[gene].append(i)
-                        # if result == results[-1]:
-                        #     pvals[gene].append(padj * weight_vector[1])  # Use weight vector for remainder sample
-                        # else:
-                        #     pvals[gene].append(padj * weight_vector[0])  # Use weight vector for partition samples
 
     # Create columns in the combined dataframe
     genes = pvals.keys()
-    ranked['num_comparisons'] = [len(pvals[x]) for x in genes]
+    ranked['num_samples'] = [len(pvals[x]) for x in genes]
     ranked['pval_counts'] = [sum([1 for y in pvals[x] if y < 0.01]) for x in genes]
-    ranked['pval_percentage'] = np.array([float(x) for x in ranked['pval_counts']]) / np.array(ranked['num_comparisons'])
+    ranked['pval_percentage'] = np.array([float(x) for x in ranked['pval_counts']]) / np.array(ranked['num_samples'])
     ranked['pval'] = [np.median(pvals[x]) for x in genes]
     ranked['pval_std'] = [round(np.std(pvals[x]), 4) for x in genes]
     ranked['fc'] = [round(np.median(fc[x]), 4) for x in genes]
     ranked['fc_std'] = [round(np.std(fc[x]), 4) for x in genes]
-    ranked['gene_rank'] = [np.median(rank[x]) for x in genes]
 
     # Map gene ids to gene names and add as a column
     gene_names = [gene_map[x] if x in gene_map.keys() else x for x in genes]
@@ -297,18 +261,10 @@ def parse_samples(path_to_manifest):
     return samples
 
 
-def partitions(l, n):
-    """Yield successive n-sized partitions from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-
-
-def deseq2_script(partition, cores):
+def deseq2_script():
     return textwrap.dedent("""
         suppressMessages(library('DESeq2'))
         suppressMessages(library('data.table'))
-        suppressMessages(library('BiocParallel'))
-        register(MulticoreParam({cores}))
 
         # Argument parsing
         df_path <- '/data/expression.tsv'
@@ -323,7 +279,7 @@ def deseq2_script(partition, cores):
         setcolorder(sub, as.character(vector))
 
         # Create matrix vectors
-        disease_vector <- c(rep('A', length(vector)-{partition}), rep('B', {partition}))
+        disease_vector <- c(rep('A', length(vector)-1), 'B')
 
         # DESeq2 preprocessing
         # Rounding the countData since DESeQ2 only accepts integer counts
@@ -332,15 +288,15 @@ def deseq2_script(partition, cores):
         y <- DESeqDataSetFromMatrix(countData = countData, colData = colData, design = ~ disease)
 
         # Run DESeq2
-        y <- DESeq(y, parallel=TRUE)
-        res <- results(y, parallel=TRUE)
+        y <- DESeq(y)
+        res <- results(y)
         summary(res)
 
         # Write out table
         resOrdered <- res[order(res$padj),]
         res_path <- paste(results_dir, sample_name, sep='/')
         write.table(as.data.frame(resOrdered), file=res_path, col.names=NA, sep='\\t', quote=FALSE)
-        """.format(**locals()))
+        """)
 
 
 def log(job, string):
@@ -389,21 +345,16 @@ def main():
                             help='Path to the (filled in) manifest file, generated with "generate-manifest". '
                             '\nDefault value: "%(default)s"')
 
-    parser_run.add_argument('--output-dir', required=True,
-                            help='Output location for pipeline. Either provide a full path to a '
-                                 'directory or an s3:// URL where the samples will be uploaded.')
+    parser_run.add_argument('--output-dir', required=True, help='Output location for pipeline. Either provide '
+                                                                'a full path to a directory or an s3:// URL '
+                                                                'where the samples will be uploaded.')
 
     parser_run.add_argument('--gene_map', help='A python pickled dictionary mapping gene ids to gene names',
                             default='https://raw.githubusercontent.com/jvivian/'
                                     'rnaseq-recompute-analysis/master/utils/gene_map.pickle')
-
-    parser_run.add_argument('--initial-size', default='10G',
-                            help='Initial disk allotted for each sample. Change this '
-                                 'value if your average sample is larger than 10G.')
-
-    parser_run.add_argument('--max-partition', type=int, default=15,
-                            help='The maximum partition size to split the larger group of samples into.')
-
+    parser_run.add_argument('--initial-size', default='10G', help='Initial disk allotted for each sample. Change'
+                                                                  'this value if your average sample is larger'
+                                                                  'than 10G.')
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         parser.print_help()
@@ -427,8 +378,7 @@ def main():
             if args.restart:
                 toil.restart()
             else:
-                toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir,
-                                         args.max_partition, args.initial_size))
+                toil.start(Job.wrapJobFn(root, samples, args.gene_map, args.output_dir, args.initial_size))
 
 
 if __name__ == '__main__':
