@@ -11,7 +11,7 @@ For a given partition size
 """
 import os
 import shutil
-from subprocess import check_call, CalledProcessError
+from subprocess import check_call
 
 from experiments.AbstractExperiment import AbstractExperiment
 
@@ -50,7 +50,7 @@ class PartitionPearsonRelationship(AbstractExperiment):
                 check_call(cmd + ['--manifest={}'.format(manifest_path),
                                   '--max-partition=' + str(p),
                                   os.path.join(self.jobStores, str(p)),
-                                  '--workDir='.format(os.path.join(self.work_dir)),
+                                  '--workDir=' + self.work_dir,
                                   '--output-dir=' + output_dir,
                                   '--disableCaching',
                                   '--cleanWorkDir=never',
