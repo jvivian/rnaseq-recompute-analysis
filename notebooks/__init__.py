@@ -53,3 +53,15 @@ def log_progress(sequence, every=None, size=None, name='Items'):
             name=name,
             index=str(index or '?')
         )
+
+
+def quantile_normalize(df):
+    """
+    Quantile normalization is a technique for making two distributions identical in statistical properties.
+    Assuming genes by samples
+    from: http://stackoverflow.com/questions/37935920/quantile-normalization-on-pandas-dataframe
+
+    Gene x Sample matrix
+    """
+    rank_mean = df.stack().groupby(df.rank(method='first').stack().astype(int)).mean()
+    return df.rank(method='min').stack().astype(int).map(rank_mean).unstack()
