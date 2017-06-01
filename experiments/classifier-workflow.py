@@ -186,19 +186,34 @@ def rank_to_dict(ranks, names, order=1):
 
 
 def main():
+    """
+    Classifier Workflow
+     
+    -- Steps --
+    1. Dataframe and label vector are split into train / test set KFold n times
+        2. Each train / test group is scaled to mean 0 unit variance 1
+        3. Optimum # of features is determined and feature importance is scored by several classifiers
+        4. Features are reduced using SelectKBest and Chi2 with the value from step 3.
+        5. Classifiers are trained and scored. The best scoring classifier is serialized.
+    6. Save scores from n runs to `scores.tsv`
+    """
     parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter,
                                      add_help=False)
 
     parser.add_argument("-X", help="Path to dataframe TSV of samples by features. Ensure all categorical features "
-                                   "have been One-Hot-Encoded or something similar. Will be read in by Pandas.")
-    parser.add_argument("-y", require=True, type=str, help='Path to label vector for dataframe (X). One label per'
-                                                           'line. Will be read in directly with NumPy.')
+                                   "have been One-Hot-Encoded. Will be read in by Pandas and expects column labels.")
+    parser.add_argument("-y", type=str, help='Path to label vector for dataframe (X). One label per '
+                                             'line. Will be read in directly with NumPy.')
+    parser.add_argument('-n', type=int, default=3, help='Number of folds to perform workflow')
 
     args = parser.parse_args()
-    c = Classifier(args.X, args.y)
-    for X_train, y_train, X_test, y_test in c.get_train_test():
-        c.features(X_train, y_train)
-        break
+    c = ClassifierWorkflow(args.X, args.y, args.n)
+    for n, (X_train, y_train, X_test, y_test) in enumerate(c.get_train_test()):
+        log.info('Beginning run for fold {} of {}'.format(n, args.n))
+        c.features(X_train, y_train, n=n + 1)
+        c.score(X_train, y_train, X_test, y_test, n=n + 1)
+    c.save_scores()
+
 
 if __name__ == '__main__':
     main()
