@@ -38,11 +38,11 @@ log = logging.getLogger(__name__)
 
 
 def unwrap_self_return_fit(arg, **kwarg):
-    return Classifier._return_fit(*arg, **kwarg)
+    return ClassifierWorkflow._return_fit(*arg, **kwarg)
 
 
-class Classifier():
-    def __init__(self, X, y):
+class ClassifierWorkflow():
+    def __init__(self, X, y, folds):
         self.X = pd.read_csv(X, sep='\t', index_col=0)
         self.y = np.array([x.strip() for x in open(y).readlines()])
         self.features = X.columns
