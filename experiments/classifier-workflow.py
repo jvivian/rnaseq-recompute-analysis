@@ -1,40 +1,37 @@
-import argparse
-
 import matplotlib
-from sklearn.linear_model import RandomizedLogisticRegression
+from collections import defaultdict
 
-matplotlib.use('Agg')
+matplotlib.use('Agg')  # Implement linux safe backend for plotting
 
-import pickle
-import os
-
-from multiprocessing import cpu_count
-from multiprocessing import Pool
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import argparse
 import logging
+import pickle
+from multiprocessing import Pool
+from multiprocessing import cpu_count
 
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import KFold
-from sklearn.preprocessing import scale
-from sklearn.preprocessing import MinMaxScaler
-
-from sklearn.feature_selection import RFE, RFECV, SelectKBest, chi2, f_regression
-from sklearn.model_selection import StratifiedKFold
-
-from sklearn.neural_network import MLPClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, ExtraTreesClassifier, \
-    GradientBoostingClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import RFECV
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.linear_model import RandomizedLogisticRegression
+from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import scale
+from sklearn.svm import SVC, LinearSVC
+from sklearn.tree import DecisionTreeClassifier
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
