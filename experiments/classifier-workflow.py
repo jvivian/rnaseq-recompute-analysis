@@ -74,61 +74,51 @@ class ClassifierWorkflow():
         for train, test in kf.split(self.X, self.y):
             yield scale(self.X[train]), self.y[train], scale(self.X[test]), self.y[test]
 
-    def _return_fit(self, (clf, X, y, features)):
-        clf.fit(X, y)
-        return clf
+    def feature_selection_and_fitting(self, X, y, n=0):
+        # RFECV is a feature selection method not an estimator, so it's defined here
+        rfecv = RFECV(estimator=SVC(kernel="linear"), step=1000, cv=StratifiedKFold(2),
+                      scoring='accuracy', n_jobs=-1, verbose=1)
 
-    def feature_selection(self, X, y):
+        # Methods to estimate feature importance
+        multi_methods = ['RandomForest', 'ExtraTrees']
+        single_methods = ['GradientBoostingClassifier', 'AdaBoost', 'DecisionTreeClassifier',
+                          'LinearSVC', 'LinearDiscriminantAnalysis']
 
+        multi_clfs = [self.multicore_classifiers[x] for x in multi_methods] + [rfecv]
+        single_clfs = [self.classifiers[x] for x in single_methods]
+
+        # Train Classifiers
+        log.info('Training Classifiers')
         # Create multiprocessing pool so we can parallelize fitting
         p = Pool(cpu_count())
-
-        # Methods to use for feature selection
-        multi_methods = [
-            RandomForestClassifier(n_jobs=-1, verbose=1),
-            ExtraTreesClassifier(n_jobs=-1, verbose=1),
-            RFECV(estimator=SVC(kernel="linear"), step=1000,
-                  cv=StratifiedKFold(2), scoring='accuracy', n_jobs=-1, verbose=1),
-            RandomizedLogisticRegression(n_jobs=-1, verbose=1)
-        ]
-
-        # These methods can't use multicore so we'll parallelize them
-        single_core_methods = [
-            GradientBoostingClassifier(verbose=1),
-            AdaBoostClassifier()
-        ]
-
-        log.info('Training Classifiers')
-        clfs = [clf.fit(X, y) for clf in multi_methods] + \
-               p.map(unwrap_self_return_fit, zip([self] * len(single_core_methods), single_core_methods))
-
+        clfs = [clf.fit(X, y) for clf in multi_clfs] + \
+                p.map(unwrap_self_return_fit, zip([self] * len(single_clfs), [(clf, X, y) for clf in single_clfs]))
 
         # Unpack fit classifiers and store their respective coefficients
-        rf, et, rfecv, rlr, gbc, ada = clfs
-        self.ranks["RF"] = rank_to_dict(np.abs(rf.feature_importances_), self.features)
-        self.ranks["ETrees"] = rank_to_dict(np.abs(et.feature_importances_), self.features)
-        self.ranks["RFECV"] = rank_to_dict(np.abs(rfecv.feature_importances_), self.features)
-        self.ranks['RLR'] = rank_to_dict(np.abs(rlr.feature_importances_), self.features)
-        self.ranks["GBC"] = rank_to_dict(np.abs(gbc.feature_importances_), self.features)
-        self.ranks["ADA"] = rank_to_dict(np.abs(gbc.feature_importances_), self.features)
-        log.info("Optimal number of features : %d" % rfecv.n_features_)
+        for method, clf in zip(multi_methods + ['RFECV'] + single_methods, clfs):
+            if method == 'LinearSVC' or method == 'LinearDiscriminantAnalysis':
+                self.ranks[method] = rank_to_dict(np.abs(clf.coef_), self.features)
+            elif method == 'RFE':
+                log.info("Optimal number of features : %d" % rfecv.n_features_)
+            else:
+                self.ranks[method] = rank_to_dict(clf.feature_importances_, self.features)
 
-        log.debug('Computing average value for each feature')
+        # Compute mean of all methods for each feature
+        log.info('Computing average score for each feature')
         r = {}
-        for name in self.features:
-            r[name] = round(np.median([self.ranks[method][name] for method in self.ranks.keys()]), 2)
-
-        methods = sorted(self.ranks.keys())
-        self.ranks["Mean"] = r
-        methods.append("Mean")
+        for feature in self.features:
+            log.debug('Computing average value for feature: {}'.format(feature))
+            r[feature] = round(np.median([self.ranks[method][feature] for method in self.ranks.keys()]), 2)
 
         # Output Dataframe of features by importance score
-        log.info('Creating')
+        log.info('Creating Dataframe of Feature Importance')
         expr = pd.DataFrame()
         expr['feature'] = self.features
-        for method in methods:
+        for method in sorted(self.ranks.keys()):
             expr[method] = [self.ranks[method][f] for f in self.features]
-        expr.to_csv('feature-scores.tsv', sep='\t')
+        expr['Mean'] = [r[f] for f in self.features]
+        expr.sort_values('Mean', ascending=False)
+        expr.to_csv('feature-scores-{}.tsv'.format(n), sep='\t')
 
         # Plot number of features VS. cross-validation scores
         plt.figure()
