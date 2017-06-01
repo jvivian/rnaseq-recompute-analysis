@@ -171,8 +171,9 @@ class ClassifierWorkflow():
 
     def save_scores(self):
         log.info('Saving scores for all classifiers')
+        cols = ['Score-R{}'.format(x+1) for x in xrange(self.folds)]
         with open('scores.tsv', 'w') as f:
-            f.write('Method\tScore-R1\tScore-R2\tScore-R3\tAverage\n')
+            f.write('Method\t{}\tAverage\n'.format('\t'.join(cols)))
             for k, v in sorted(self.scores.iteritems()):
                 f.write('{}\t{}\t{}\n'.format(k, '\t'.join([str(x) for x in v]), np.mean(v)))
 
