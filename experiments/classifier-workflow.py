@@ -126,7 +126,55 @@ class ClassifierWorkflow():
         plt.ylabel("Cross validation score (nb of correct classifications)")
         plt.plot([x * 1000 for x in range(len(rfecv.grid_scores_))], rfecv.grid_scores_)
         plt.title('Optimal Number of Features for Classification')
-        plt.savefig('features-vs-cv-scores.png')
+        plt.savefig('features-vs-cv-scores-{}.png'.format(n))
+
+    def _return_fit(self, (clf, X, y)):
+        clf.fit(X, y)
+        return clf
+
+    def score(self, X_train, y_train, X_test, y_test, n=0):
+        best_clf = None
+        best_name = None
+        best_score = 0
+
+        # Using information from the feature selection step we'll select top K features
+        # And then retrain the classifiers on the reduced dataset
+        log.info('Selecting top {} features based on RFECV'.format(self.n_features))
+        skb = SelectKBest(chi2, k=self.n_features)
+        skb.fit(X_train, y_train)
+        mask = skb.get_support(indices=True)
+
+        # Apply Mask
+        X_train, y_train = X_train[mask], y_train[mask]
+        X_test, y_test = X_test[mask], y_test[mask]
+
+        log.info('\n\nRetraining and Scoring Classifiers')
+        for name in sorted(self.classifiers.keys()):
+            # Retrain and score
+            clf = self.classifiers[name]
+            clf.fit(X_train, y_train)
+            score = clf.score(X_test, y_test)
+            self.scores[name].append(score)
+
+            # Retain top-scoring CLF
+            if score > best_score:
+                best_score = score
+                best_clf = clf
+                best_name = name
+                log.info('\tCurrent best classifier: {}'.format(name))
+
+            log.info('Classifier: {}\tScore: {}'.format(name, score))
+
+        log.info('Seralizing top-scoring classifier')
+        with open('{}-{}.pickle'.format(best_name, n), 'w') as f:
+            pickle.dump(best_clf, f)
+
+    def save_scores(self):
+        log.info('Saving scores for all classifiers')
+        with open('scores.tsv', 'w') as f:
+            f.write('Method\tScore-R1\tScore-R2\tScore-R3\tAverage\n')
+            for k, v in sorted(self.scores.iteritems()):
+                f.write('{}\t{}\t{}\n'.format(k, '\t'.join([str(x) for x in v]), np.mean(v)))
 
 
 def rank_to_dict(ranks, names, order=1):
