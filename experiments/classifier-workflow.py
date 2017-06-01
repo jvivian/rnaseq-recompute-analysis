@@ -45,12 +45,32 @@ class ClassifierWorkflow():
     def __init__(self, X, y, folds):
         self.X = pd.read_csv(X, sep='\t', index_col=0)
         self.y = np.array([x.strip() for x in open(y).readlines()])
+        self.folds = folds
         self.features = X.columns
         self.samples = X.index
+        self.n_features = None
         self.ranks = dict()
+        self.scores = defaultdict()
 
-    def get_train_test(self, n=3):
-        kf = KFold(n)
+        # Classifiers
+        self.classifiers = {'GradientBoostingClassifier': GradientBoostingClassifier(verbose=1),
+                            'AdaBoost': AdaBoostClassifier(),
+                            'LinearSVC': LinearSVC(verbose=1),
+                            'MLPClassifier': MLPClassifier(alpha=1, verbose=1),
+                            'DecisionTreeClassifier': DecisionTreeClassifier(),
+                            'GaussianNB': GaussianNB(),
+                            'QuadraticDiscriminantAnalysis': QuadraticDiscriminantAnalysis(),
+                            'LinearDiscriminantAnalysis': LinearDiscriminantAnalysis()}
+
+        self.multicore_classifiers = {
+            'RandomForest': RandomForestClassifier(n_jobs=-1, verbose=1),
+            'ExtraTrees': ExtraTreesClassifier(n_jobs=-1, verbose=1),
+            'RandomizedLogisticRegression': RandomizedLogisticRegression(n_jobs=-1, verbose=1),
+            'GaussianProcessClassifier': GaussianProcessClassifier(n_jobs=-1),
+            'KNeighborsClassifier': KNeighborsClassifier(n_jobs=-1)}
+
+    def get_train_test(self):
+        kf = KFold(self.folds)
         for train, test in kf.split(self.X, self.y):
             yield scale(self.X[train]), self.y[train], scale(self.X[test]), self.y[test]
 
