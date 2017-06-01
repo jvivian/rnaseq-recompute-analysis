@@ -1,4 +1,5 @@
 import matplotlib
+
 matplotlib.use('Agg')  # Implement linux safe backend for plotting
 
 import argparse
@@ -36,10 +37,6 @@ from sklearn.tree import DecisionTreeClassifier
 from utils import cls, mkdir_p
 
 log = logging.getLogger(__name__)
-
-
-def unwrap_self_return_fit(arg, **kwarg):
-    return ClassifierWorkflow._return_fit(*arg, **kwarg)
 
 
 class ClassifierWorkflow():
@@ -83,7 +80,7 @@ class ClassifierWorkflow():
                 yield scale(np.array(self.X)[train, :]), self.y[train], scale(np.array(self.X)[test, :]), self.y[test]
 
     def feature_selection_and_fitting(self, X, y, n=0):
-        # RFECV is a feature selection method not an estimator, so it's defined here
+        # RFECV isn't an estimator, just used to estimate the optimal number of features
         self.step = np.ceil(len(self.features) * 1.0 / 20)
         rfecv = RFECV(estimator=SVC(kernel="linear"), step=self.step, cv=StratifiedKFold(2),
                       scoring='accuracy', n_jobs=-1, verbose=self.verbose)
@@ -185,6 +182,10 @@ class ClassifierWorkflow():
             f.write('Method\t{}\tAverage\n'.format('\t'.join(cols)))
             for k, v in sorted(self.scores.iteritems()):
                 f.write('{}\t{}\t{}\n'.format(k, '\t'.join([str(x) for x in v]), np.mean(v)))
+
+
+def unwrap_self_return_fit(arg, **kwarg):
+    return ClassifierWorkflow._return_fit(*arg, **kwarg)
 
 
 def rank_to_dict(ranks, names):
