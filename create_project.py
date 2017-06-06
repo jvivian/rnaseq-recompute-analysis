@@ -6,34 +6,40 @@ October, 2016
 import argparse
 import logging
 import os
-import shutil
 import sys
 
+import pandas as pd
 import synapseclient
 from concurrent.futures import ThreadPoolExecutor
 from synapseclient.exceptions import SynapseHTTPError
-from tqdm import tqdm
 
-from preprocessing.tissue_preprocessing import create_subframes, concat_frames, remove_nonprotein_coding_genes
-from utils import mkdir_p
+from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, create_candidate_pairs
+from utils import mkdir_p, merge_two_dicts
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 # Synapse inputs
-gtex_counts = 'syn7434140'
-tcga_counts = 'syn7434253'
-gtex_metadata = 'syn7248852'
-tcga_metadata = 'syn7248855'
-gencode_metadata = 'syn7248851'
-paired_table = 'syn7541065'
-gene_map = 'syn7801438'
-# Subdirectories to create
-leaves = ['data/xena-tables/gtex', 'data/xena-tables/tcga', 'data/tissue-pairs',
-          'data/tissue-dataframes', 'metadata', 'experiments']
+base_inputs = {
+    # Expression
+    'syn7434140': 'data/xena',
+    'syn7434253': 'data/xena',
+    # Pickled Objects
+    'syn9962451': 'data/objects',
+    'syn9962453': 'data/objects',
+    'syn7801438': 'data/objects',
+    # Additional Metadata
+    'syn7248852': 'metadata',
+    'syn7248855': 'metadata',
+    'syn7248851': 'metadata',
+    'syn9962462': 'metadata'}
+
+inter_inputs = {
+
+}
 
 
-def download_input_data(root_dir, user_name, cores):
+def download_input_data(inputs, root_dir, user_name, cores):
     """
     Downloads input data for the project
 
@@ -50,59 +56,47 @@ def download_input_data(root_dir, user_name, cores):
     except SynapseHTTPError as e:
         raise RuntimeError('Failed to connect Synapse client, check password: ' + e.message)
     # Download input tables
-    log.info('Downloading input data')
-    metadata_dir = os.path.join(root_dir, 'metadata')
-    download_information = [(syn, gtex_counts, os.path.join(root_dir, 'data/xena-tables/gtex')),
-                            (syn, tcga_counts, os.path.join(root_dir, 'data/xena-tables/tcga')),
-                            (syn, gtex_metadata, metadata_dir),
-                            (syn, tcga_metadata, metadata_dir),
-                            (syn, gencode_metadata, metadata_dir),
-                            (syn, paired_table, metadata_dir),
-                            (syn, gene_map, metadata_dir)]
+    log.info('Downloading data')
+    download_information = zip([syn for _ in xrange(len(inputs))], inputs.iteritems())
+
     with ThreadPoolExecutor(max_workers=cores) as executor:
         executor.map(synpase_download, download_information)
 
 
-def create_paired_tissues(root_dir):
-    """
-    Creates paired tissue dataframes
-
-    :param str root_dir: Project root directory
-    """
-    log.info('Creating paired tissues')
-    with open(os.path.join(root_dir, 'metadata/tissue-pairings.tsv'), 'r') as f:
-        for line in tqdm(f):
-            if line:
-                dirname, gtex, tcga = line.strip().split('\t')
-                # Some GTEx tissues need to be combined in the final dataframe
-                gtex = gtex.split(',') if ',' in gtex else [gtex]
-                tissue_dir = os.path.join(root_dir, 'data/tissue-pairs', dirname)
-                combined_path = os.path.join(tissue_dir, 'combined-gtex-tcga-counts.tsv')
-                if not os.path.exists(combined_path):
-                    mkdir_p(tissue_dir)
-                    gtex_dfs = [os.path.join(root_dir, 'data/tissue-dataframes/', g) for g in gtex]
-                    tcga_df = os.path.join(root_dir, 'data/tissue-dataframes/', tcga)
-                    # Create combined dataframe and group tissues together
-                    concat_frames(gtex_df_paths=gtex_dfs, tcga_df_path=tcga_df, output_path=combined_path)
-                    # Copy input dataframe NAMES over for clarity
-                    for name in gtex_dfs + [tcga_df]:
-                        with open(os.path.join(tissue_dir, os.path.basename(name)), 'w') as f:
-                            f.write('\n')
-                    # Create dataframe of just protein-coding genes
-                    gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
-                    remove_nonprotein_coding_genes(df_path=combined_path, gencode_path=gencode_path)
-
-
 def synpase_download(blob):
     """Map function for downloading from Synapse"""
-    syn, syn_id, location = blob
+    syn, info = blob
+    syn_id, location = info
     syn.get(syn_id, downloadLocation=location)
+
+
+def build(root_dir):
+    log.info('Reading in expression dataframes')
+    tcga_df = pd.read_csv(os.path.join(root_dir, 'data/xena/tcga_rsem_gene_counts.tsv'), sep='\t', index_col=0)
+    gtex_df = pd.read_csv(os.path.join(root_dir, 'data/xena/gtex_rsem_gene_counts.tsv'), sep='\t', index_col=0)
+    df = pd.concat([tcga_df, gtex_df], axis=1)
+    df.index.name = None
+
+    log.info('Reversing Xena normalization to get raw counts')
+    df = df.apply(lambda x: (2 ** x) - 1)
+
+    log.info('Retain only protein-coding genes')
+    gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
+    df = filter_nonprotein_coding_genes(df, gencode_path=gencode_path)
+
+    log.info('Creating and clustering candidate pairs')
+    create_candidate_pairs(df, root_dir)
 
 
 def main():
     """
     Recreates the RNA-seq Recompute Analysis project structure.
-        - Downloads input data / metadata from Synapse
+
+    Two methods:
+    1. Download all files needed for downstream experiments directly from Synapse
+
+    2. Download raw input files and build project from scratch
+        - Download input data / metadata from Synapse
         - Creates dataframes for GTEx and TCGA separated by body site or disease name
         - Pairs matching tissues together
         - Creates a subset of the combined dataframes containing only protein-coding genes
@@ -115,38 +109,38 @@ def main():
     If you do not have a synapse account, create one for free in under a minute at www.synapse.org
     """
     parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--location', type=str, help='Directory to create project.')
+    parser.add_argument('--location', type=str, help='Directory to create project: "rna-seq-analysis"')
     parser.add_argument('--username', type=str, help='Synapse username (email). Create account at Synpase.org and set '
                                                      'the password in the environment variable "SYNAPSE_PASSWORD".')
-    parser.add_argument('--cores', type=int, help='Number of cores to use when running R.', default=1)
-    parser.add_argument('--no-download', action='store_true', help='Flag for disabling downloading from Synapse')
-    params = parser.parse_args()
+    parser.add_argument('--cores', default=2, type=int, help='Number of cores to use.')
+
+    # Subparsers
+    subparsers = parser.add_subparsers()
+    subparsers.add_parser('download', dest='command', help='Recommended. Downloads directly from Synapse')
+    subparsers.add_parser('build', dest='command', help='Builds project from scratch.')
+
+    args = parser.parse_args()
 
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
 
-    log.info('Creating project directory tree at: ' + params.location)
-    root_dir = os.path.join(params.location, 'rna-seq-analysis')
+    # Create directories
+    log.info('Creating project directory tree at: ' + args.location)
+    root_dir = os.path.join(args.location, 'rna-seq-analysis')
+    leaves = ['data/xena', 'data/objects', 'data/tissue-pairs', 'data/candidate-tissues', 'metadata', 'experiments']
     [mkdir_p(os.path.join(root_dir, x)) for x in leaves]
 
-    if not params.no_download:
-        download_input_data(root_dir=root_dir, user_name=params.username, cores=params.cores)
+    # Commmand
+    if args.command == 'download':
+        inputs = merge_two_dicts(base_inputs, inter_inputs)
+        download_input_data(inputs, root_dir, args.username, args.cores)
+    elif args.command == 'build':
+        download_input_data(base_inputs, root_dir, args.username, args.cores)
+        build(root_dir)
     else:
-        log.info('--no-download enabled, skipping downloads from Synapse. Warning: missing files'
-                 'will cause failures downstream.')
-
-    gtex_metadata_path = os.path.join(root_dir, 'metadata/gtex-table.txt')
-    tcga_metadata_path = os.path.join(root_dir, 'metadata/tcga-summary.tsv')
-    gtex_xena_path = os.path.join(root_dir, 'data/xena-tables/gtex/gtex_gene_counts')
-    tcga_xena_path = os.path.join(root_dir, 'data/xena-tables/tcga/tcga_gene_counts')
-    tissue_dataframe_path = os.path.join(root_dir, 'data/tissue-dataframes')
-    log.info('Creating tissue dataframes at: ' + tissue_dataframe_path)
-    create_subframes(gtex_metadata=gtex_metadata_path, tcga_metadata=tcga_metadata_path,
-                     tcga_expression=tcga_xena_path, gtex_expression=gtex_xena_path, output_dir=tissue_dataframe_path)
-    # Create paired tissue directories
-    create_paired_tissues(root_dir)
+        raise RuntimeError('Argument error, check commands: {}'.format(args))
 
 
 if __name__ == '__main__':

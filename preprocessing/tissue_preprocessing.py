@@ -9,9 +9,84 @@ import os
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+import pickle
+
+from utils import mkdir_p
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+
+
+def create_candidate_pairs(df, root_dir):
+    pair_file = os.path.join(os.path.dirname(__file__), 'candidate_tissues.csv')
+    combined_metadata = os.path.join(root_dir, 'metadata/combined_metadata.tsv')
+    metadata = pd.read_csv(combined_metadata, index_col=0, sep='\t')
+
+    # For each candidate tissue (and possible pairing) create a dataframe for downstream clustering
+    with open(pair_file, 'r') as f:
+        for line in f:
+            line = line.split(',') if ',' in line else [line]
+
+            # Pull samples that match our tissue
+            samples = [list(metadata[metadata.tissue == x].index) for x in line]
+
+            # Filter out samples that aren't in our expression dataset
+            samples = [x for x in samples if x in df.columns]
+
+            name = os.path.join(root_dir, 'data/candidate-tissues', '-'.join(line))
+            mkdir_p(name)
+            log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(name)))
+            df[samples].T.to_csv(os.path.join(name, 'exp.tsv'), sep='\t')  # Samples by genes for clustering
+
+            log.info('Clustering: {}'.format(os.path.basename(name)))
+            output_path = os.path.join(name, 'cluster.html')
+            cluster_df(df[samples].T, root_dir, output_path=output_path)
+
+
+def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
+    """df needs to be samples by features"""
+    from bokeh.charts import Scatter, output_file
+    from bokeh.palettes import Category20c
+    from sklearn.manifold import TSNE
+    from sklearn.decomposition import TruncatedSVD
+
+    df = df.apply(lambda x: np.log2(x + 1)) if norm else df
+    log.info('\tReducing feature space to 50 with TruncatedSVD')
+    y = TruncatedSVD(n_components=50, random_state=0).fit_transform(np.array(df))
+    log.info('\tRunning t-SNE')
+    model = TSNE(n_components=2, random_state=1, perplexity=50, learning_rate=1000, verbose=2)
+    z = model.fit_transform(np.array(y))
+
+    # Load pickled map obojects
+    tissue_map = pickle.load(open(os.path.join(root_dir, 'data/objects/tissue_map.pickle', 'rb')))
+    type_map = pickle.load(open(os.path.join(root_dir, 'data/objects/type_map.pickle', 'rb')))
+
+    # Preparing Bokeh Plot
+    samples = df.index
+    pdf = pd.DataFrame()
+    pdf['sample'] = samples
+    pdf['tissue'] = [tissue_map[x].capitalize() for x in samples]
+    pdf['x'] = z[:, 0]
+    pdf['y'] = z[:, 1]
+    pdf['type'] = [type_map[x] for x in samples]
+
+    tooltips = [
+        ('Tissue', '@tissue'),
+        ('Type', '@type'),
+        ('Sample', '@sample')]
+
+
+    p = Scatter(pdf, x='x', y='y', title=title,
+                xlabel="1", ylabel="2",
+                color='tissue',
+                tooltips=tooltips,
+                legend=True,
+                plot_width=1024, plot_height=1024,
+                palette=Category20c[20],
+                responsive=True)
+
+    p.title.align = 'center'
+    output_file(output_path)
 
 
 def process_raw_xena_df(df):
@@ -98,41 +173,13 @@ def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_express
         create_subframe(tc, samples=subtype.barcode, name=name, output_dir=output_dir)
 
 
-def concat_frames(gtex_df_paths, tcga_df_path, output_path):
-    """
-    Concantenate tissue dataframes to create a single combined data frame
-
-    :param list gtex_df_paths: Path(s) to GTEx dataframe(s)
-    :param str tcga_df_path: Path to TCGA dataframe
-    :param str output_path: Path to where directory and tissue will be created
-    """
-    log.debug('Combining: {}\t{}'.format(gtex_df_paths, tcga_df_path))
-    if not os.path.exists(output_path):
-        gtex = [pd.read_csv(gtex_df, sep='\t', index_col=0) for gtex_df in gtex_df_paths]
-        tcga = pd.read_csv(tcga_df_path, sep='\t', index_col=0)
-        df = pd.concat(gtex + [tcga], axis=1)
-        df.to_csv(output_path, sep='\t')
-
-
-# TODO: Replace with GTFParser
-def remove_nonprotein_coding_genes(df_path, gencode_path):
-    """
-    Removes non-protein coding genes which can skew normalization
-
-    :param str df_path: Path to combined-gtex-tcga-counts.tsv dataframe
-    :param str gencode_path: Path to gencode GTF
-    """
-    df = pd.read_csv(df_path, sep='\t', index_col=0)
+def filter_nonprotein_coding_genes(df, gencode_path):
     pc_genes = set()
-    output_path = os.path.join(os.path.dirname(df_path), 'combined-gtex-tcga-counts-protein-coding.tsv')
-    if not os.path.exists(output_path):
-        with open(gencode_path, 'r') as f:
-            for line in f.readlines():
-                if not line.startswith('#'):
-                    line = line.split()
-                    if line[line.index('gene_type') + 1] == '"protein_coding";':
-                        pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
-        # Subset list of protein-coding genes
-        pc_genes = list(pc_genes)
-        df = df.ix[pc_genes]
-        df.to_csv(output_path, sep='\t')
+    with open(gencode_path, 'r') as f:
+        for line in f.readlines():
+            if not line.startswith('#'):
+                line = line.split()
+                if line[line.index('gene_type') + 1] == '"protein_coding";':
+                    pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
+    pc_genes = list(pc_genes)
+    return df[pc_genes]
