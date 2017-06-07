@@ -129,6 +129,7 @@ def main():
         parser.print_help()
         sys.exit(1)
     args = parser.parse_args()
+    cls()
 
     # Create directories
     log.info('Creating project directory tree at: ' + args.location)

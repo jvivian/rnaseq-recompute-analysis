@@ -32,15 +32,15 @@ def create_candidate_pairs(df, root_dir):
 
             # Filter out samples that aren't in our expression dataset
             samples = [x for x in samples if x in df.columns]
+            if samples:
+                name = os.path.join(root_dir, 'data/candidate-tissues', '-'.join(line))
+                mkdir_p(name)
+                log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(name)))
+                df[samples].T.to_csv(os.path.join(name, 'exp.tsv'), sep='\t')  # Samples by genes for clustering
 
-            name = os.path.join(root_dir, 'data/candidate-tissues', '-'.join(line))
-            mkdir_p(name)
-            log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(name)))
-            df[samples].T.to_csv(os.path.join(name, 'exp.tsv'), sep='\t')  # Samples by genes for clustering
-
-            log.info('Clustering: {}'.format(os.path.basename(name)))
-            output_path = os.path.join(name, 'cluster.html')
-            cluster_df(df[samples].T, root_dir, output_path=output_path)
+                log.info('Clustering: {}'.format(os.path.basename(name)))
+                output_path = os.path.join(name, 'cluster.html')
+                cluster_df(df[samples].T, root_dir, output_path=output_path)
 
 
 def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
@@ -50,6 +50,7 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     from sklearn.manifold import TSNE
     from sklearn.decomposition import TruncatedSVD
 
+    log.info('Dataframe shape: {}'.format(df.shape))
     df = df.apply(lambda x: np.log2(x + 1)) if norm else df
     log.info('\tReducing feature space to 50 with TruncatedSVD')
     y = TruncatedSVD(n_components=50, random_state=0).fit_transform(np.array(df))
