@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 def create_candidate_pairs(df, root_dir):
     pair_file = os.path.join(os.path.dirname(__file__), 'candidate_tissues.csv')
-    combined_metadata = os.path.join(root_dir, 'metadata/combined_metadata.tsv')
+    combined_metadata = os.path.join(root_dir, 'metadata/tcga_gtex_metadata_intersect.tsv')
     metadata = pd.read_csv(combined_metadata, index_col=0, sep='\t')
 
     # For each candidate tissue (and possible pairing) create a dataframe for downstream clustering
