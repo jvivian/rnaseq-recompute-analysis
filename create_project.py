@@ -14,7 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 from synapseclient.exceptions import SynapseHTTPError
 
 from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, create_candidate_pairs
-from utils import mkdir_p, merge_two_dicts
+from utils import mkdir_p, merge_two_dicts, cls
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -67,8 +67,7 @@ def synpase_download(blob):
     """Map function for downloading from Synapse"""
     syn, info = blob
     syn_id, location = info
-    if not os.path.exists(location):
-        syn.get(syn_id, downloadLocation=location)
+    syn.get(syn_id, downloadLocation=location)
 
 
 def build(root_dir):
@@ -122,6 +121,7 @@ def main():
 
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
+        cls()
         parser.print_help()
         sys.exit(1)
     args = parser.parse_args()
