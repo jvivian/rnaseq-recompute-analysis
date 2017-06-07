@@ -181,4 +181,4 @@ def filter_nonprotein_coding_genes(df, gencode_path):
                 if line[line.index('gene_type') + 1] == '"protein_coding";':
                     pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
     pc_genes = list(pc_genes)
-    return df[pc_genes]
+    return df.loc[pc_genes]
