@@ -67,7 +67,8 @@ def synpase_download(blob):
     """Map function for downloading from Synapse"""
     syn, info = blob
     syn_id, location = info
-    syn.get(syn_id, downloadLocation=location)
+    if not os.path.exists(location):
+        syn.get(syn_id, downloadLocation=location)
 
 
 def build(root_dir):
@@ -115,16 +116,15 @@ def main():
     parser.add_argument('--cores', default=2, type=int, help='Number of cores to use.')
 
     # Subparsers
-    subparsers = parser.add_subparsers()
-    subparsers.add_parser('download', dest='command', help='Recommended. Downloads directly from Synapse')
-    subparsers.add_parser('build', dest='command', help='Builds project from scratch.')
-
-    args = parser.parse_args()
+    subparsers = parser.add_subparsers(dest='command')
+    subparsers.add_parser('download', help='Recommended. Downloads directly from Synapse')
+    subparsers.add_parser('build',  help='Builds project from scratch.')
 
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
+    args = parser.parse_args()
 
     # Create directories
     log.info('Creating project directory tree at: ' + args.location)

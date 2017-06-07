@@ -75,7 +75,6 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
         ('Type', '@type'),
         ('Sample', '@sample')]
 
-
     p = Scatter(pdf, x='x', y='y', title=title,
                 xlabel="1", ylabel="2",
                 color='tissue',
