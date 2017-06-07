@@ -59,8 +59,8 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     z = model.fit_transform(np.array(y))
 
     # Load pickled map obojects
-    tissue_map = pickle.load(open(os.path.join(root_dir, 'data/objects/tissue_map.pickle', 'rb')))
-    type_map = pickle.load(open(os.path.join(root_dir, 'data/objects/type_map.pickle', 'rb')))
+    tissue_map = pickle.load(open(os.path.join(root_dir, 'data/objects/tissue_map.pickle'), 'rb'))
+    type_map = pickle.load(open(os.path.join(root_dir, 'data/objects/type_map.pickle'), 'rb'))
 
     # Preparing Bokeh Plot
     samples = df.index
