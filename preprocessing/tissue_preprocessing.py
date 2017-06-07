@@ -72,7 +72,7 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     pdf['type'] = [type_map[x] for x in samples]
 
     # Determine number of colors for palette
-    if 3 < len(pdf.type.unique) < 10:
+    if 3 < len(pdf.type.unique()) < 10:
         num_colors = len(pdf.type.unique())
     elif len(pdf.type.unique()) >= 10:
         num_colors = 10
