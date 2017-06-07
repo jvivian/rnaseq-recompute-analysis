@@ -25,7 +25,7 @@ def create_candidate_pairs(df, root_dir):
     # For each candidate tissue (and possible pairing) create a dataframe for downstream clustering
     with open(pair_file, 'r') as f:
         for line in f:
-            line = line.strip().split(',') if ',' in line else [line.stip()]
+            line = line.strip().split(',') if ',' in line else [line.strip()]
 
             # Pull samples that match our tissue
             samples = flatten([list(metadata[metadata.tissue == x].index) for x in line])
