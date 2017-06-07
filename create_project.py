@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 
 # Synapse inputs
 base_inputs = {
-    # Expression
+    # Expression tables
     'syn7434140': 'data/xena',
     'syn7434253': 'data/xena',
     # Pickled Objects
@@ -57,7 +57,9 @@ def download_input_data(inputs, root_dir, user_name, cores):
         raise RuntimeError('Failed to connect Synapse client, check password: ' + e.message)
     # Download input tables
     log.info('Downloading data')
-    download_information = zip([syn for _ in xrange(len(inputs))], inputs.iteritems())
+    download_information = zip([syn for _ in xrange(len(inputs))],
+                               [root_dir for _ in xrange(len(inputs))],
+                               inputs.iteritems())
 
     with ThreadPoolExecutor(max_workers=cores) as executor:
         executor.map(synpase_download, download_information)
@@ -65,8 +67,9 @@ def download_input_data(inputs, root_dir, user_name, cores):
 
 def synpase_download(blob):
     """Map function for downloading from Synapse"""
-    syn, info = blob
+    syn, root_dir, info = blob
     syn_id, location = info
+    download_dir = os.path.join(root_dir, location)
     if not os.path.exists(os.path.join(location, syn.get(syn_id, downloadFile=False))):
         syn.get(syn_id, downloadLocation=location)
 
