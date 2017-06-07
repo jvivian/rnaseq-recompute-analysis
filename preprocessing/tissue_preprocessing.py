@@ -46,7 +46,7 @@ def create_candidate_pairs(df, root_dir):
 def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     """df needs to be samples by features"""
     from bokeh.charts import Scatter, output_file
-    from bokeh.palettes import Category20c
+    from bokeh.palettes import Category10
     from sklearn.manifold import TSNE
     from sklearn.decomposition import TruncatedSVD
 
@@ -70,7 +70,14 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     pdf['x'] = z[:, 0]
     pdf['y'] = z[:, 1]
     pdf['type'] = [type_map[x] for x in samples]
-    num_colors = len(pdf.type.unique()) if len(pdf.type.unique()) < 20 else 20
+
+    # Determine number of colors for palette
+    if 3 < len(pdf.type.unique) < 10:
+        num_colors = len(pdf.type.unique())
+    elif len(pdf.type.unique) >= 10:
+        num_colors = 10
+    else:
+        num_colors = 3
 
     tooltips = [
         ('Tissue', '@tissue'),
@@ -84,7 +91,7 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
                 tooltips=tooltips,
                 legend=True,
                 plot_width=1024, plot_height=1024,
-                palette=Category20c[num_colors],
+                palette=Category10[num_colors],
                 responsive=True)
 
     log.info('Outputting HTML to: {}'.format(output_path))
