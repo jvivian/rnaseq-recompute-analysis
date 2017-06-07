@@ -70,8 +70,8 @@ def synpase_download(blob):
     syn, root_dir, info = blob
     syn_id, location = info
     download_dir = os.path.join(root_dir, location)
-    if not os.path.exists(os.path.join(location, syn.get(syn_id, downloadFile=False))):
-        syn.get(syn_id, downloadLocation=location)
+    if not os.path.exists(os.path.join(download_dir, syn.get(syn_id, downloadFile=False))):
+        syn.get(syn_id, downloadLocation=download_dir)
 
 
 def build(root_dir):
