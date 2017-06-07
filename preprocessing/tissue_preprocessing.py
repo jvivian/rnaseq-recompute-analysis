@@ -70,21 +70,24 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     pdf['x'] = z[:, 0]
     pdf['y'] = z[:, 1]
     pdf['type'] = [type_map[x] for x in samples]
+    num_colors = len(pdf.type.unique()) if len(pdf.type.unique()) < 20 else 20
 
     tooltips = [
         ('Tissue', '@tissue'),
         ('Type', '@type'),
         ('Sample', '@sample')]
 
+    log.info('Creating Bokeh Scatterplot')
     p = Scatter(pdf, x='x', y='y', title=title,
                 xlabel="1", ylabel="2",
                 color='tissue',
                 tooltips=tooltips,
                 legend=True,
                 plot_width=1024, plot_height=1024,
-                palette=Category20c[20],
+                palette=Category20c[num_colors],
                 responsive=True)
 
+    log.info('Outputting HTML to: {}'.format(output_path))
     p.title.align = 'center'
     output_file(output_path)
 
