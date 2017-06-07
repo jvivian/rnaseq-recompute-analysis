@@ -45,7 +45,7 @@ def create_candidate_pairs(df, root_dir):
 
 def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     """df needs to be samples by features"""
-    from bokeh.charts import Scatter, output_file
+    from bokeh.charts import Scatter, output_file, show
     from bokeh.palettes import Category10
     from sklearn.manifold import TSNE
     from sklearn.decomposition import TruncatedSVD
@@ -97,6 +97,7 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     log.info('Outputting HTML to: {}'.format(output_path))
     p.title.align = 'center'
     output_file(output_path)
+    show(p)
 
 
 def process_raw_xena_df(df):
