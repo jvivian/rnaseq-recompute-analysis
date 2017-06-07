@@ -67,7 +67,8 @@ def synpase_download(blob):
     """Map function for downloading from Synapse"""
     syn, info = blob
     syn_id, location = info
-    syn.get(syn_id, downloadLocation=location)
+    if not os.path.exists(os.path.join(location, syn.get(syn_id, downloadFile=False))):
+        syn.get(syn_id, downloadLocation=location)
 
 
 def build(root_dir):
