@@ -11,7 +11,7 @@ import pandas as pd
 from tqdm import tqdm
 import pickle
 
-from utils import mkdir_p
+from utils import mkdir_p, flatten
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ def create_candidate_pairs(df, root_dir):
             line = line.split(',') if ',' in line else [line]
 
             # Pull samples that match our tissue
-            samples = [list(metadata[metadata.tissue == x].index) for x in line]
+            samples = flatten([list(metadata[metadata.tissue == x].index) for x in line])
 
             # Filter out samples that aren't in our expression dataset
             samples = [x for x in samples if x in df.columns]
