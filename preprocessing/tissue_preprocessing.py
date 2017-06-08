@@ -57,6 +57,7 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
     from sklearn.decomposition import TruncatedSVD
 
     log.info('Dataframe shape: {}'.format(df.shape))
+    log.info('Applying log2(x + 1) normalization to raw counts')
     df = df.apply(lambda x: np.log2(x + 1)) if norm else df
     log.info('\tReducing feature space to 50 with TruncatedSVD')
     y = TruncatedSVD(n_components=50, random_state=0).fit_transform(np.array(df))
@@ -76,6 +77,16 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
     pdf['x'] = z[:, 0]
     pdf['y'] = z[:, 1]
     pdf['type'] = [type_map[x] if x in type_map else 'Not Found' for x in samples]
+    dataset = []
+    for s in samples:
+        if s.startswith('TCGA'):
+            if s.endswith('11'):
+                dataset.append('TCGA-Normal')
+            else:
+                dataset.append('TCGA-Tumor')
+        elif s.startswith('GTEX'):
+            dataset.append('GTEX')
+    pdf['dataset'] = dataset
 
     # Determine number of colors for palette
     if 3 < len(pdf.type.unique()) < 10:

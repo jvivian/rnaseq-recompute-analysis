@@ -95,6 +95,9 @@ def build(root_dir):
     log.info('Reducing dataframe from {} to {} samples'.format(len(df.columns), len(samples)))
     df = df[samples]
 
+    log.info('Saving Dataframe')
+    df.to_csv(os.path.join(root_dir, 'data/xena/tcga_gtex_counts_protein_coding.tsv'), sep='\t')
+
     log.info('Creating and clustering candidate pairs')
     create_candidate_pairs(df, root_dir)
 
@@ -111,6 +114,13 @@ def build(root_dir):
         log.info('Clustering entire dataset by type')
         cluster_df(df.T, root_dir, output_path=output_path,
                    title='t-SNE Clustering of TCGA and GTEx by Type', colorby='type')
+
+    output_path = os.path.join(output_dir, 'tSNE-clustering-dataset.html')
+    if not os.path.exists(output_path):
+        log.info('Clustering entire dataset by dataset origin')
+        cluster_df(df.T, root_dir, output_path=output_path,
+                   title='t-SNE Clustering of TCGA and GTEx by Type', colorby='dataset')
+
 
 
 def main():
