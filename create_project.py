@@ -148,7 +148,7 @@ def main():
     # Create directories
     log.info('Creating project directory tree at: ' + args.location)
     root_dir = os.path.join(args.location, 'rna-seq-analysis')
-    leaves = ['data/xena', 'data/objects', 'data/tissue-pairs', '/data/clustering', 'metadata', 'experiments']
+    leaves = ['data/xena', 'data/objects', 'data/tissue-pairs', 'data/clustering', 'metadata', 'experiments']
     [mkdir_p(os.path.join(root_dir, x)) for x in leaves]
 
     # Commmand
