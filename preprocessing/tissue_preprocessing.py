@@ -84,7 +84,7 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
                 dataset.append('TCGA-Normal')
             else:
                 dataset.append('TCGA-Tumor')
-        elif s.startswith('GTEX'):
+        else:
             dataset.append('GTEX')
     pdf['dataset'] = dataset
 

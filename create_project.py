@@ -124,7 +124,6 @@ def build(root_dir):
                    title='t-SNE Clustering of TCGA and GTEx by Type', colorby='dataset')
 
 
-
 def main():
     """
     Recreates the RNA-seq Recompute Analysis project structure.
