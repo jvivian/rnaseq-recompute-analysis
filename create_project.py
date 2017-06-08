@@ -84,9 +84,16 @@ def build(root_dir):
     log.info('Reversing Xena normalization to get raw counts')
     df = df.apply(lambda x: (2 ** x) - 1)
 
-    log.info('Retain only protein-coding genes')
+    log.info('Retaining only protein-coding genes')
     gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
     df = filter_nonprotein_coding_genes(df, gencode_path=gencode_path)
+
+    log.info('Filtering out samples with no corresponding metadata')
+    metadata = pd.read_csv(os.path.join(root_dir, 'metadata/tcga_gtex_metadata_intersect.tsv'), sep='\t', index_col=0)
+    met_samples = list(metadata.index)
+    samples = [x for x in df.columns if x in met_samples]
+    log.info('Reducing dataframe from {} to {} samples'.format(len(df.columns), len(samples)))
+    df = df[samples]
 
     log.info('Creating and clustering candidate pairs')
     create_candidate_pairs(df, root_dir)
@@ -103,7 +110,7 @@ def build(root_dir):
     if not os.path.exists(output_path):
         log.info('Clustering entire dataset by type')
         cluster_df(df.T, root_dir, output_path=output_path,
-                   title='t-SNE Clustering of TCGA and GTEx by Type', colorby='tissue')
+                   title='t-SNE Clustering of TCGA and GTEx by Type', colorby='type')
 
 
 def main():
