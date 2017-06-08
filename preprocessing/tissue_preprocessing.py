@@ -33,17 +33,23 @@ def create_candidate_pairs(df, root_dir):
             # Filter out samples that aren't in our expression dataset
             samples = [x for x in samples if x in df.columns]
             if samples:
-                name = os.path.join(root_dir, 'data/candidate-tissues', '-'.join(line))
+                name = os.path.join(root_dir, 'data/tissue-pairs', '-'.join(line))
                 mkdir_p(name)
-                log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(name)))
-                df[samples].T.to_csv(os.path.join(name, 'exp.tsv'), sep='\t')  # Samples by genes for clustering
+                tsv_path = os.path.join(name, 'tcga-gtex-exp.tsv')
+                if not os.path.exists(tsv_path):
+                    log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(name)))
+                    df[samples].to_csv(tsv_path, sep='\t')
 
-                log.info('Clustering: {}'.format(os.path.basename(name)))
-                output_path = os.path.join(name, 'cluster.html')
-                cluster_df(df[samples].T, root_dir, output_path=output_path, title=os.path.basename(name))
+                output_dir = os.path.join(root_dir, 'data/clustering', '-'.join(line))
+                mkdir_p(output_dir)
+                output_path = os.path.join(output_dir, 'tSNE-clustering.html')
+                if not os.path.exists(output_path):
+                    log.info('Clustering: {}'.format(os.path.basename(name)))
+                    # Note the transpose of the matrix is passed to get: samples by genes
+                    cluster_df(df[samples].T, root_dir, output_path=output_path, title=os.path.basename(name))
 
 
-def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
+def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby='type'):
     """df needs to be samples by features"""
     from bokeh.charts import Scatter, output_file, save
     from bokeh.palettes import Category10
@@ -87,7 +93,7 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True):
     log.info('Creating Bokeh Scatterplot')
     p = Scatter(pdf, x='x', y='y', title=title,
                 xlabel="1", ylabel="2",
-                color='tissue',
+                color=colorby,
                 tooltips=tooltips,
                 legend=True,
                 plot_width=1024, plot_height=1024,
