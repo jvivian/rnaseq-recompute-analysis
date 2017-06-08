@@ -5,11 +5,11 @@ September, 2016
 """
 import logging
 import os
+import pickle
 
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-import pickle
 
 from utils import mkdir_p, flatten
 
@@ -51,7 +51,7 @@ def create_candidate_pairs(df, root_dir):
 
 def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby='type'):
     """df needs to be samples by features"""
-    from bokeh.charts import Scatter, output_file, save
+    from bokeh.charts import Scatter, save
     from bokeh.palettes import Category10
     from sklearn.manifold import TSNE
     from sklearn.decomposition import TruncatedSVD
