@@ -13,7 +13,7 @@ import synapseclient
 from concurrent.futures import ThreadPoolExecutor
 from synapseclient.exceptions import SynapseHTTPError
 
-from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, create_candidate_pairs
+from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, create_candidate_pairs, cluster_df
 from utils import mkdir_p, merge_two_dicts, cls
 
 logging.basicConfig(level=logging.INFO)
@@ -91,6 +91,20 @@ def build(root_dir):
     log.info('Creating and clustering candidate pairs')
     create_candidate_pairs(df, root_dir)
 
+    output_dir = os.path.join(root_dir, 'data/clustering', 'all')
+    mkdir_p(output_dir)
+    output_path = os.path.join(output_dir, 'tSNE-clustering-tissue.html')
+    if not os.path.exists(output_path):
+        log.info('Clustering entire dataset by Tissue')
+        cluster_df(df.T, root_dir, output_path=output_path,
+                   title='t-SNE Clustering of TCGA and GTEx by Tissue', colorby='tissue')
+
+    output_path = os.path.join(output_dir, 'tSNE-clustering-type.html')
+    if not os.path.exists(output_path):
+        log.info('Clustering entire dataset by type')
+        cluster_df(df.T, root_dir, output_path=output_path,
+                   title='t-SNE Clustering of TCGA and GTEx by Type', colorby='tissue')
+
 
 def main():
     """
@@ -100,7 +114,7 @@ def main():
     1. Download all files needed for downstream experiments directly from Synapse
 
     2. Download raw input files and build project from scratch
-        - Download input data / metadata from Synapse
+            - Download input data / metadata from Synapse
         - Creates dataframes for GTEx and TCGA separated by body site or disease name
         - Pairs matching tissues together
         - Creates a subset of the combined dataframes containing only protein-coding genes
@@ -121,7 +135,7 @@ def main():
     # Subparsers
     subparsers = parser.add_subparsers(dest='command')
     subparsers.add_parser('download', help='Recommended. Downloads directly from Synapse')
-    subparsers.add_parser('build',  help='Builds project from scratch.')
+    subparsers.add_parser('build', help='Builds project from scratch.')
 
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
@@ -134,7 +148,7 @@ def main():
     # Create directories
     log.info('Creating project directory tree at: ' + args.location)
     root_dir = os.path.join(args.location, 'rna-seq-analysis')
-    leaves = ['data/xena', 'data/objects', 'data/tissue-pairs', 'data/candidate-tissues', 'metadata', 'experiments']
+    leaves = ['data/xena', 'data/objects', 'data/tissue-pairs', '/data/clustering', 'metadata', 'experiments']
     [mkdir_p(os.path.join(root_dir, x)) for x in leaves]
 
     # Commmand
