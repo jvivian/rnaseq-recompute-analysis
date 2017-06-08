@@ -96,7 +96,9 @@ def build(root_dir):
     df = df[samples]
 
     log.info('Saving Dataframe')
-    df.to_csv(os.path.join(root_dir, 'data/xena/tcga_gtex_counts_protein_coding.tsv'), sep='\t')
+    output_name = os.path.join(root_dir, 'data/xena/tcga_gtex_counts_protein_coding.tsv')
+    if not os.path.exists(output_name):
+        df.to_csv(output_name, sep='\t')
 
     log.info('Creating and clustering candidate pairs')
     create_candidate_pairs(df, root_dir)
