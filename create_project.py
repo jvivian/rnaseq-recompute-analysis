@@ -95,7 +95,7 @@ def build(root_dir):
     mkdir_p(output_dir)
     output_path = os.path.join(output_dir, 'tSNE-clustering-tissue.html')
     if not os.path.exists(output_path):
-        log.info('Clustering entire dataset by Tissue')
+        log.info('Clustering entire dataset by tissue')
         cluster_df(df.T, root_dir, output_path=output_path,
                    title='t-SNE Clustering of TCGA and GTEx by Tissue', colorby='tissue')
 
