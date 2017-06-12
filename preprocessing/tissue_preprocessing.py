@@ -10,7 +10,6 @@ import pickle
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-
 from utils import mkdir_p, flatten
 
 logging.basicConfig(level=logging.INFO)
@@ -53,6 +52,8 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
     """df needs to be samples by features"""
     from bokeh.charts import Scatter, save
     from bokeh.palettes import Category10
+    from bokeh.embed import autoload_static
+    from bokeh.resources import CDN
     from sklearn.manifold import TSNE
     from sklearn.decomposition import TruncatedSVD
 
@@ -114,6 +115,17 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
     log.info('Outputting HTML to: {}'.format(output_path))
     p.title.align = 'center'
     save(p, output_path, title=title)
+
+    # Save Javascript and HTMl tag versions of plots
+    output_dir = os.path.join(os.path.dirname(output_path), 'javascript')
+    mkdir_p(output_dir)
+    name = os.path.basename(output_path).split('.')[0] + '.js'
+    output_name = os.path.join(output_dir, name)
+    js, tag = autoload_static(p, CDN, "js/bokeh/{}".format(name))
+    with open(output_name, 'w') as f:
+        f.write(js)
+    with open(os.path.join(output_dir, "tags.txt"), 'a') as f:
+        f.write(tag)
 
 
 def process_raw_xena_df(df):
