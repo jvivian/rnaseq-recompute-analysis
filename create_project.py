@@ -14,7 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 from synapseclient.exceptions import SynapseHTTPError
 
 from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, create_candidate_pairs, cluster_df
-from utils import mkdir_p, merge_two_dicts, cls
+from utils import mkdir_p, cls
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ inputs = {
     'syn7248855': 'metadata',
     'syn7248851': 'metadata',
     'syn9962462': 'metadata',
-    'syn9998691': 'metadata',}
+    'syn9998691': 'metadata'}
 
 
 def download_input_data(root_dir, user_name, cores):
