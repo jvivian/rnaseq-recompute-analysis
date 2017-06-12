@@ -20,26 +20,23 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 # Synapse inputs
-base_inputs = {
+inputs = {
     # Expression tables
     'syn7434140': 'data/xena',
     'syn7434253': 'data/xena',
+    'syn9998692': 'data/xena',
     # Pickled Objects
     'syn9962451': 'data/objects',
     'syn9962453': 'data/objects',
-    'syn7801438': 'data/objects',
+    'syn9998690': 'data/objects',
     # Additional Metadata
     'syn7248852': 'metadata',
     'syn7248855': 'metadata',
     'syn7248851': 'metadata',
-    'syn9962462': 'metadata'}
-
-inter_inputs = {
-
-}
+    'syn9962462': 'metadata',
+    'syn9998691': 'metadata',}
 
 
-def download_input_data(inputs, root_dir, user_name, cores):
     """
     Downloads input data for the project
 
