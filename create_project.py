@@ -37,6 +37,7 @@ inputs = {
     'syn9998691': 'metadata',}
 
 
+def download_input_data(root_dir, user_name, cores):
     """
     Downloads input data for the project
 
@@ -102,23 +103,11 @@ def build(root_dir):
 
     output_dir = os.path.join(root_dir, 'data/clustering', 'all')
     mkdir_p(output_dir)
-    output_path = os.path.join(output_dir, 'tSNE-clustering-tissue.html')
-    if not os.path.exists(output_path):
-        log.info('Clustering entire dataset by tissue')
+    for cluster_type in ['tissue', 'type', 'dataset']:
+        output_path = os.path.join(output_dir, 'tSNE-clustering-{}.html'.format(cluster_type))
+        log.info('Clustering entire dataset by: {}'.format(cluster_type))
         cluster_df(df.T, root_dir, output_path=output_path,
-                   title='t-SNE Clustering of TCGA and GTEx by Tissue', colorby='tissue')
-
-    output_path = os.path.join(output_dir, 'tSNE-clustering-type.html')
-    if not os.path.exists(output_path):
-        log.info('Clustering entire dataset by type')
-        cluster_df(df.T, root_dir, output_path=output_path,
-                   title='t-SNE Clustering of TCGA and GTEx by Type', colorby='type')
-
-    output_path = os.path.join(output_dir, 'tSNE-clustering-dataset.html')
-    if not os.path.exists(output_path):
-        log.info('Clustering entire dataset by dataset origin')
-        cluster_df(df.T, root_dir, output_path=output_path,
-                   title='t-SNE Clustering of TCGA and GTEx by Type', colorby='dataset')
+                   title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby='tissue')
 
 
 def main():
@@ -168,10 +157,9 @@ def main():
 
     # Commmand
     if args.command == 'download':
-        inputs = merge_two_dicts(base_inputs, inter_inputs)
-        download_input_data(inputs, root_dir, args.username, args.cores)
+        download_input_data(root_dir, args.username, args.cores)
     elif args.command == 'build':
-        download_input_data(base_inputs, root_dir, args.username, args.cores)
+        download_input_data(root_dir, args.username, args.cores)
         build(root_dir)
     else:
         raise RuntimeError('Argument error, check commands: {}'.format(args))
