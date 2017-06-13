@@ -172,4 +172,4 @@ def cluster_entire_dataset(df, root_dir, base_title):
         if not os.path.exists(output_path):
             log.info('Clustering entire dataset by: {}'.format(cluster_type))
             cluster_df(df.T, root_dir, output_path=output_path,
-                       title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby='tissue')
+                       title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), cluster_type)
