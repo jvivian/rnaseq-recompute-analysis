@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-def create_tissue_pairs(df, root_dir, sub_dir='raw-counts', tsv_name='tcga-gtex-exp.tsv'):
+def create_tissue_pairs(df, root_dir, sub_dir='raw-counts'):
     pair_file = os.path.join(os.path.dirname(__file__), 'candidate_tissues.csv')
     # For each candidate tissue create a dataframe
     tissues = []
@@ -36,7 +36,7 @@ def create_tissue_pairs(df, root_dir, sub_dir='raw-counts', tsv_name='tcga-gtex-
                 tissue = '-'.join(line)
                 tissue_path = os.path.join(root_dir, 'data/tissue-pairs', sub_dir)
                 mkdir_p(tissue_path)
-                tsv_path = os.path.join(tissue_path, tsv_name)
+                tsv_path = os.path.join(tissue_path, '{}.tsv'.format(tissue))
                 if not os.path.exists(tsv_path):
                     log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(tissue_path)))
                     df[samples].to_csv(tsv_path, sep='\t')
@@ -150,11 +150,12 @@ def get_samples_for_tissue(df, root_dir, samples):
     return [x for x in samples if x in df.columns]
 
 
-def cluster_tissues(df, root_dir, tissues, base_title):
+def cluster_tissues(df, root_dir, tissues, sub_dir='raw-counts'):
     for tissue in tissues:
         tissue_name = '-'.join(tissue)
-        output_dir = os.path.join(root_dir, 'data/clustering')
-        output_path = os.path.join(output_dir, '{}-{}.html'.format(base_title, tissue_name))
+        output_dir = os.path.join(root_dir, 'data/tsne-clustering', sub_dir)
+        mkdir_p(output_dir)
+        output_path = os.path.join(output_dir, '{}.html'.format(tissue_name))
         if not os.path.exists(output_path):
             log.info('Clustering: {}'.format(tissue_name))
             # Get samples that correspond to our tissue
@@ -163,10 +164,11 @@ def cluster_tissues(df, root_dir, tissues, base_title):
             cluster_df(df[tissue_samples].T, root_dir, output_path=output_path, title=tissue_name)
 
 
-def cluster_entire_dataset(df, root_dir, base_title):
-    output_dir = os.path.join(root_dir, 'data/clustering')
+def cluster_entire_dataset(df, root_dir, sub_dir):
+    output_dir = os.path.join(root_dir, 'data/tsne-clustering', sub_dir, 'all')
+    mkdir_p(output_dir)
     for cluster_type in ['tissue', 'type', 'dataset']:
-        output_path = os.path.join(output_dir, '{}-{}.html'.format(base_title, cluster_type))
+        output_path = os.path.join(output_dir, '{}.html'.format(cluster_type))
         if not os.path.exists(output_path):
             log.info('Clustering entire dataset by: {}'.format(cluster_type))
             cluster_df(df.T, root_dir, output_path=output_path,
