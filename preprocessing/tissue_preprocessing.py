@@ -9,7 +9,13 @@ import pickle
 
 import numpy as np
 import pandas as pd
+from bokeh.charts import Scatter, save
+from bokeh.embed import autoload_static
 from bokeh.io import reset_output
+from bokeh.palettes import Category10
+from bokeh.resources import CDN
+from sklearn.decomposition import TruncatedSVD
+from sklearn.manifold import TSNE
 from utils import mkdir_p, flatten
 
 logging.basicConfig(level=logging.INFO)
@@ -40,12 +46,6 @@ def create_tissue_pairs(df, root_dir, tsv_name='tcga-gtex-exp.tsv'):
 
 def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby='type'):
     """df needs to be samples by features"""
-    from bokeh.charts import Scatter, save
-    from bokeh.palettes import Category10
-    from bokeh.embed import autoload_static
-    from bokeh.resources import CDN
-    from sklearn.manifold import TSNE
-    from sklearn.decomposition import TruncatedSVD
 
     log.info('Dataframe shape: {}'.format(df.shape))
     log.info('Applying log2(x + 1) normalization to raw counts')
