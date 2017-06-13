@@ -26,7 +26,7 @@ inputs = {
     # Expression tables
     'syn7434140': 'data/xena',
     'syn7434253': 'data/xena',
-    'syn10002712': 'data/xena',
+    'syn10002767': 'data/xena',
     # Pickled Objects
     'syn9962451': 'data/objects',
     'syn9962453': 'data/objects',
