@@ -106,7 +106,8 @@ def build(root_dir):
 
     # Read in DESeq2 Normalized Dataset
     log.info('\n\nCreating tissue pairs and clusters with DESeq2 normalized expression values')
-    df = pd.read_csv(os.path.join(root_dir, 'data/xena/deseq2_normalized_tcga_gtex_counts.tsv'), sep='\t', index_col=0)
+    df = pd.read_csv(os.path.join(root_dir, 'data/xena/deseq2_normalized_tcga_gtex_counts.tsv'),
+                     sep='\t', index_col=0, low_memory=True)
 
     log.info('Creating tissue pairs from normalized data')
     tissues = create_tissue_pairs(df, root_dir)
