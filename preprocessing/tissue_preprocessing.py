@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-def create_tissue_pairs(df, root_dir, tsv_name='tcga-gtex-exp.tsv'):
+def create_tissue_pairs(df, root_dir, sub_dir='raw-counts', tsv_name='tcga-gtex-exp.tsv'):
     pair_file = os.path.join(os.path.dirname(__file__), 'candidate_tissues.csv')
     # For each candidate tissue create a dataframe
     tissues = []
@@ -34,7 +34,7 @@ def create_tissue_pairs(df, root_dir, tsv_name='tcga-gtex-exp.tsv'):
 
             if samples:
                 tissue = '-'.join(line)
-                tissue_path = os.path.join(root_dir, 'data/tissue-pairs', tissue)
+                tissue_path = os.path.join(root_dir, 'data/tissue-pairs', sub_dir)
                 mkdir_p(tissue_path)
                 tsv_path = os.path.join(tissue_path, tsv_name)
                 if not os.path.exists(tsv_path):
