@@ -145,11 +145,6 @@ def main():
                                                      'the password in the environment variable "SYNAPSE_PASSWORD".')
     parser.add_argument('--cores', default=2, type=int, help='Number of cores to use.')
 
-    # Subparsers
-    subparsers = parser.add_subparsers(dest='command')
-    subparsers.add_parser('download', help='Recommended. Downloads directly from Synapse')
-    subparsers.add_parser('build', help='Builds project from scratch.')
-
     # If no arguments provided, print full help menu
     if len(sys.argv) == 1:
         cls()
@@ -164,14 +159,9 @@ def main():
     leaves = ['data/xena', 'data/objects', 'data/tissue-pairs', 'data/clustering', 'metadata', 'experiments']
     [mkdir_p(os.path.join(root_dir, x)) for x in leaves]
 
-    # Commmand
-    if args.command == 'download':
-        download_input_data(root_dir, args.username, args.cores)
-    elif args.command == 'build':
-        download_input_data(root_dir, args.username, args.cores)
-        build(root_dir)
-    else:
-        raise RuntimeError('Argument error, check commands: {}'.format(args))
+    # Download, build tissue pairs, and cluster
+    download_input_data(root_dir, args.username, args.cores)
+    build(root_dir)
 
 
 if __name__ == '__main__':
