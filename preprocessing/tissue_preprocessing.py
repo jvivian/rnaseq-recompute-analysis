@@ -29,18 +29,17 @@ def create_tissue_pairs(df, root_dir, sub_dir='raw-counts'):
     with open(pair_file, 'r') as f:
         for line in f:
             line = line.strip().split(',') if ',' in line else [line.strip()]
-            tissues.append(line)
             samples = get_samples_for_tissue(df, root_dir, line)
 
             if samples:
+                tissues.append(line)
                 tissue = '-'.join(line)
                 tissue_path = os.path.join(root_dir, 'data/tissue-pairs', sub_dir)
                 mkdir_p(tissue_path)
                 tsv_path = os.path.join(tissue_path, '{}.tsv'.format(tissue))
                 if not os.path.exists(tsv_path):
-                    log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(tissue_path)))
+                    log.info('Subsetting and saving dataframe: {}'.format(tissue))
                     df[samples].to_csv(tsv_path, sep='\t')
-                    tissues.append(tissue)
     return tissues
 
 
