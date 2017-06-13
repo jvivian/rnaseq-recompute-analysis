@@ -9,7 +9,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from bokeh.charts import Scatter, save
+from bokeh.charts import Scatter, save, Bar
 from bokeh.embed import autoload_static
 from bokeh.io import reset_output
 from bokeh.palettes import Category10
@@ -173,3 +173,48 @@ def cluster_entire_dataset(df, root_dir, sub_dir='raw-counts'):
             cluster_df(df.T, root_dir, output_path=output_path,
                        title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby=cluster_type)
 
+
+def plot_samples(df, tissues, root_dir):
+    tissue_names = []
+    tcga_t = []
+    tcga_n = []
+    gtex = []
+
+    output_dir = os.path.join(root_dir, 'plots')
+    output_file = os.path.join(output_dir, 'tissue-counts.html')
+    mkdir_p(output_dir)
+
+    for tissue in tissues:
+        tissue_name = '-'.join(tissue)
+        tissue_names.append(tissue_name)
+
+        tissue_samples = get_samples_for_tissue(df, root_dir, samples=tissue)
+        tcga_t.append(len([x for x in tissue_samples if x.startswith('TCGA') and not x.endswith('11')]))
+        tcga_n.append(len([x for x in tissue_samples if x.startswith('TCGA') and x.endswith('11')]))
+        gtex.append(len([x for x in tissue_samples if not x.startswith('TCGA')]))
+
+    tc = pd.DataFrame()
+    tc['counts'] = [int(x) for x in tcga_t + tcga_n + gtex]
+    tc['dataset'] = ['gtex' for _ in xrange(len(gtex))] + \
+                    ['tumor' for _ in xrange(len(tcga_t))] + \
+                    ['normal' for _ in xrange(len(tcga_n))]
+    tc['tissue'] = tissue_names * 3
+
+    # Plot
+    tooltips = [
+        ('# Samples', '@height'),
+    ]
+    b = Bar(tc, label='tissue', values='counts', group='dataset',
+            plot_width=1024, plot_height=512, tooltips=tooltips,
+            title='Number of Samples per Tissue Across Datasets',
+            responsive=True)
+    b.title.align = 'center'
+
+    save(b, output_file)
+
+    js, tag = autoload_static(b, CDN, 'js/bokeh/tissue-counts.js')
+    with open(os.path.join(output_dir, 'tissue-counts.js'), 'w') as f:
+        f.write(js)
+    with open(os.path.join(output_dir, 'tissue-counts.tag'), 'a') as f:
+        f.write(tag)
+    reset_output()
