@@ -150,7 +150,8 @@ def get_samples_for_tissue(df, root_dir, samples):
 
 def cluster_tissues(df, root_dir, tissues, title):
     for tissue in tissues:
-        output_dir = os.path.join(root_dir, 'data/clustering', tissue)
+        tissue_name = '-'.join(tissue)
+        output_dir = os.path.join(root_dir, 'data/clustering', tissue_name)
         mkdir_p(output_dir)
         output_path = os.path.join(output_dir, '{}.html'.format(title))
         if not os.path.exists(output_path):
