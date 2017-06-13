@@ -16,36 +16,26 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-def create_candidate_pairs(df, root_dir):
+def create_tissue_pairs(df, root_dir, tsv_name='tcga-gtex-exp.tsv'):
     pair_file = os.path.join(os.path.dirname(__file__), 'candidate_tissues.csv')
-    combined_metadata = os.path.join(root_dir, 'metadata/tcga_gtex_metadata_intersect.tsv')
-    metadata = pd.read_csv(combined_metadata, index_col=0, sep='\t')
-
-    # For each candidate tissue (and possible pairing) create a dataframe for downstream clustering
+    # For each candidate tissue create a dataframe
+    tissues = []
     with open(pair_file, 'r') as f:
         for line in f:
             line = line.strip().split(',') if ',' in line else [line.strip()]
+            tissues.append(line)
+            samples = get_samples_for_tissue(df, root_dir, line)
 
-            # Pull samples that match our tissue
-            samples = flatten([list(metadata[metadata.tissue == x].index) for x in line])
-
-            # Filter out samples that aren't in our expression dataset
-            samples = [x for x in samples if x in df.columns]
             if samples:
-                name = os.path.join(root_dir, 'data/tissue-pairs', '-'.join(line))
-                mkdir_p(name)
-                tsv_path = os.path.join(name, 'tcga-gtex-exp.tsv')
+                tissue = '-'.join(line)
+                tissue_path = os.path.join(root_dir, 'data/tissue-pairs', tissue)
+                mkdir_p(tissue_path)
+                tsv_path = os.path.join(tissue_path, tsv_name)
                 if not os.path.exists(tsv_path):
-                    log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(name)))
+                    log.info('Subsetting and saving dataframe: {}'.format(os.path.basename(tissue_path)))
                     df[samples].to_csv(tsv_path, sep='\t')
-
-                output_dir = os.path.join(root_dir, 'data/clustering', '-'.join(line))
-                mkdir_p(output_dir)
-                output_path = os.path.join(output_dir, 'tSNE-clustering.html')
-                if not os.path.exists(output_path):
-                    log.info('Clustering: {}'.format(os.path.basename(name)))
-                    # Note the transpose of the matrix is passed to get: samples by genes
-                    cluster_df(df[samples].T, root_dir, output_path=output_path, title=os.path.basename(name))
+                    tissues.append(tissue)
+    return tissues
 
 
 def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby='type'):
@@ -128,91 +118,8 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
         f.write(tag)
 
 
-def process_raw_xena_df(df):
-    """
-    Returns a dataframe in the format: samples x genes/isoforms
-
-    :param pd.DataFrame df: Raw expression dataframe pulled from Xena
-    :return: pd.DataFrame
-    """
-    df = df.T
-    df.columns = df.iloc[0]
-    print 'Samples: {}\tGenes: {}'.format(len(df.index), len(df.columns))
-    return df.drop('sample', axis=0)
-
-
-def prepare_for_de(df):
-    """
-    Returns gene/isoforms by samples
-
-    :param pd.DataFrame df: Dataframe to be transposed
-    :return: pd.DataFrame
-    """
-    df = df.T
-    df.index.name = None
-    return df
-
-
-def create_subframe(df, samples, name, output_dir):
-    """
-    Creates a subframe from a dataframe given a set of samples
-    Applies reverse normalization to get expected counts.
-
-    :param pd.DataFrame df: Expression dataframe
-    :param pd.Series samples: Selection of samples to subselect from
-    :param str name: Name of output dataframe
-    :param str output_dir: Path to output dataframe
-    """
-    output_path = os.path.join(output_dir, name + '.tsv')
-    if not os.path.exists(output_path):
-        sub = df[df.index.isin(samples)]
-        sub = prepare_for_de(sub)
-        sub = sub.apply(lambda x: (2**x) - 1)  # Reverse of Xena normalization
-        sub.to_csv(output_path, sep='\t')
-
-
-def create_subframes(gtex_metadata, tcga_metadata, gtex_expression, tcga_expression, output_dir):
-    """
-    Create subframes for every tissue
-
-    :param str gtex_metadata: Path to GTEx metadata
-    :param str tcga_metadata: Path to TCGA metadata
-    :param str gtex_expression: Path to GTEx expression table
-    :param str tcga_expression: Path to TCGA expression table
-    :param str output_dir: Path to output directory for tables
-    """
-    # GTEx metadata
-    gtex_meta = pd.read_csv(gtex_metadata, delimiter='\t')
-    gtex_meta.replace('<not provided>', np.nan, inplace=True)
-    gtex_meta.columns = [x[:-2] for x in gtex_meta.columns]
-
-    # TCGA metadata
-    # Fix naming convention - Xena's barcode consists of only 15 characters
-    tcga_meta = pd.read_csv(tcga_metadata, delimiter='\t')
-    tcga_meta.barcode = [x[:15] for x in tcga_meta.barcode]
-
-    log.info('Reading in in GTEx expression table')
-    gt = pd.read_csv(gtex_expression, delimiter='\t')
-    gt = process_raw_xena_df(gt)
-
-    log.info('Reading in TCGA expression table')
-    tc = pd.read_csv(tcga_expression, delimiter='\t')
-    tc = process_raw_xena_df(tc)
-
-    log.info('Creating GTEx tissue dataframes')
-    for tissue in tqdm(gtex_meta.body_site.unique()):
-        subtype = gtex_meta[gtex_meta.body_site == tissue]
-        name = '_'.join(' '.join(tissue.split('-')).split())
-        create_subframe(gt, samples=subtype.Sample_Name, name=name, output_dir=output_dir)
-
-    log.info('Creating TCGA tissue dataframes')
-    for tissue in tqdm(tcga_meta.disease_name.unique()):
-        subtype = tcga_meta[tcga_meta.disease_name == tissue]
-        name = '_'.join(' '.join(tissue.split('-')).split())
-        create_subframe(tc, samples=subtype.barcode, name=name, output_dir=output_dir)
-
-
-def filter_nonprotein_coding_genes(df, gencode_path):
+def filter_nonprotein_coding_genes(df, root_dir):
+    gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
     pc_genes = set()
     with open(gencode_path, 'r') as f:
         for line in f.readlines():
@@ -222,3 +129,44 @@ def filter_nonprotein_coding_genes(df, gencode_path):
                     pc_genes.add(line[line.index('gene_id') + 1].split('"')[1])
     pc_genes = list(pc_genes)
     return df.loc[pc_genes]
+
+
+def filter_samples_by_metadata(df, root_dir):
+    '''Removes samples not in metadata'''
+    metadata = pd.read_csv(os.path.join(root_dir, 'metadata/tcga_gtex_metadata_intersect.tsv'), sep='\t', index_col=0)
+    met_samples = list(metadata.index)
+    samples = [x for x in df.columns if x in met_samples]
+    log.info('Reducing dataframe from {} to {} samples'.format(len(df.columns), len(samples)))
+    return df[samples], samples
+
+
+def get_samples_for_tissue(df, root_dir, samples):
+    combined_metadata = os.path.join(root_dir, 'metadata/tcga_gtex_metadata_intersect.tsv')
+    metadata = pd.read_csv(combined_metadata, index_col=0, sep='\t')
+    # Pull samples that match our tissue
+    samples = flatten([list(metadata[metadata.tissue == x].index) for x in samples])
+    # Filter out samples that aren't in our expression dataset
+    return [x for x in samples if x in df.columns]
+
+
+def cluster_tissues(df, root_dir, tissues, title):
+    for tissue in tissues:
+        output_dir = os.path.join(root_dir, 'data/clustering', tissue)
+        mkdir_p(output_dir)
+        output_path = os.path.join(output_dir, '{}.html'.format(title))
+        if not os.path.exists(output_path):
+            log.info('Clustering: {}'.format(tissue))
+            # Get samples that correspond to our tissue
+            tissue_samples = get_samples_for_tissue(df, root_dir, samples=tissue)
+            # Note the transpose of the matrix is passed to get: samples by genes
+            cluster_df(df[tissue_samples].T, root_dir, output_path=output_path, title=tissue)
+
+
+def cluster_entire_dataset(df, root_dir, base_title):
+    output_dir = os.path.join(root_dir, 'data/clustering', 'all')
+    mkdir_p(output_dir)
+    for cluster_type in ['tissue', 'type', 'dataset']:
+        output_path = os.path.join(output_dir, '{}-{}.html'.format(base_title, cluster_type))
+        log.info('Clustering entire dataset by: {}'.format(cluster_type))
+        cluster_df(df.T, root_dir, output_path=output_path,
+                   title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby='tissue')

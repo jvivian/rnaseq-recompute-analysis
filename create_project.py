@@ -13,7 +13,11 @@ import synapseclient
 from concurrent.futures import ThreadPoolExecutor
 from synapseclient.exceptions import SynapseHTTPError
 
-from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, create_candidate_pairs, cluster_df
+from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, get_samples_for_tissue, cluster_tissues, \
+    cluster_entire_dataset
+from preprocessing.tissue_preprocessing import create_tissue_pairs
+from preprocessing.tissue_preprocessing import cluster_df
+from preprocessing.tissue_preprocessing import filter_samples_by_metadata
 from utils import mkdir_p, cls
 
 logging.basicConfig(level=logging.INFO)
@@ -83,31 +87,37 @@ def build(root_dir):
     df = df.apply(lambda x: (2 ** x) - 1)
 
     log.info('Retaining only protein-coding genes')
-    gencode_path = os.path.join(root_dir, 'metadata/gencode.v23.annotation.gtf')
-    df = filter_nonprotein_coding_genes(df, gencode_path=gencode_path)
+    df = filter_nonprotein_coding_genes(df, root_dir)
 
     log.info('Filtering out samples with no corresponding metadata')
-    metadata = pd.read_csv(os.path.join(root_dir, 'metadata/tcga_gtex_metadata_intersect.tsv'), sep='\t', index_col=0)
-    met_samples = list(metadata.index)
-    samples = [x for x in df.columns if x in met_samples]
-    log.info('Reducing dataframe from {} to {} samples'.format(len(df.columns), len(samples)))
-    df = df[samples]
+    df, samples = filter_samples_by_metadata(df, root_dir)
 
     log.info('Saving Dataframe')
     output_name = os.path.join(root_dir, 'data/xena/tcga_gtex_counts_protein_coding.tsv')
     if not os.path.exists(output_name):
         df.to_csv(output_name, sep='\t')
 
-    log.info('Creating and clustering candidate pairs')
-    create_candidate_pairs(df, root_dir)
+    log.info('Creating candidate pairs')
+    tissues = create_tissue_pairs(df, root_dir)
 
-    output_dir = os.path.join(root_dir, 'data/clustering', 'all')
-    mkdir_p(output_dir)
-    for cluster_type in ['tissue', 'type', 'dataset']:
-        output_path = os.path.join(output_dir, 'tSNE-clustering-{}.html'.format(cluster_type))
-        log.info('Clustering entire dataset by: {}'.format(cluster_type))
-        cluster_df(df.T, root_dir, output_path=output_path,
-                   title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby='tissue')
+    log.info('Clustering candidate pairs')
+    cluster_tissues(df, root_dir, tissues, title='tSNE-clustering')
+
+    # Clustering of entire Dataset
+    cluster_entire_dataset(df, root_dir, base_title='tSNE-clustering')
+
+    # Read in DESeq2 Normalized Dataset
+    log.info('\n\nCreating tissue pairs and clusters with DESeq2 normalized expression values')
+    df = pd.read_csv(os.path.join(root_dir, 'data/xena/deseq2_normalized_tcga_gtex_counts.tsv'), sep='\t', index_col=0)
+
+    log.info('Creating tissue pairs from normalized data')
+    tissues = create_tissue_pairs(df, root_dir)
+
+    log.info('Clustering normalized tissue pairs')
+    cluster_tissues(df, root_dir, tissues, title='Normalized-tSNE-clustering')
+
+    # Clustering of entire Dataset
+    cluster_entire_dataset(df, root_dir, base_title='Normalized-tSNE-clustering')
 
 
 def main():
