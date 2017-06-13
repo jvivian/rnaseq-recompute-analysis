@@ -11,9 +11,10 @@ import sys
 import pandas as pd
 import synapseclient
 from concurrent.futures import ThreadPoolExecutor
-from preprocessing.tissue_preprocessing import create_tissue_pairs, plot_samples
-from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, cluster_tissues, \
-    cluster_entire_dataset
+from preprocessing.tissue_preprocessing import cluster_entire_dataset
+from preprocessing.tissue_preprocessing import cluster_tissues
+from preprocessing.tissue_preprocessing import create_tissue_pairs, plot_num_samples_per_dataset
+from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes
 from preprocessing.tissue_preprocessing import filter_samples_by_metadata
 from synapseclient.exceptions import SynapseHTTPError
 from utils import mkdir_p, cls
@@ -112,8 +113,8 @@ def build(root_dir):
     log.info('Creating tissue pairs from normalized data')
     tissues = create_tissue_pairs(df, root_dir, sub_dir='normalized')
 
-    log.info('Creating plot of dataset')
-    plot_samples(df, tissues, root_dir)
+    log.info('Plotting dataset by number of samples')
+    plot_num_samples_per_dataset(df, tissues, root_dir)
 
     log.info('Clustering normalized tissue pairs')
     cluster_tissues(df, root_dir, tissues, sub_dir='normalized')

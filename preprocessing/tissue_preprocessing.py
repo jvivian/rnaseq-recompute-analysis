@@ -174,7 +174,7 @@ def cluster_entire_dataset(df, root_dir, sub_dir='raw-counts'):
                        title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby=cluster_type)
 
 
-def plot_samples(df, tissues, root_dir):
+def plot_num_samples_per_dataset(df, tissues, root_dir):
     tissue_names = []
     tcga_t = []
     tcga_n = []
