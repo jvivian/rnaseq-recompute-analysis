@@ -16,6 +16,7 @@ setup(name='rnaseq_recompute_analysis',
                         'sklearn',
                         'scipy',
                         'futures',
+                        'bokeh',
                         'toil>=3.6.0'],
       entry_points = {
           'console_scripts': [
