@@ -9,6 +9,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
+from bokeh.io import reset_output
 from utils import mkdir_p, flatten
 
 logging.basicConfig(level=logging.INFO)
@@ -115,6 +116,7 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
         f.write(js)
     with open(os.path.join(output_dir, "tags.txt"), 'a') as f:
         f.write(tag)
+    reset_output()
 
 
 def filter_nonprotein_coding_genes(df, root_dir):
