@@ -63,10 +63,10 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
     samples = df.index
     pdf = pd.DataFrame()
     pdf['sample'] = samples
-    pdf['tissue'] = [tissue_map[x].capitalize() if x in tissue_map else 'Not Found' for x in samples]
+    pdf['tissue'] = [tissue_map[x].capitalize() for x in samples if x in tissue_map]
     pdf['x'] = z[:, 0]
     pdf['y'] = z[:, 1]
-    pdf['type'] = [type_map[x] if x in type_map else 'Not Found' for x in samples]
+    pdf['type'] = [type_map[x] for x in samples if x in type_map]
     dataset = []
     for s in samples:
         if s.startswith('TCGA'):
