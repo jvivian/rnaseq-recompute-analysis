@@ -30,9 +30,9 @@ def create_tissue_pairs(df, root_dir, sub_dir='raw-counts'):
         for line in f:
             line = line.strip().split(',') if ',' in line else [line.strip()]
             samples = get_samples_for_tissue(df, root_dir, line)
+            tissues.append(line)
 
             if samples:
-                tissues.append(line)
                 tissue = '-'.join(line)
                 tissue_path = os.path.join(root_dir, 'data/tissue-pairs', sub_dir)
                 mkdir_p(tissue_path)
