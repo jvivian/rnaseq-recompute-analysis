@@ -150,14 +150,13 @@ def get_samples_for_tissue(df, root_dir, samples):
     return [x for x in samples if x in df.columns]
 
 
-def cluster_tissues(df, root_dir, tissues, title):
+def cluster_tissues(df, root_dir, tissues, base_title):
     for tissue in tissues:
         tissue_name = '-'.join(tissue)
-        output_dir = os.path.join(root_dir, 'data/clustering', tissue_name)
-        mkdir_p(output_dir)
-        output_path = os.path.join(output_dir, '{}.html'.format(title))
+        output_dir = os.path.join(root_dir, 'data/clustering')
+        output_path = os.path.join(output_dir, '{}-{}.html'.format(base_title, tissue_name))
         if not os.path.exists(output_path):
-            log.info('Clustering: {}'.format(tissue))
+            log.info('Clustering: {}'.format(tissue_name))
             # Get samples that correspond to our tissue
             tissue_samples = get_samples_for_tissue(df, root_dir, samples=tissue)
             # Note the transpose of the matrix is passed to get: samples by genes
@@ -165,11 +164,11 @@ def cluster_tissues(df, root_dir, tissues, title):
 
 
 def cluster_entire_dataset(df, root_dir, base_title):
-    output_dir = os.path.join(root_dir, 'data/clustering', 'all')
-    mkdir_p(output_dir)
+    output_dir = os.path.join(root_dir, 'data/clustering')
     for cluster_type in ['tissue', 'type', 'dataset']:
         output_path = os.path.join(output_dir, '{}-{}.html'.format(base_title, cluster_type))
         if not os.path.exists(output_path):
             log.info('Clustering entire dataset by: {}'.format(cluster_type))
             cluster_df(df.T, root_dir, output_path=output_path,
                        title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby=cluster_type)
+
