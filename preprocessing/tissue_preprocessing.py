@@ -167,6 +167,7 @@ def cluster_entire_dataset(df, root_dir, base_title):
     mkdir_p(output_dir)
     for cluster_type in ['tissue', 'type', 'dataset']:
         output_path = os.path.join(output_dir, '{}-{}.html'.format(base_title, cluster_type))
-        log.info('Clustering entire dataset by: {}'.format(cluster_type))
-        cluster_df(df.T, root_dir, output_path=output_path,
-                   title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby='tissue')
+        if not os.path.exists(output_path):
+            log.info('Clustering entire dataset by: {}'.format(cluster_type))
+            cluster_df(df.T, root_dir, output_path=output_path,
+                       title='t-SNE Clustering of TCGA and GTEx by {}'.format(cluster_type), colorby='tissue')
