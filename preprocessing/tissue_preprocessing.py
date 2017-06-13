@@ -159,7 +159,7 @@ def cluster_tissues(df, root_dir, tissues, title):
             # Get samples that correspond to our tissue
             tissue_samples = get_samples_for_tissue(df, root_dir, samples=tissue)
             # Note the transpose of the matrix is passed to get: samples by genes
-            cluster_df(df[tissue_samples].T, root_dir, output_path=output_path, title=tissue)
+            cluster_df(df[tissue_samples].T, root_dir, output_path=output_path, title=tissue_name)
 
 
 def cluster_entire_dataset(df, root_dir, base_title):
