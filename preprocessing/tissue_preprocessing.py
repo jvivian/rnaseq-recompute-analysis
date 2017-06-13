@@ -163,7 +163,7 @@ def cluster_tissues(df, root_dir, tissues, sub_dir='raw-counts'):
             cluster_df(df[tissue_samples].T, root_dir, output_path=output_path, title=tissue_name)
 
 
-def cluster_entire_dataset(df, root_dir, sub_dir):
+def cluster_entire_dataset(df, root_dir, sub_dir='raw-counts'):
     output_dir = os.path.join(root_dir, 'data/tsne-clustering', sub_dir, 'all')
     mkdir_p(output_dir)
     for cluster_type in ['tissue', 'type', 'dataset']:
