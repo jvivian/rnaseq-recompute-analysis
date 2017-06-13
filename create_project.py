@@ -75,34 +75,34 @@ def synpase_download(blob):
 
 
 def build(root_dir):
-    log.info('Reading in expression dataframes')
-    tcga_df = pd.read_csv(os.path.join(root_dir, 'data/xena/tcga_rsem_gene_counts.tsv'), sep='\t', index_col=0)
-    gtex_df = pd.read_csv(os.path.join(root_dir, 'data/xena/gtex_rsem_gene_counts.tsv'), sep='\t', index_col=0)
-    df = pd.concat([tcga_df, gtex_df], axis=1)
-    df.index.name = None
-
-    log.info('Reversing Xena normalization to get raw counts')
-    df = df.apply(lambda x: (2 ** x) - 1)
-
-    log.info('Retaining only protein-coding genes')
-    df = filter_nonprotein_coding_genes(df, root_dir)
-
-    log.info('Filtering out samples with no corresponding metadata')
-    df, samples = filter_samples_by_metadata(df, root_dir)
-
-    log.info('Saving Dataframe')
     output_name = os.path.join(root_dir, 'data/xena/tcga_gtex_counts_protein_coding.tsv')
     if not os.path.exists(output_name):
+        log.info('Reading in expression dataframes')
+        tcga_df = pd.read_csv(os.path.join(root_dir, 'data/xena/tcga_rsem_gene_counts.tsv'), sep='\t', index_col=0)
+        gtex_df = pd.read_csv(os.path.join(root_dir, 'data/xena/gtex_rsem_gene_counts.tsv'), sep='\t', index_col=0)
+        df = pd.concat([tcga_df, gtex_df], axis=1)
+        df.index.name = None
+
+        log.info('Reversing Xena normalization to get raw counts')
+        df = df.apply(lambda x: (2 ** x) - 1)
+
+        log.info('Retaining only protein-coding genes')
+        df = filter_nonprotein_coding_genes(df, root_dir)
+
+        log.info('Filtering out samples with no corresponding metadata')
+        df, samples = filter_samples_by_metadata(df, root_dir)
+
+        log.info('Saving Dataframe')
         df.to_csv(output_name, sep='\t')
 
-    log.info('Creating candidate pairs')
-    tissues = create_tissue_pairs(df, root_dir)
+        log.info('Creating candidate pairs')
+        tissues = create_tissue_pairs(df, root_dir)
 
-    log.info('Clustering candidate pairs')
-    cluster_tissues(df, root_dir, tissues, title='tSNE-clustering')
+        log.info('Clustering raw tissue pairs (for comparison)')
+        cluster_tissues(df, root_dir, tissues)
 
-    # Clustering of entire Dataset
-    cluster_entire_dataset(df, root_dir, base_title='tSNE-clustering')
+        # Clustering of entire Dataset
+        cluster_entire_dataset(df, root_dir)
 
     # Read in DESeq2 Normalized Dataset
     log.info('\n\nCreating tissue pairs and clusters with DESeq2 normalized expression values')
@@ -110,13 +110,13 @@ def build(root_dir):
                      sep='\t', index_col=0, low_memory=True)
 
     log.info('Creating tissue pairs from normalized data')
-    tissues = create_tissue_pairs(df, root_dir)
+    tissues = create_tissue_pairs(df, root_dir, sub_dir='normalized')
 
     log.info('Clustering normalized tissue pairs')
-    cluster_tissues(df, root_dir, tissues, title='Normalized-tSNE-clustering')
+    cluster_tissues(df, root_dir, tissues, sub_dir='normalized')
 
     # Clustering of entire Dataset
-    cluster_entire_dataset(df, root_dir, base_title='Normalized-tSNE-clustering')
+    cluster_entire_dataset(df, root_dir, sub_dir='normalized')
 
 
 def main():
@@ -156,7 +156,7 @@ def main():
     # Create directories
     log.info('Creating project directory tree at: ' + args.location)
     root_dir = os.path.join(args.location, 'rna-seq-analysis')
-    leaves = ['data/xena', 'data/objects', 'data/tissue-pairs', 'data/clustering', 'metadata', 'experiments']
+    leaves = ['data/xena', 'data/objects', 'data/tissue-pairs', 'data/tsne-clustering', 'metadata', 'experiments']
     [mkdir_p(os.path.join(root_dir, x)) for x in leaves]
 
     # Download, build tissue pairs, and cluster
