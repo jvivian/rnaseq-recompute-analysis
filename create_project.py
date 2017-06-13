@@ -11,13 +11,11 @@ import sys
 import pandas as pd
 import synapseclient
 from concurrent.futures import ThreadPoolExecutor
-from synapseclient.exceptions import SynapseHTTPError
-
-from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, get_samples_for_tissue, cluster_tissues, \
-    cluster_entire_dataset
 from preprocessing.tissue_preprocessing import create_tissue_pairs
-from preprocessing.tissue_preprocessing import cluster_df
+from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes, cluster_tissues, \
+    cluster_entire_dataset
 from preprocessing.tissue_preprocessing import filter_samples_by_metadata
+from synapseclient.exceptions import SynapseHTTPError
 from utils import mkdir_p, cls
 
 logging.basicConfig(level=logging.INFO)

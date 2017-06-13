@@ -9,7 +9,6 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
 from utils import mkdir_p, flatten
 
 logging.basicConfig(level=logging.INFO)
@@ -132,7 +131,7 @@ def filter_nonprotein_coding_genes(df, root_dir):
 
 
 def filter_samples_by_metadata(df, root_dir):
-    '''Removes samples not in metadata'''
+    """Removes samples not in metadata"""
     metadata = pd.read_csv(os.path.join(root_dir, 'metadata/tcga_gtex_metadata_intersect.tsv'), sep='\t', index_col=0)
     met_samples = list(metadata.index)
     samples = [x for x in df.columns if x in met_samples]
