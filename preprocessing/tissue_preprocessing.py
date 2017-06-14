@@ -180,7 +180,7 @@ def plot_num_samples_per_dataset(df, tissues, root_dir):
     tcga_n = []
     gtex = []
 
-    output_dir = os.path.join(root_dir, 'plots')
+    output_dir = os.path.join(root_dir, 'data', 'plots')
     output_file = os.path.join(output_dir, 'tissue-counts.html')
     mkdir_p(output_dir)
 
