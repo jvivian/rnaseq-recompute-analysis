@@ -195,7 +195,7 @@ def plot_num_samples_per_dataset(df, tissues, root_dir):
         gtex.append(len([x for x in tissue_samples if not x.startswith('TCGA')]))
 
     tc = pd.DataFrame()
-    tc['counts'] = [int(x) for x in tcga_t + tcga_n + gtex]
+    tc['counts'] = [int(x) for x in gtex + tcga_t + tcga_n]
     tc['dataset'] = ['gtex' for _ in xrange(len(gtex))] + \
                     ['tumor' for _ in xrange(len(tcga_t))] + \
                     ['normal' for _ in xrange(len(tcga_n))]
@@ -217,6 +217,6 @@ def plot_num_samples_per_dataset(df, tissues, root_dir):
     js, tag = autoload_static(b, CDN, 'js/bokeh/tissue-counts.js')
     with open(os.path.join(output_dir, 'tissue-counts.js'), 'w') as f:
         f.write(js)
-    with open(os.path.join(output_dir, 'tissue-counts.tag'), 'a') as f:
+    with open(os.path.join(output_dir, 'tissue-counts.tag'), 'w') as f:
         f.write(tag)
     reset_output()
