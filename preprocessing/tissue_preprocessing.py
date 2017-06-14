@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from bokeh.charts import Scatter, save, Bar
 from bokeh.embed import autoload_static
-from bokeh.io import reset_output
+from bokeh.io import reset_output, output_file
 from bokeh.palettes import Category10
 from bokeh.resources import CDN
 from sklearn.decomposition import TruncatedSVD
@@ -103,7 +103,8 @@ def cluster_df(df, root_dir, output_path, title='Bokeh Plot', norm=True, colorby
 
     log.info('Outputting HTML to: {}'.format(output_path))
     p.title.align = 'center'
-    save(p, output_path, title=title)
+    output_file(output_path)
+    save(p, resources=CDN, title=title)
 
     # Save Javascript and HTMl tag versions of plots
     output_dir = os.path.join(os.path.dirname(output_path), 'javascript')
@@ -181,7 +182,7 @@ def plot_num_samples_per_dataset(df, tissues, root_dir):
     gtex = []
 
     output_dir = os.path.join(root_dir, 'data', 'plots')
-    output_file = os.path.join(output_dir, 'tissue-counts.html')
+    output_path = os.path.join(output_dir, 'tissue-counts.html')
     mkdir_p(output_dir)
 
     for tissue in tissues:
@@ -210,7 +211,8 @@ def plot_num_samples_per_dataset(df, tissues, root_dir):
             responsive=True)
     b.title.align = 'center'
 
-    save(b, output_file)
+    output_file(output_path)
+    save(b, resources=CDN)
 
     js, tag = autoload_static(b, CDN, 'js/bokeh/tissue-counts.js')
     with open(os.path.join(output_dir, 'tissue-counts.js'), 'w') as f:
