@@ -126,7 +126,7 @@ def build(root_dir):
 
     # Cluster in a reduced gene space using 409 genes from UCSF
     gene_map = pickle.load(open(os.path.join(root_dir, 'data/objects/gene_map.pickle'), 'rb'))
-    genes = [gene_map[x] if x in gene_map else x for x in df.columns]
+    genes = [gene_map[x] if x in gene_map else x for x in df.index]
     df.index = genes
 
     ucsf_path = os.path.join(root_dir, 'metadata/UCSF-RNAPanel-Final-412-genes.csv')
