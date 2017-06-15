@@ -134,7 +134,7 @@ def build(root_dir):
     ucsf_genes = [x for x in ucsf_genes if x in genes]
 
     log.info('Clustering UCSF gene subset (409 genes)')
-    cluster_tissues(df[ucsf_genes], root_dir, tissues, sub_dir='UCSF-subset')
+    cluster_tissues(df.T[ucsf_genes].T, root_dir, tissues, sub_dir='UCSF-subset')
 
     cluster_entire_dataset(df, root_dir, sub_dir='UCSF-subset')
 
