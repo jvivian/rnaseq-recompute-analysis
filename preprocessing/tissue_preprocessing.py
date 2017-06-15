@@ -16,6 +16,7 @@ from bokeh.palettes import Category10
 from bokeh.resources import CDN
 from sklearn.decomposition import TruncatedSVD
 from sklearn.manifold import TSNE
+
 from utils import mkdir_p, flatten
 
 logging.basicConfig(level=logging.INFO)

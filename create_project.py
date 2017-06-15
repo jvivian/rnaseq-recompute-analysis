@@ -6,17 +6,19 @@ October, 2016
 import argparse
 import logging
 import os
+import pickle
 import sys
 
 import pandas as pd
 import synapseclient
 from concurrent.futures import ThreadPoolExecutor
+from synapseclient.exceptions import SynapseHTTPError
+
 from preprocessing.tissue_preprocessing import cluster_entire_dataset
 from preprocessing.tissue_preprocessing import cluster_tissues
 from preprocessing.tissue_preprocessing import create_tissue_pairs, plot_num_samples_per_dataset
 from preprocessing.tissue_preprocessing import filter_nonprotein_coding_genes
 from preprocessing.tissue_preprocessing import filter_samples_by_metadata
-from synapseclient.exceptions import SynapseHTTPError
 from utils import mkdir_p, cls
 
 logging.basicConfig(level=logging.INFO)
@@ -121,6 +123,20 @@ def build(root_dir):
 
     # Clustering of entire Dataset
     cluster_entire_dataset(df, root_dir, sub_dir='normalized')
+
+    # Cluster in a reduced gene space using 409 genes from UCSF
+    gene_map = pickle.load(open(os.path.join(root_dir, 'data/objects/gene_map.pickle'), 'rb'))
+    genes = [gene_map[x] if x in gene_map else x for x in df.columns]
+    df.columns = genes
+
+    ucsf_path = os.path.join(root_dir, 'metadata/UCSF-RNAPanel-Final-412-genes.csv')
+    ucsf_genes = [x.strip() for x in open(ucsf_path, 'r').readlines()]
+    ucsf_genes = [x for x in ucsf_genes if x in genes]
+
+    log.info('Clustering UCSF gene subset (409 genes)')
+    cluster_tissues(df[ucsf_genes], root_dir, tissues, sub_dir='UCSF-subset')
+
+    cluster_entire_dataset(df, root_dir, sub_dir='UCSF-subset')
 
 
 def main():
