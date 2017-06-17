@@ -39,7 +39,8 @@ inputs = {
     'syn7248855': 'metadata',
     'syn7248851': 'metadata',
     'syn9962462': 'metadata',
-    'syn9998691': 'metadata'}
+    'syn9998691': 'metadata',
+    'syn10131007': 'metadata'}
 
 
 def download_input_data(root_dir, user_name, cores):
@@ -95,9 +96,6 @@ def build(root_dir):
         log.info('Filtering out samples with no corresponding metadata')
         df, samples = filter_samples_by_metadata(df, root_dir)
 
-        log.info('Saving Dataframe')
-        df.to_csv(output_name, sep='\t')
-
         log.info('Creating candidate pairs')
         tissues = create_tissue_pairs(df, root_dir)
 
@@ -106,6 +104,9 @@ def build(root_dir):
 
         # Clustering of entire Dataset
         cluster_entire_dataset(df, root_dir)
+
+        log.info('Saving Dataframe')
+        df.to_csv(output_name, sep='\t')
 
     # Read in DESeq2 Normalized Dataset
     log.info('\n\nCreating tissue pairs and clusters with DESeq2 normalized expression values')
