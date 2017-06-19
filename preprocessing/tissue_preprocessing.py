@@ -146,7 +146,7 @@ def get_samples_for_tissue(df, root_dir, samples):
     combined_metadata = os.path.join(root_dir, 'metadata/tcga_gtex_metadata_intersect.tsv')
     metadata = pd.read_csv(combined_metadata, index_col=0, sep='\t')
     # Pull samples that match our tissue
-    samples = flatten([list(metadata[metadata.tissue == x].index) for x in samples])
+    samples = flatten([list(set(metadata[metadata.tissue == x].index) for x in samples)])
     # Filter out samples that aren't in our expression dataset
     return [x for x in samples if x in df.columns]
 
