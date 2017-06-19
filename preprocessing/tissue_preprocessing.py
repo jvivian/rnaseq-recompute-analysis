@@ -23,24 +23,29 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-def create_tissue_pairs(df, root_dir, sub_dir='raw-counts'):
+def get_tissues():
     pair_file = os.path.join(os.path.dirname(__file__), 'candidate_tissues.csv')
-    # For each candidate tissue create a dataframe
     tissues = []
     with open(pair_file, 'r') as f:
         for line in f:
             line = line.strip().split(',') if ',' in line else [line.strip()]
-            samples = get_samples_for_tissue(df, root_dir, line)
             tissues.append(line)
+    return tissues
 
-            if samples:
-                tissue = '-'.join(line)
-                tissue_path = os.path.join(root_dir, 'data/tissue-pairs', sub_dir)
-                mkdir_p(tissue_path)
-                tsv_path = os.path.join(tissue_path, '{}.tsv'.format(tissue))
-                if not os.path.exists(tsv_path):
-                    log.info('Subsetting and saving dataframe: {}'.format(tissue))
-                    df[samples].to_csv(tsv_path, sep='\t')
+
+def create_tissue_pairs(df, root_dir, sub_dir='raw-counts'):
+    # For each candidate tissue create a dataframe
+    tissues = get_tissues()
+    for tissue in tissues:
+        samples = get_samples_for_tissue(df, root_dir, tissue)
+        if samples:
+            tissue = '-'.join(tissue)
+            tissue_path = os.path.join(root_dir, 'data/tissue-pairs', sub_dir)
+            mkdir_p(tissue_path)
+            tsv_path = os.path.join(tissue_path, '{}.tsv'.format(tissue))
+            if not os.path.exists(tsv_path):
+                log.info('Subsetting and saving dataframe: {}'.format(tissue))
+                df[samples].to_csv(tsv_path, sep='\t')
     return tissues
 
 
