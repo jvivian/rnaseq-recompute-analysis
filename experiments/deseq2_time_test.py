@@ -20,8 +20,8 @@ class DESeq2TimeTest(AbstractExperiment):
         self.vector_dir = os.path.join(self.experiment_dir, 'vectors')
         self.results_dir = os.path.join(self.experiment_dir, 'results')
         self.script_path = None
-        self.df_b = os.path.join(self.tissue_pair_dir, 'breast', 'combined-gtex-tcga-counts-protein-coding.tsv')
-        self.df_h = os.path.join(self.tissue_pair_dir, 'head_and_neck', 'combined-gtex-tcga-counts-protein-coding.tsv')
+        self.df_b = os.path.join(self.tissue_pair_dir, 'Breast', 'tcga-gtex-exp.tsv')
+        self.df_h = os.path.join(self.tissue_pair_dir, 'Skin-Head', 'tcga-gtex-exp.tsv')
         self.results = os.path.join(self.experiment_dir, 'results.tsv')
         self.df_path = os.path.join(self.experiment_dir, 'arbitary_df.tsv')
 

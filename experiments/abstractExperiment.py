@@ -26,7 +26,7 @@ class AbstractExperiment(object):
 
         # Paths to expression dataframes containing only protien-coding genes for all tissues
         self.protein_coding_paths = [
-            os.path.join(self.tissue_pair_dir, x, 'combined-gtex-tcga-counts-protein-coding.tsv')
+            os.path.join(self.tissue_pair_dir, x, 'tcga-gtex-exp.tsv')
             for x in self.tissues]
 
         # ComBat Nonparametric with Tissue Covariates
