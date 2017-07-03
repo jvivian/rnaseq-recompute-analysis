@@ -9,7 +9,7 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
-from experiments.AbstractExperiment import AbstractExperiment
+from experiments.abstractExperiment import AbstractExperiment
 from utils import run_deseq2
 from utils import write_script
 

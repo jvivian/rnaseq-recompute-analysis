@@ -6,7 +6,7 @@ from subprocess import check_call
 
 import pandas as pd
 
-from experiments.AbstractExperiment import AbstractExperiment
+from experiments.abstractExperiment import AbstractExperiment
 from utils import quantile_normalize
 from utils import write_script
 

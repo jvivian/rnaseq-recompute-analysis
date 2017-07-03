@@ -3,7 +3,7 @@ import os
 import shutil
 import textwrap
 from subprocess import Popen, PIPE
-from experiments.AbstractExperiment import AbstractExperiment
+from experiments.abstractExperiment import AbstractExperiment
 from utils import write_script
 from random import sample
 import pandas as pd

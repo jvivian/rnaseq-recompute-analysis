@@ -13,7 +13,7 @@ import os
 import shutil
 from subprocess import check_call
 
-from experiments.AbstractExperiment import AbstractExperiment
+from experiments.abstractExperiment import AbstractExperiment
 
 
 class PartitionPearsonRelationship(AbstractExperiment):

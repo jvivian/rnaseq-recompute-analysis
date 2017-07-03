@@ -3,7 +3,7 @@ import textwrap
 
 from concurrent.futures import ThreadPoolExecutor
 
-from experiments.AbstractExperiment import AbstractExperiment
+from experiments.abstractExperiment import AbstractExperiment
 import logging
 from tqdm import tqdm
 import pandas as pd

@@ -3,7 +3,7 @@ import os
 import shutil
 import textwrap
 
-from experiments.AbstractExperiment import AbstractExperiment
+from experiments.abstractExperiment import AbstractExperiment
 from utils import run_deseq2, add_gene_names
 from utils import write_script
 

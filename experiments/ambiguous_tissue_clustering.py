@@ -17,7 +17,7 @@ from tissue_clustering.tsne_clustering import run_pca
 from tissue_clustering.tsne_clustering import run_tsne
 from tissue_clustering.tsne_clustering import split_tcga_tumor_normal
 from tissue_clustering.tsne_clustering import tissues
-from experiments.AbstractExperiment import AbstractExperiment
+from experiments.abstractExperiment import AbstractExperiment
 import logging
 
 logging.basicConfig(level=logging.INFO)
