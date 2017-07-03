@@ -29,6 +29,10 @@ class DESeq2TimeTest(AbstractExperiment):
         self.create_directories([self.vector_dir, self.results_dir])
         self.script_path = write_script(self.deseq2_script, directory=self.experiment_dir)
 
+        log.info('Reading in expression dataframes')
+        self.df_b = pd.read_csv(self.df_b, index_col=0, sep='\t')
+        self.df_h = pd.read_csv(self.df_h, index_col=0, sep='\t')
+
         log.info('Creating large dataframe to sample from')
         df = pd.concat([self.df_b, self.df_h], axis=1)
         df.to_csv(self.df_path, sep='\t')
