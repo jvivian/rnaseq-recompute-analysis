@@ -218,7 +218,7 @@ def generate_file(file_path, generate_func):
     Checks file existance, generates file, and provides message
 
     :param str file_path: File location to generate file
-    :param function generate_func: Function used to generate file
+    :param func generate_func: Function used to generate file
     """
     require(not os.path.exists(file_path), file_path + ' already exists!')
     with open(file_path, 'w') as f:
