@@ -24,6 +24,7 @@ class DESeq2TimeTest(AbstractExperiment):
         self.df_h = os.path.join(self.tissue_pair_dir, 'Skin-Head', 'tcga-gtex-exp.tsv')
         self.results = os.path.join(self.experiment_dir, 'results.tsv')
         self.df_path = os.path.join(self.experiment_dir, 'arbitary_df.tsv')
+        self.num_samples = [1, 50, 100, 250, 500, 750, 1000, 1250, 1500, 1750, 2000]
 
     def setup(self):
         self.create_directories([self.vector_dir, self.results_dir])
@@ -41,7 +42,7 @@ class DESeq2TimeTest(AbstractExperiment):
         log.info('Creating vectors')
         samples = list(df.columns)
 
-        for i in [1, 50, 100, 250, 500, 750, 1000, 1250, 1500, 1750, 2000]:
+        for i in self.num_samples:
             s = [x.replace('-', '.') for x in sample(samples, i)]
             with open(os.path.join(self.vector_dir, '{}-vector'.format(i)), 'w') as f:
                 f.write('\n'.join(s) + '\n')
@@ -49,7 +50,7 @@ class DESeq2TimeTest(AbstractExperiment):
     def run_experiment(self):
         vectors = [os.path.join(self.vector_dir, x) for x in
                    sorted(os.listdir(self.vector_dir), key=lambda x: float(x.split('-')[0]))]  # Sort by # of samples
-        for i, vector in enumerate(vectors):
+        for i, vector in zip(self.num_samples, vectors):
             log.info('Running {} number of samples'.format((i)))
             err = self.run_deseq2(vector)
             with open(self.results, 'a') as f:
