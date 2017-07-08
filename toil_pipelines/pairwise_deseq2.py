@@ -393,7 +393,7 @@ def main():
 
     parser_run.add_argument('--gene_map', help='A python pickled dictionary mapping gene ids to gene names',
                             default='https://raw.githubusercontent.com/jvivian/'
-                                    'rnaseq-recompute-analysis/master/utils/gene_map.pickle')
+                                    'rnaseq-recompute-analysis/master/notebooks/maps/pickles/gene_map.pickle')
 
     parser_run.add_argument('--initial-size', default='10G',
                             help='Initial disk allotted for each sample. Change this '
