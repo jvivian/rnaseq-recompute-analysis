@@ -7,9 +7,10 @@ import random
 import sys
 import textwrap
 from collections import defaultdict
+from itertools import product
+from multiprocessing import cpu_count
 from subprocess import check_call
 from urlparse import urlparse
-from multiprocessing import cpu_count
 
 import numpy as np
 import pandas as pd
@@ -20,7 +21,6 @@ from toil.job import Job, PromisedRequirement
 from toil_lib import require, UserError, flatten
 from toil_lib.files import copy_files
 from toil_lib.urls import download_url, s3am_upload, download_url_job
-
 
 schemes = ('http', 'file', 's3', 'ftp', 'gnos')
 
@@ -71,53 +71,34 @@ def staging(job, sample, gene_map_id, max_partition, output_dir):
         for line in f:
             if not line.isspace():
                 sample, group = line.strip().split('\t')
-                groups[group].append(sample)
-    assert len(groups.keys()) == 2 and '1' in groups.keys() and '2' in groups.keys(), \
+                groups[int(group)].append(sample)
+    assert len(groups.keys()) == 2 and 1 in groups.keys() and 2 in groups.keys(), \
         'Group requirements not met for sample {}. Make sure only a 1 or a 2 is used: {}'.format(uuid, groups.keys())
 
-    # Sort so group 1 is smaller
-    group_1, group_2 = sorted([groups['1'], groups['2']], key=lambda x: len(x))
+    # Break groups up into partitions if length of a group is larger than the max_partition
+    group_1 = get_sample_partitions(groups[1], max_partition=max_partition)
+    group_2 = get_sample_partitions(groups[2], max_partition=max_partition)
 
-    # Partition larger group into n groups by some value such that the (N mod p) + r is maximized and the difference
-    # between the partition and the remainder is minimized
-    max_val = 0
-    partition = None
-    remainder = None
-    for i in xrange(max_partition):
-        r = len(group_2) % max_partition
-        r = max_partition if r == 0 else r  # Special case where 0 indicates the remainder is equal to the partition
-        if r + max_partition >= max_val:
-            max_val = r + max_partition
-            partition = max_partition
-            remainder = r
-        max_partition -= 1
-
-    log(job, 'Writing out vectors for {}, one per {} samples in group 2 and one of size {}. g1: {}  g2: {}'
-             ''.format(uuid, partition, remainder, len(group_1), len(group_2)))
-    random.shuffle(group_2)
-    num_partitions = 0
-    for i, p_vector in enumerate(partitions(group_2, partition)):
-        with open(os.path.join(work_dir, str(i)), 'w') as f:
-            vector = [x.replace('-', '.') for x in group_1 + p_vector]
-            f.write('\n'.join(vector) + '\n')
-        num_partitions += 1
-
-    # Save vectors to jobStore
-    vector_ids = [job.fileStore.writeGlobalFile(os.path.join(work_dir, str(x))) for x in xrange(num_partitions)]
-
-    log(job, 'Creating one job per vector: {}'.format(len(vector_ids)))
+    # Spawn a DESeq2 job for every pairing
+    results = []
     disk = int(df_id.size + 1e9)
-    cores = min(partition, int(cpu_count()))
-    memory = str(min(partition, int(cpu_count()))) + 'G'
-    results = [job.addChildJobFn(run_deseq2, partition, df_id, vector_id, cores=cores,
-                                 disk=disk, memory=memory).rv() for vector_id in vector_ids[:-1]]
-    results.append(job.addChildJobFn(run_deseq2, remainder, df_id, vector_ids[-1], cores=cores,
-                                     disk=disk, memory=memory).rv())
+    cpu = int(cpu_count())
+    for i, pairing in enumerate(product(group_1, group_2)):
+        g1, g2 = pairing
+        with open(os.path.join(work_dir, str(i)), 'w') as f:
+            vector = [x.replace('-', '.') for x in g1 + g2]
+            f.write('\n'.join(vector) + '\n')
+        vector_id = job.fileStore.writeGlobalFile(os.path.join(work_dir, str(i)))
+        cores = min(len(g2), cpu)
+        memory = str(min(len(g2), cpu)) + 'G'
+        log(job, 'Creating job of length {} for group 1 and {} for group 2'.format(len(g1), len(g2)))
+        results.append(
+            job.addChildJobFn(run_deseq2, len(g2), df_id, vector_id, cores=cores, disk=disk, memory=memory).rv())
 
     # Follow-on --> combine_results
     # weight_vector = [1.0 * partition / len(group_2), 1.0 * remainder / len(group_2)]
     disk = PromisedRequirement(lambda y: sum([x.size for x in y]) + int(1e9), results)
-    job.addFollowOnJobFn(combine_results, results, vector_ids, gene_map_id, uuid, output_dir, disk=disk).rv()
+    job.addFollowOnJobFn(combine_results, results, gene_map_id, uuid, output_dir, disk=disk).rv()
 
 
 def run_deseq2(job, partition, df_id, vector_id):
@@ -295,6 +276,27 @@ def parse_samples(path_to_manifest):
                                                              'approved schemes: {}'.format(schemes))
                 samples[uuid] = [exp_url, group_url]
     return samples
+
+
+def get_sample_partitions(samples, max_partition):
+    # Partition larger group into n groups by some value such that the (N mod p) + r is maximized and the difference
+    # between the partition and the remainder is minimized
+    if len(samples) > max_partition:
+        max_val = 0
+        partition = None
+        for i in xrange(max_partition):
+            r = len(samples) % max_partition
+            r = max_partition if r == 0 else r  # Special case where 0 indicates the remainder is equal to the partition
+            if r + max_partition >= max_val:
+                max_val = r + max_partition
+                partition = max_partition
+            else:
+                break  # Once the max score decreases once the global maximum has been found
+            max_partition -= 1
+        random.shuffle(samples)
+        return list(partitions(samples, partition))
+    else:
+        return [samples]
 
 
 def partitions(l, n):
