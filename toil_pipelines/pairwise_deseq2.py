@@ -139,13 +139,12 @@ def run_deseq2(job, partition, df_id, vector_id):
     return job.fileStore.writeGlobalFile(os.path.join(work_dir, 'results.tsv'))
 
 
-def combine_results(job, result_ids, vector_ids, gene_map_id, uuid, output_dir):
+def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
     """
     Combines individual DESeq2 results into one meta-results TSV
 
     :param JobFunctionWrappingJob job: passed automatically by Toil
     :param list[str,] result_ids: FileStoreIDs of all the results for this sample
-    :param list[str,] vector_ids: FileStoreIDs of all the vectors for this sample
     :param str gene_map_id: FileStoreID for the gene_map downloaded in the root job
     :param str uuid: The UUID of the sample
     :param str output_dir: Full path/ S3 URL to output directory
@@ -211,9 +210,6 @@ def combine_results(job, result_ids, vector_ids, gene_map_id, uuid, output_dir):
         log(job, 'Moving {} to output dir: {}'.format(uuid, output_dir))
         mkdir_p(output_dir)
         copy_files(file_paths=[results_path], output_dir=output_dir)
-
-    # Clean up
-    [job.fileStore.deleteGlobalFile(x) for x in vector_ids + results]
 
 
 # Pipeline specific functions
