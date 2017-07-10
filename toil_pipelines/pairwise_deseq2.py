@@ -193,7 +193,7 @@ def combine_results(job, result_ids, gene_map_id, uuid, output_dir):
     ranked['gene_rank'] = [np.median(rank[x]) for x in genes]
 
     # Map gene ids to gene names and add as a column
-    gene_names = [gene_map[x] if x in gene_map.keys() else x for x in genes]
+    gene_names = [gene_map[x.split('.')[0]] if x in gene_map.keys() else x for x in genes]
     ranked['gene_id'] = genes
     ranked.index = gene_names
     ranked.sort_values('pval_counts', inplace=True, ascending=False)
