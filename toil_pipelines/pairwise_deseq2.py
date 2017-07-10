@@ -234,7 +234,7 @@ def generate_manifest():
         #
         #   UUID        Unique identifier for the sample
         #
-        #   dataframe   Tab-separated gene by sample matrix
+        #   dataframe   Tab-separated gene by sample matrix with ENSEMBL gene names
         #
         #   group       A two column TSV assocating sample to group number. First column is a sample
         #               name corresponding to a sample in the dataframe, and the second column is
