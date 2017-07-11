@@ -37,5 +37,3 @@ def test_workflow(tmpdir):
 
     # Confirm output exists
     assert os.path.exists(os.path.join(workdir, 'test.tsv'))
-
-
