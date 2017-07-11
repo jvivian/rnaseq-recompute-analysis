@@ -1,5 +1,5 @@
 import os
-from subprocess import Popen
+from subprocess import Popen, PIPE
 
 # This script is to produce data for a single plot, so paths are hardcoded
 df_path = '/mnt/rna-seq-analysis/data/xena/tcga_gtex_counts_protein_coding.tsv'
@@ -22,7 +22,7 @@ for max_partition in [32, 64, 128, 256, 512, 1024]:
 
     print 'Running workflow with a maximum partition of: {}'.format(max_partition)
     # Call workflow
-    p = Popen(['python', pipeline_path,
+    p = Popen(['time', 'python', pipeline_path,
                'run',
                '--manifest', manifest_path,
                '--output-dir', cwd,
@@ -30,7 +30,7 @@ for max_partition in [32, 64, 128, 256, 512, 1024]:
                '--max-partition', str(max_partition),
                '--retryCount', '2',
                '--workDir', '/mnt/',
-               '/mnt/jobStore'])
+               '/mnt/jobStore'], stderr=PIPE, stdout=PIPE)
 
     out, err = p.communicate()
 
