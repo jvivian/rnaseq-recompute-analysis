@@ -379,10 +379,10 @@ g153
 Ntp162
 Rp163
 ((lp164
-cpandas.indexes.base
+cpandas.core.indexes.base
 _new_Index
 p165
-(cpandas.indexes.base
+(cpandas.core.indexes.base
 Index
 p166
 (dp167
