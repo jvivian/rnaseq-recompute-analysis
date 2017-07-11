@@ -14,7 +14,7 @@ if os.path.exists(log_path):
     os.remove(log_path)
 
 # For every log2 partition run DESeq2 and save output
-for max_partition in [32, 64, 128, 256, 512, 1024]:
+for max_partition in [128, 256, 512, 1024]:
 
     # Create manifest
     with open(manifest_path, 'w') as f:
