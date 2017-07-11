@@ -3,7 +3,7 @@ from subprocess import Popen
 
 # This script is to produce data for a single plot, so paths are hardcoded
 df_path = '/mnt/rna-seq-analysis/data/xena/tcga_gtex_counts_protein_coding.tsv'
-pairing_path = '/home/ubuntu/rnaseq-recompute-analysis/toil_pipelines/scripts/pairings.tsv'
+pairing_path = '/home/ubuntu/rnaseq-recompute-analysis/toil_pipelines/scripts/pairing.tsv'
 cwd = os.path.dirname(os.path.abspath(__file__))
 pipeline_path = os.path.join(os.path.dirname(cwd), 'pairwise_deseq2.py')
 manifest_path = os.path.join(cwd, 'manifest-pairwise-deseq2.tsv')
