@@ -18,7 +18,7 @@ for max_partition in [32, 64, 128, 256, 512, 1024]:
 
     # Create manifest
     with open(manifest_path, 'w') as f:
-        f.write('test{}\t{}\t{}'.format(max_partition, df_path, pairing_path))
+        f.write('test{}\tfile://{}\tfile://{}'.format(max_partition, df_path, pairing_path))
 
     print 'Running workflow with a maximum partition of: {}'.format(max_partition)
     # Call workflow
