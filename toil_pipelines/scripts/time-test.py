@@ -20,13 +20,14 @@ for max_partition in [32, 64, 128, 256, 512, 1024]:
     with open(manifest_path, 'w') as f:
         f.write('test{}\t{}\t{}'.format(max_partition, df_path, pairing_path))
 
+    print 'Running workflow with a maximum partition of: {}'.format(max_partition)
     # Call workflow
     p = Popen(['python', pipeline_path,
                'run',
                '--manifest', manifest_path,
                '--output-dir', cwd,
                '--initial-size', '1G',
-               '--max-partition', max_partition,
+               '--max-partition', str(max_partition),
                '--retryCount', '2',
                '--workDir', '/mnt/',
                '/mnt/jobStore'])
