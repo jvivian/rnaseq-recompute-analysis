@@ -40,7 +40,7 @@ inputs = {
     'syn7248851': 'metadata',
     'syn9962462': 'metadata',
     'syn9998691': 'metadata',
-    'syn10131007': 'metadata',
+    'syn10181478': 'metadata',
     'syn10142937': 'metadata',
     'syn10142930': 'metadata',
     'syn10156423': 'metadata'}
