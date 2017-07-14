@@ -14,7 +14,7 @@ if os.path.exists(log_path):
     os.remove(log_path)
 
 # For every log2 partition run DESeq2 and save output
-for max_partition in [128, 256, 512, 1024]:
+for max_partition in [256, 512, 1024]:
 
     # Create manifest
     with open(manifest_path, 'w') as f:
@@ -30,6 +30,7 @@ for max_partition in [128, 256, 512, 1024]:
                '--max-partition', str(max_partition),
                '--retryCount', '2',
                '--workDir', '/mnt/',
+               '--cleanWorkDir', 'onSuccess',
                '/mnt/jobStore'], stderr=PIPE, stdout=PIPE)
 
     out, err = p.communicate()
