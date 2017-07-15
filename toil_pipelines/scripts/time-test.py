@@ -31,7 +31,7 @@ for max_partition in [256, 512, 1024]:
                '--retryCount', '1',
                '--workDir', '/mnt/',
                '--cleanWorkDir', 'onSuccess',
-               '--disableCaching'
+               '--disableCaching',
                '/mnt/jobStore'], stderr=PIPE, stdout=PIPE)
 
     out, err = p.communicate()
