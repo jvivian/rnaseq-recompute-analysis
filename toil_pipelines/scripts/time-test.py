@@ -28,17 +28,20 @@ for max_partition in [256, 512, 1024]:
                '--output-dir', cwd,
                '--initial-size', '1G',
                '--max-partition', str(max_partition),
-               '--retryCount', '2',
+               '--retryCount', '1',
                '--workDir', '/mnt/',
                '--cleanWorkDir', 'onSuccess',
+               '--disableCaching'
                '/mnt/jobStore'], stderr=PIPE, stdout=PIPE)
 
     out, err = p.communicate()
 
     if p.returncode != 0:
         print 'Something went FUBAR with run: {}'.format(max_partition)
-        print out
-        print err
+        with open('out.log', 'w') as f:
+            f.write(out)
+        with open('err.log', 'w') as f:
+            f.write(err)
     else:
         with open(log_path, 'a') as f:
             f.write('{}\n\n'.format(err))
