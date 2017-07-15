@@ -93,7 +93,7 @@ def staging(job, sample, gene_map_id, max_partition, output_dir):
         memory = str(min(len(g2), cpu)) + 'G'
         log(job, 'Creating job of length {} for group 1 and {} for group 2'.format(len(g1), len(g2)))
         results.append(
-            job.addChildJobFn(run_deseq2, len(g2), df_id, vector_id, cores=cores, disk=disk, memory=memory).rv())
+            job.addChildJobFn(run_deseq2, len(g2), df_id, vector_id, cores=1, disk=disk, memory=memory).rv())
 
     # Follow-on --> combine_results
     # weight_vector = [1.0 * partition / len(group_2), 1.0 * remainder / len(group_2)]
