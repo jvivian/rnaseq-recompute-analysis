@@ -31,9 +31,9 @@ inputs = {
     'syn7434253': 'data/xena',
     'syn10002767': 'data/xena',
     # Pickled Objects
-    'syn9962451': 'data/objects',
-    'syn9962453': 'data/objects',
-    'syn9998690': 'data/objects',
+    'syn10190808': 'data/objects',
+    'syn10190809': 'data/objects',
+    'syn10190810': 'data/objects',
     # Additional Metadata
     'syn7248852': 'metadata',
     'syn7248855': 'metadata',
